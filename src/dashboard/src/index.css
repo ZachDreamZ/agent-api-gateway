@@ -25,6 +25,10 @@
   --color-surface-800: #27272a;
   --color-surface-900: #18181b;
   --color-surface-950: #09090b;
+
+  --color-accent-400: #2dd4bf;
+  --color-accent-500: #14b8a6;
+  --color-accent-600: #0d9488;
 }
 
 /* ─── Base ─── */
