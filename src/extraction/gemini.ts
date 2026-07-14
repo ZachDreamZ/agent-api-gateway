@@ -5,7 +5,7 @@ import { validateExtraction, ValidationError } from './validator.js';
 
 // ─── Config ───
 
-const MODEL = 'gemini-1.5-flash';
+const MODEL = 'gemma-4-31b-it';
 const TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 1;
 
