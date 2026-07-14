@@ -1,0 +1,40 @@
+{
+  "name": "agent-api-gateway",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:api": "tsx watch src/api/index.ts",
+    "dev:dashboard": "vite dev src/dashboard --port 5173",
+    "dev:mcp": "tsx watch src/mcp/index.ts",
+    "typecheck": "tsc --noEmit --checkers 4",
+    "build": "tsc",
+    "start": "node dist/api/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "@google/generative-ai": "^0.24.1",
+    "@hono/node-server": "^2.0.8",
+    "@hono/zod-validator": "^0.4.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "hono": "^4.6.0",
+
+    "playwright": "^1.49.0",
+    "stripe": "^17.0.0",
+    "supabase": "^1.2.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^7.0.2",
+    "vite": "^6.0.0"
+  }
+}

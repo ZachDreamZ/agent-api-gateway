@@ -1,0 +1,26 @@
+{
+  "name": "@agent-api-gateway/sdk",
+  "version": "0.1.0",
+  "description": "Node.js SDK for Agent API Gateway — structured web data for AI agents",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["agent", "ai", "extraction", "web-scraping", "mcp", "structured-data"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

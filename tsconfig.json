@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "esnext",                          // TS7 default — latest ES
+    "module": "esnext",                          // TS7 default — ESM
+    "moduleResolution": "bundler",
+    "outDir": "dist",
+    "rootDir": "./src",
+    "strict": true,                              // TS7 default — on by default
+    "types": ["node"],                           // TS7 default is [] — must list explicitly
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noUncheckedSideEffectImports": true,         // TS7 default
+    "paths": {
+      "@shared/*": ["./src/shared/*"]            // relative to tsconfig root (no baseUrl)
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/dashboard"]
+}

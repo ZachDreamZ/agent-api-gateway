@@ -1,0 +1,74 @@
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { getConfig } from './lib/config.js';
+import { authMiddleware } from './middleware/auth.js';
+import { rateLimitMiddleware } from './middleware/rate-limit.js';
+import { extractRoutes } from './routes/extract.js';
+import { schemasRoutes } from './routes/schemas.js';
+import { usageRoutes } from './routes/usage.js';
+import { billingApp, billingPricing } from './routes/billing.js';
+import { apiKeysApp } from './routes/api-keys.js';
+
+// ─── App ───
+
+const app = new Hono();
+
+app.use('/*', cors({ origin: getConfig().corsOrigin }));
+
+// ─── Health ───
+
+app.get('/health', (c) =>
+  c.json({ status: 'ok', service: 'agent-api-gateway', version: '0.1.0' }),
+);
+
+// ─── Public routes ───
+
+app.route('/v1/schemas', schemasRoutes);
+
+// ─── Public billing pricing data ───
+
+app.route('/v1/billing/pricing', billingPricing);
+
+// ─── Authenticated routes ───
+
+app.use('/v1/*', authMiddleware, rateLimitMiddleware);
+
+app.route('/v1/extract', extractRoutes);
+app.route('/v1/usage', usageRoutes);
+app.route('/v1/api-keys', apiKeysApp);
+app.route('/v1/billing', billingApp);
+
+// ─── 404 ───
+
+app.notFound((c) =>
+  c.json({ error: `Not found: ${c.req.method} ${c.req.path}` }, 404),
+);
+
+// ─── Error handler ───
+
+app.onError((err, c) => {
+  console.error('[unhandled]', err);
+  return c.json({ error: 'Internal server error' }, 500);
+});
+
+// ─── Start ───
+
+const cfg = getConfig();
+
+export default app;
+
+if (process.env['NODE_ENV'] !== 'test') {
+  const serve = async () => {
+    const { serve: honoServe } = await import('@hono/node-server');
+    honoServe(
+      { fetch: app.fetch, port: cfg.port },
+      (info) => {
+        console.log(`[api] listening on http://localhost:${info.port}`);
+      },
+    );
+  };
+  serve().catch((err) => {
+    console.error('[api] failed to start:', err);
+    process.exit(1);
+  });
+}
