@@ -4,3 +4,6 @@ dist/
 *.log
 .playwright/
 .dockerignore
+render-cli/
+*.ps1
+set-env*
