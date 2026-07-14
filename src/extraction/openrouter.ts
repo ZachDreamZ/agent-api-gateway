@@ -119,7 +119,7 @@ export async function extractWithOpenRouter(
 
       // Validate
       try {
-        validateExtraction(parsed, schema);
+        validateExtraction(schema, parsed);
       } catch (err) {
         if (err instanceof ValidationError) {
           console.warn(`[openrouter] validation warn (attempt ${attempt}): ${err.message}`);

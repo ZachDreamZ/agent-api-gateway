@@ -56,6 +56,11 @@ const checkoutSchema = z.object({
 });
 
 billingApp.post('/checkout', zValidator('json', checkoutSchema), async (c) => {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) {
+    return c.json({ error: 'Billing not configured. Stripe payment processing is currently unavailable.' }, 503);
+  }
+
   try {
     const { tier, email } = c.req.valid('json');
     const user = c.get('user');
@@ -82,13 +87,18 @@ const portalSchema = z.object({
 });
 
 billingApp.post('/portal', zValidator('json', portalSchema), async (c) => {
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!stripeKey) {
+    return c.json({ error: 'Billing not configured. Stripe payment processing is currently unavailable.' }, 503);
+  }
+
   try {
     const { return_url } = c.req.valid('json');
     const user = c.get('user');
     const stripeCustomerId = user.stripe_customer_id;
 
     if (!stripeCustomerId) {
-      return c.json({ error: 'No Stripe customer found' }, 400);
+      return c.json({ error: 'No Stripe customer found. Please sign up for a plan first.' }, 400);
     }
 
     const url = await createPortalSession(stripeCustomerId, return_url);
