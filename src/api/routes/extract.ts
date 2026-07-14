@@ -74,7 +74,7 @@ async function logUsage(opts: {
 
 const router = new Hono();
 
-router.post('/extract', zValidator('json', extractBodySchema), async (c) => {
+router.post('/', zValidator('json', extractBodySchema), async (c) => {
   const user = c.get('user');
   const apiKey = c.get('apiKey');
   const tier = c.get('tier');
