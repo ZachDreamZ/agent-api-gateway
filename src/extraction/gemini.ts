@@ -140,10 +140,16 @@ export async function extractWithGemini(
       const response = result.response;
       const rawText = response.text().trim();
 
+      // Strip markdown code fences if present
+      const cleaned = rawText
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```$/i, '')
+        .trim();
+
       // Parse JSON
       let parsed: unknown;
       try {
-        parsed = JSON.parse(rawText);
+        parsed = JSON.parse(cleaned);
       } catch {
         throw new GeminiExtractionError(
           `Gemini returned invalid JSON: ${rawText.slice(0, 200)}`,
