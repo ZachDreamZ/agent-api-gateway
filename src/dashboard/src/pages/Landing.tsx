@@ -16,18 +16,18 @@ function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-surface-800 bg-surface-950/90 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="text-lg leading-none">⚡</span>
+        <Link to="/" className="flex items-center gap-2" aria-label="Home">
+          <span className="text-lg leading-none" aria-hidden="true">⚡</span>
           <span className="text-sm font-semibold tracking-wider uppercase">api</span>
         </Link>
-        <nav className="flex items-center gap-6">
-          <a href="#features" className="text-xs text-surface-500 hover:text-surface-300 uppercase tracking-wider">
+        <nav className="flex items-center gap-6" aria-label="Primary">
+          <a href="#features" className="text-xs text-surface-500 hover:text-surface-300 uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-950">
             Features
           </a>
-          <a href="#pricing" className="text-xs text-surface-500 hover:text-surface-300 uppercase tracking-wider">
+          <a href="#pricing" className="text-xs text-surface-500 hover:text-surface-300 uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-950">
             Pricing
           </a>
-          <Link to="/docs" className="text-xs text-surface-500 hover:text-surface-300 uppercase tracking-wider">
+          <Link to="/docs" className="text-xs text-surface-500 hover:text-surface-300 uppercase tracking-wider focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-950">
             Docs
           </Link>
           <Link
@@ -54,7 +54,7 @@ function Hero() {
         <p className="mb-2 text-xs text-surface-500 uppercase tracking-widest">
           API for AI agents that need web data
         </p>
-        <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
+        <h1 className="text-3xl font-bold leading-tight tracking-tight text-balance sm:text-5xl">
           One endpoint,<br />
           <span className="text-surface-400">structured data from any URL</span>
         </h1>
@@ -86,7 +86,7 @@ function Hero() {
               {' \\\n  '}
               <span className="text-yellow-500">-H</span>
               {' '}
-              <span className="text-surface-300">"Authorization: Bearer sk-..."</span>
+              <span className="text-surface-300">"Authorization: Bearer sk-…"</span>
               {' \\\n  '}
               <span className="text-yellow-500">-d</span>
               {' '}
@@ -467,13 +467,13 @@ function Footer() {
     <footer className="border-t border-surface-800 px-6 py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-base leading-none">⚡</span>
+          <span className="text-base leading-none" aria-hidden="true">⚡</span>
           <span className="text-xs font-semibold tracking-wider uppercase">api</span>
         </div>
         <div className="flex items-center gap-5 text-xs text-surface-600">
           <Link to="/docs" className="hover:text-surface-400 transition-colors">Docs</Link>
           <Link to="/dashboard" className="hover:text-surface-400 transition-colors">Dashboard</Link>
-          <a href="https://github.com/ZachDreamZ/agent-api-gateway" className="hover:text-surface-400 transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://github.com/ZachDreamZ/agent-api-gateway" className="hover:text-surface-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-950" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
         <p className="text-[10px] text-surface-700">© 2026 Agent API Gateway</p>
       </div>
@@ -485,7 +485,7 @@ function Footer() {
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-surface-950 text-surface-100 antialiased">
+    <div id="start" className="min-h-screen bg-surface-950 text-surface-100 antialiased">
       <Header />
       <Hero />
       <Features />
