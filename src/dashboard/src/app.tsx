@@ -16,7 +16,7 @@ interface UserInfo {
 function useUser() {
   const [user, setUser] = useState<UserInfo | null>(null);
   useEffect(() => {
-    fetch('/api/billing/current')
+    fetch('/v1/billing/current')
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json() as Promise<UserInfo>;

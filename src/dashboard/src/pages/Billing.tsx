@@ -108,8 +108,8 @@ export default function Billing() {
     async function load() {
       try {
         const [tiersRes, currentRes] = await Promise.all([
-          fetch('/api/billing/pricing'),
-          fetch('/api/billing/current'),
+          fetch('/v1/billing/pricing'),
+          fetch('/v1/billing/current'),
         ]);
 
         if (!tiersRes.ok) throw new Error(`Pricing HTTP ${tiersRes.status}`);
@@ -150,7 +150,7 @@ export default function Billing() {
         return;
       }
 
-      const res = await fetch('/api/billing/checkout', {
+      const res = await fetch('/v1/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier: tierId, email }),
@@ -175,7 +175,7 @@ export default function Billing() {
   async function handlePortal() {
     setError(null);
     try {
-      const res = await fetch('/api/billing/portal', {
+      const res = await fetch('/v1/billing/portal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ return_url: window.location.href }),

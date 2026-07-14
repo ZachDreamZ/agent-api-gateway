@@ -14,6 +14,14 @@ interface UsageStats {
   recent_errors: number;
 }
 
+interface ApiUsageResponse {
+  tier: string;
+  credits_used: number;
+  credits_limit: number;
+  credits_remaining: number;
+  period_start: string;
+}
+
 interface DailyUsage {
   date: string;
   count: number;
@@ -101,15 +109,26 @@ export default function Overview() {
     async function load() {
       try {
         const [statsRes, chartRes] = await Promise.all([
-          fetch('/api/billing/usage'),
-          fetch('/api/billing/usage/daily'),
+          fetch('/v1/usage'),
+          fetch('/v1/usage/daily'),
         ]);
 
         if (!statsRes.ok) throw new Error(`Stats HTTP ${statsRes.status}`);
         if (!chartRes.ok) throw new Error(`Chart HTTP ${chartRes.status}`);
 
-        const statsData = (await statsRes.json()) as UsageStats;
+        const raw = (await statsRes.json()) as ApiUsageResponse;
         const chartData = (await chartRes.json()) as { days: DailyUsage[] };
+        const statsData: UsageStats = {
+          total_queries: raw.credits_used,
+          queries_today: 0,
+          queries_this_month: raw.credits_used,
+          credits_used: raw.credits_used,
+          credits_remaining: raw.credits_remaining,
+          cache_hit_rate: 0,
+          avg_latency_ms: 0,
+          active_keys: 0,
+          recent_errors: 0,
+        };
 
         if (!cancelled) {
           setStats(statsData);

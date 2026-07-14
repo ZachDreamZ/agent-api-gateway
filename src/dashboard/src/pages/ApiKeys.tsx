@@ -128,7 +128,7 @@ export default function ApiKeys() {
 
   const loadKeys = useCallback(async () => {
     try {
-      const res = await fetch('/api/keys');
+      const res = await fetch('/v1/api-keys');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as { keys: ApiKeyItem[] };
       setKeys(data.keys);
@@ -146,7 +146,7 @@ export default function ApiKeys() {
     if (!name.trim()) return;
     setCreating(true);
     try {
-      const res = await fetch('/api/keys', {
+      const res = await fetch('/v1/api-keys', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim() }),
@@ -166,7 +166,7 @@ export default function ApiKeys() {
   async function handleToggle(id: string) {
     setToggling(id);
     try {
-      const res = await fetch(`/api/keys/${id}/toggle`, { method: 'PATCH' });
+      const res = await fetch(`/v1/api-keys/${id}/toggle`, { method: 'PATCH' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       await loadKeys();
     } catch (err) {
@@ -180,7 +180,7 @@ export default function ApiKeys() {
     if (!window.confirm('Revoke this key? It will stop working immediately.')) return;
     setToggling(id);
     try {
-      const res = await fetch(`/api/keys/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/v1/api-keys/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       await loadKeys();
     } catch (err) {

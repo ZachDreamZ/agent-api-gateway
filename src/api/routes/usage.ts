@@ -47,4 +47,46 @@ router.get('/', async (c) => {
   }
 });
 
+// ─── GET /daily — Daily usage breakdown for last 7 days ───
+
+router.get('/daily', async (c) => {
+  const user = c.get('user');
+
+  try {
+    const supabase = getSupabase();
+
+    // Last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const { data, error } = await supabase
+      .from('usage_logs')
+      .select('credits_used, created_at')
+      .gte('created_at', sevenDaysAgo.toISOString())
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('[usage/daily] query failed:', error);
+      return c.json({ days: [] });
+    }
+
+    // Group by day
+    const daily: Record<string, number> = {};
+    for (const row of data ?? []) {
+      const day = new Date(row.created_at).toISOString().slice(0, 10);
+      daily[day] = (daily[day] ?? 0) + (row.credits_used ?? 0);
+    }
+
+    const days = Object.entries(daily).map(([date, count]) => ({ date, count }));
+    days.sort((a, b) => a.date.localeCompare(b.date));
+
+    return c.json({ days });
+  } catch (err) {
+    console.error('[usage/daily] unexpected error:', err);
+    return c.json({ days: [] });
+  }
+});
+
 export { router as usageRoutes };
