@@ -1,6 +1,6 @@
 import type { ExtractionSchema } from '../shared/types.js';
 import { getSystemPrompt, getTrimmedHtml } from './prompts.js';
-import { validateExtraction, ValidationError } from './validation.js';
+import { validateExtraction, ValidationError } from './validator.js';
 
 // ─── Errors ───
 export class OpenRouterError extends Error {
