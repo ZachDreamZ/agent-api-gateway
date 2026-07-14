@@ -10,6 +10,7 @@ import { extractRoutes } from './routes/extract.js';
 import { schemasRoutes } from './routes/schemas.js';
 import { usageRoutes } from './routes/usage.js';
 import { billingApp, billingPricing } from './routes/billing.js';
+import { webhookApp } from '../billing/webhooks-polar.js';
 import { apiKeysApp } from './routes/api-keys.js';
 
 // ─── Static file serving (built frontend) ───
@@ -73,6 +74,9 @@ app.route('/v1/extract', extractRoutes);
 app.route('/v1/usage', usageRoutes);
 app.route('/v1/api-keys', apiKeysApp);
 app.route('/v1/billing', billingApp);
+
+// ─── Polar webhook (no auth) ───
+app.route('/webhooks/polar', webhookApp);
 
 // ─── 404 ───
 

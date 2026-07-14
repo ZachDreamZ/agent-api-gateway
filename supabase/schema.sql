@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE TABLE public.users (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email       TEXT UNIQUE NOT NULL,
-  stripe_customer_id TEXT,
+  stripe_customer_id TEXT,  -- Billing provider customer ID (Polar)
   tier        TEXT NOT NULL DEFAULT 'free'
               CHECK (tier IN ('free', 'hobby', 'pro', 'scale')),
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
