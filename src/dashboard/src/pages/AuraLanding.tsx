@@ -34,7 +34,7 @@ function LogoMark({ className = 'w-8 h-8' }: { className?: string }) {
 
 // ─── Shared components ───
 
-function AppleButton({ label = 'Download Aura', full }: { label?: string; full?: boolean }) {
+function AppleButton({ label = 'Get Started Free', full }: { label?: string; full?: boolean }) {
   return (
     <button
       className={`group inline-flex items-center justify-center gap-2 rounded-full bg-white text-black font-medium text-sm px-5 py-3 transition-all hover:bg-white/90 active:scale-[0.98] ${
@@ -84,7 +84,7 @@ const gradientStyle: React.CSSProperties = {
 // ─── Navbar ───
 
 function Navbar() {
-  const links = ['Solutions', 'Pricing', 'Blog', 'Documentation', 'Careers'];
+  const links = ['Features', 'Pricing', 'Docs', 'API Reference'];
   return (
     <motion.nav
       initial={{ opacity: 0, y: -10 }}
@@ -93,17 +93,15 @@ function Navbar() {
       className="fixed top-0 left-0 right-0 z-50"
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Left — LogoMark only */}
         <Link to="/" className="text-white">
           <LogoMark />
         </Link>
 
-        {/* Center — nav links */}
         <div className="hidden md:flex gap-8">
           {links.map((link, i) => (
             <motion.a
               key={link}
-              href="#"
+              href={link === 'Docs' ? '/docs' : link === 'API Reference' ? '/docs' : `#${link.toLowerCase()}`}
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + i * 0.05, duration: 0.4 }}
@@ -114,9 +112,10 @@ function Navbar() {
           ))}
         </div>
 
-        {/* Right */}
         <div className="hidden md:block">
-          <AppleButton label="Download Aura" />
+          <Link to="/dashboard">
+            <AppleButton label="Dashboard →" />
+          </Link>
         </div>
         <div className="md:hidden">
           <button className="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/70">
@@ -151,8 +150,8 @@ function Hero() {
         transition={{ delay: 0.5, duration: 0.6 }}
         className="mt-8 text-white/60 max-w-md text-base leading-[1.5]"
       >
-        Aura is the API gateway built for the AI era. Send a URL, get structured JSON.
-        One endpoint, infinite integrations.
+        One endpoint for structured web data. AI agents send a URL + schema type,
+        get clean JSON back. No parsing, no markdown — just the fields you need.
       </motion.p>
 
       <motion.div
@@ -161,7 +160,9 @@ function Hero() {
         transition={{ delay: 0.7, duration: 0.6 }}
         className="mt-8 flex flex-col items-center gap-3"
       >
-        <AppleButton label="Start Building" />
+        <Link to="/dashboard">
+          <AppleButton />
+        </Link>
         <span className="text-xs text-white/40">1500 free queries/month · No credit card</span>
       </motion.div>
     </section>
@@ -182,7 +183,7 @@ function MenuBar() {
       <div className="max-w-6xl mx-auto px-6 h-full flex items-center justify-between text-xs">
         <div className="flex items-center gap-4">
           <AppleLogo className="w-3.5 h-3.5 text-white/70" />
-          <span className="font-bold text-white/80">Aura</span>
+          <span className="font-bold text-white/80">AgentAPI</span>
           {menuItems.map((item, i) => (
             <span
               key={item}
@@ -203,23 +204,23 @@ function MenuBar() {
   );
 }
 
-// ─── Inbox Mockup → API Playground ───
+// ─── API Playground ───
 
 function InboxMockup() {
   const messages = [
-    { name: 'POST /v1/extract', subject: '200 OK · 2.3s', preview: 'https://sneakers.com/nike-air-max', time: '9:41 AM', unread: true, active: true },
-    { name: 'GET /v1/schemas', subject: '200 OK · 0.4s', preview: 'Listed 3 schemas: product, article, company', time: '8:12 AM', unread: true, active: false },
-    { name: 'POST /v1/extract', subject: '200 OK · 1.8s', preview: 'https://blog.example.com/deep-dive', time: 'Yesterday', unread: false, active: false },
-    { name: 'POST /v1/extract', subject: '200 OK · 3.1s', preview: 'https://stripe.com/pricing', time: 'Yesterday', unread: false, active: false },
-    { name: 'GET /v1/usage', subject: '200 OK · 0.2s', preview: '1,420 queries used today', time: 'Mon', unread: false, active: false },
-    { name: 'Error', subject: '502 Bad Gateway · re-tried', preview: 'Upstream timeout on https://slow-site...', time: 'Mon', unread: false, active: false },
+    { name: 'POST /v1/extract', subject: '200 OK · 2.3s', preview: 'api-docs.example.com/products', time: '9:41 AM', unread: true, active: true },
+    { name: 'POST /v1/extract', subject: '200 OK · 1.8s', preview: 'blog.example.com/deep-dive', time: '8:12 AM', unread: true, active: false },
+    { name: 'POST /v1/extract', subject: '200 OK · 3.1s', preview: 'store.example.com/pricing', time: 'Yesterday', unread: false, active: false },
+    { name: 'GET /v1/usage', subject: '200 OK · 0.2s', preview: '1,420 queries used, 80 remaining', time: 'Yesterday', unread: false, active: false },
+    { name: 'POST /v1/extract', subject: '200 OK · 4.2s', preview: 'news.example.com/technology', time: 'Mon', unread: false, active: false },
+    { name: 'Error', subject: '502 upstream timeout', preview: 'Retried automatically · served from cache', time: 'Mon', unread: false, active: false },
   ];
 
   const labels = [
-    { name: 'Work', color: '#00d2ff' },
-    { name: 'Personal', color: '#A4F4FD' },
-    { name: 'Debug', color: '#f59e0b' },
-    { name: 'Prod', color: '#10b981' },
+    { name: 'Product', color: '#00d2ff' },
+    { name: 'Article', color: '#A4F4FD' },
+    { name: 'Company', color: '#f59e0b' },
+    { name: 'Cache', color: '#10b981' },
   ];
 
   return (
@@ -236,21 +237,24 @@ function InboxMockup() {
           <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
           <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
           <span className="w-3 h-3 rounded-full bg-[#28c840]" />
-          <span className="ml-4 text-xs text-white/50">Aura — API Playground</span>
+          <span className="ml-4 text-xs text-white/50">API Playground</span>
         </div>
 
         {/* Body */}
         <div className="grid grid-cols-12 h-[520px]">
           {/* Sidebar */}
           <div className="col-span-3 border-r border-white/5 bg-black/30 p-4 flex flex-col gap-4">
-            <button className="flex items-center justify-center gap-2 rounded-lg bg-white text-black text-xs font-semibold px-3 py-2 hover:bg-white/90 transition-colors">
+            <Link
+              to="/dashboard"
+              className="flex items-center justify-center gap-2 rounded-lg bg-white text-black text-xs font-semibold px-3 py-2 hover:bg-white/90 transition-colors"
+            >
               <Sparkles className="w-3.5 h-3.5" />
-              New Request
-            </button>
+              Dashboard
+            </Link>
 
             <nav className="space-y-0.5">
-              {['Inbox', 'Starred', 'Sent', 'Drafts', 'Archive', 'Trash'].map((item, i) => {
-                const counts: Record<string, number> = { Inbox: 12, Starred: 3, Drafts: 2 };
+              {['Requests', 'Starred', 'Failed', 'Archived'].map((item, i) => {
+                const counts: Record<string, number> = { Requests: 142, Starred: 3, Failed: 0 };
                 return (
                   <div
                     key={item}
@@ -261,7 +265,7 @@ function InboxMockup() {
                     }`}
                   >
                     <span>{item}</span>
-                    {counts[item] && (
+                    {counts[item] !== undefined && (
                       <span className="text-white/40">{counts[item]}</span>
                     )}
                   </div>
@@ -270,7 +274,7 @@ function InboxMockup() {
             </nav>
 
             <div className="mt-auto">
-              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Labels</p>
+              <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Schemas</p>
               <div className="space-y-1.5">
                 {labels.map((l) => (
                   <div key={l.name} className="flex items-center gap-2 px-2">
@@ -282,7 +286,7 @@ function InboxMockup() {
             </div>
           </div>
 
-          {/* Message list */}
+          {/* Request list */}
           <div className="col-span-4 border-r border-white/5 overflow-y-auto">
             <div className="flex items-center gap-2 px-3 py-2 border-b border-white/5">
               <Search className="w-3 h-3 text-white/40" />
@@ -310,7 +314,7 @@ function InboxMockup() {
             ))}
           </div>
 
-          {/* Reader / API Response */}
+          {/* Response viewer */}
           <div className="col-span-5 p-5 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-1">
@@ -332,7 +336,6 @@ function InboxMockup() {
               </button>
             </div>
 
-            {/* Request/Response viewer */}
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#00d2ff] to-[#0B2551] flex items-center justify-center text-[10px] font-bold text-white">
@@ -340,20 +343,20 @@ function InboxMockup() {
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-white">/v1/extract</div>
-                  <div className="text-[10px] text-white/40">API · 9:41 AM</div>
+                  <div className="text-[10px] text-white/40">product schema · 2.3s</div>
                 </div>
-                <span className="ml-auto px-1.5 py-0.5 rounded text-[10px] bg-white/10 text-white/70">Product</span>
+                <span className="ml-auto px-1.5 py-0.5 rounded text-[10px] bg-white/10 text-white/70">200</span>
               </div>
 
-              {/* Summary by Aura */}
+              {/* Summary by LLM */}
               <div className="liquid-glass rounded-lg p-3 mb-4">
                 <div className="flex items-center gap-2 mb-1.5">
                   <Sparkles className="w-3.5 h-3.5" style={{ color: '#A4F4FD' }} />
-                  <span className="text-xs font-semibold text-white/80">Summary by Aura</span>
+                  <span className="text-xs font-semibold text-white/80">Extraction Result</span>
                 </div>
                 <p className="text-[11px] text-white/60 leading-[1.5]">
-                  Extracted product data: "Nike Air Max 90" at $149.99, 4.5★ rating, in stock.
-                  4 variants, 23 reviews scraped. No errors.
+                  Extracted product "Studio Headphones Pro" at $249.99, 4.7★ rating, in stock.
+                  3 color variants, 142 reviews. Server-cached: no.
                 </p>
               </div>
 
@@ -364,7 +367,7 @@ function InboxMockup() {
 {`curl -X POST /v1/extract \\
   -H "Authorization: Bearer sk-..." \\
   -d '{
-    "url": "https://sneakers.com/nike-air-max",
+    "url": "https://api-docs.example.com/products",
     "schema": "product"
   }'`}
                 </pre>
@@ -372,17 +375,21 @@ function InboxMockup() {
 
               {/* Response */}
               <div>
-                <p className="text-xs font-semibold text-white/70 mb-1">Response · 200 OK</p>
+                <p className="text-xs font-semibold text-white/70 mb-1">Response</p>
                 <pre className="bg-black/40 rounded-lg p-3 text-[11px] text-white/70 font-mono leading-[1.6] overflow-x-auto whitespace-pre-wrap">
 {`{
   "success": true,
   "data": {
-    "name": "Nike Air Max 90",
-    "price": 149.99,
+    "name": "Studio Headphones Pro",
+    "price": 249.99,
     "currency": "USD",
-    "rating": 4.5,
+    "rating": 4.7,
     "in_stock": true,
-    "variants": ["Black/White", "Red/Blue"]
+    "variants": ["Matte Black", "Silver", "Midnight"]
+  },
+  "usage": {
+    "credits_used": 1,
+    "credits_remaining": 1499
   },
   "latency_ms": 2347
 }`}
@@ -390,10 +397,9 @@ function InboxMockup() {
               </div>
             </div>
 
-            {/* Attachment */}
             <div className="flex items-center gap-2 liquid-glass rounded-lg px-3 py-2">
               <Paperclip className="w-3 h-3 text-white/40" />
-              <span className="text-xs text-white/60">full-response-2026-05-06.json</span>
+              <span className="text-xs text-white/60">response-2026-05-06.json</span>
             </div>
           </div>
         </div>
@@ -402,38 +408,38 @@ function InboxMockup() {
   );
 }
 
-// ─── FeatureTriage ───
+// ─── Features ───
 
-function FeatureTriage() {
-  const tiers = [
-    { label: 'Priority (4)', color: '#ffffff', items: ['Shopify — product scrape', 'Stripe — payout check'] },
-    { label: 'Follow-up (7)', color: '#e5e5e5', items: ['Marcus — schema request', 'Figma — design review'] },
-    { label: 'Updates (18)', color: '#a3a3a3', items: ['Vercel — deploy ready', 'GitHub — PR approved'] },
-    { label: 'Archived (13)', color: '#525252', items: ['Newsletter · Receipts · Logs'] },
-  ];
+const featureTiers = [
+  { label: 'Schemas (3)', color: '#ffffff', items: ['Product — name, price, rating, variants', 'Article — title, author, date, topics'] },
+  { label: 'Cache (auto)', color: '#e5e5e5', items: ['24h default TTL on successful extractions', 'Sub-10ms response on cache hit'] },
+  { label: 'LLM Engine', color: '#a3a3a3', items: ['Gemma 4 31B IT via Google API', 'Auto-retry on malformed response'] },
+  { label: 'Integrations', color: '#525252', items: ['REST API · MCP server · Node.js SDK · Python SDK'] },
+];
 
+function Features() {
   return (
-    <section className="max-w-6xl mx-auto px-6 py-20 md:py-28 relative z-10">
+    <section id="features" className="max-w-6xl mx-auto px-6 py-20 md:py-28 relative z-10">
       <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
-        {/* Left */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <SectionEyebrow label="Triage" tag="AI-native" />
+          <SectionEyebrow label="Capabilities" tag="API-first" />
           <h2 className="mt-5 text-3xl md:text-5xl font-semibold tracking-tight leading-[1.02]">
             Extract any page
             <br />
             in a single call.
           </h2>
           <p className="mt-6 text-white/60 text-base leading-[1.6] max-w-md">
-            Aura reads every URL, understands the structure, and returns clean JSON.
-            No raw HTML, no markdown parsing — just the fields your agent needs.
+            Send a URL and a schema type. The LLM-powered engine reads every page,
+            understands the structure, and returns validated JSON. No raw HTML,
+            no markdown parsing — just the fields your agent needs.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            {['Auto-schema detect', 'Smart retry', 'Cached responses', 'One-line SDK'].map(
+            {['Product', 'Article', 'Company', '24h cache', 'Auto retry', 'MCP support'].map(
               (chip) => (
                 <span
                   key={chip}
@@ -446,7 +452,6 @@ function FeatureTriage() {
           </div>
         </motion.div>
 
-        {/* Right — Triage cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -456,7 +461,7 @@ function FeatureTriage() {
         >
           <p className="text-xs text-white/50 mb-4">Today · 42 pages extracted</p>
           <div className="space-y-3">
-            {tiers.map((tier) => (
+            {featureTiers.map((tier) => (
               <div key={tier.label} className="liquid-glass rounded-lg p-3">
                 <p className="text-xs font-semibold mb-1.5" style={{ color: tier.color }}>
                   {tier.label}
@@ -510,24 +515,24 @@ function LogoCloud() {
 const testimonials = [
   {
     quote:
-      'Aura gave our engineering team full control over structured extraction. It reads like the API we always wanted to build internally.',
-    name: 'Parker Wilf',
-    role: 'Group Product Manager',
-    company: 'MERCURY',
+      'We replaced three separate scraping scripts with a single API call. The structured output eliminated all our post-processing code.',
+    name: 'Engineering Lead',
+    role: 'AI Infrastructure',
+    company: 'MERIDIAN',
   },
   {
     quote:
-      'The schema routing alone changed how we ingest competitor data. I cannot imagine going back to scraping HTML and patching broken selectors.',
-    name: 'Andrew von Rosenbach',
-    role: 'Senior Engineering Program Manager',
-    company: 'COHERE',
+      'The schema routing is what sold us. Product pages, articles, company profiles — one endpoint handles all of them correctly.',
+    name: 'Senior Developer',
+    role: 'Data Pipeline Team',
+    company: 'CORTEX',
   },
   {
     quote:
-      'Extraction that actually understands page structure. Our data team stopped dreading Monday morning pipeline failures.',
-    name: 'Mathies Christensen',
-    role: 'Engineering Manager',
-    company: 'LUNAR',
+      'Cache hits in under 10ms on our repeat queries. Monday morning pipeline failures went from weekly to zero.',
+    name: 'Platform Engineer',
+    role: 'ML Platform',
+    company: 'STRATO',
   },
 ];
 
@@ -567,20 +572,20 @@ const plans = [
   {
     tier: 'Free',
     price: { monthly: '0', yearly: '0' },
-    desc: 'For developers testing the waters with structured extraction.',
+    desc: 'For developers testing structured extraction.',
     features: [
       'Up to 1,500 queries / month',
       'Product & article schemas',
       'Basic cache (1h TTL)',
-      'Standard rate limits',
-      'Access via REST API',
+      '1 API key',
+      'REST API + MCP access',
     ],
     pro: false,
   },
   {
     tier: 'Hobby',
-    price: { monthly: '9,99', yearly: '99,99' },
-    desc: 'For solo builders and side projects that need reliable data.',
+    price: { monthly: '29', yearly: '290' },
+    desc: 'For solo builders and side projects.',
     features: [
       'Up to 5,000 queries / month',
       'All schemas (product, article, company)',
@@ -592,10 +597,10 @@ const plans = [
   },
   {
     tier: 'Pro',
-    price: { monthly: '19,99', yearly: '199,99' },
-    desc: 'For studios, agencies, and production agent workloads.',
+    price: { monthly: '99', yearly: '990' },
+    desc: 'For production agent workloads.',
     features: [
-      'Unlimited queries',
+      'Up to 25,000 queries / month',
       'Custom schema definitions',
       'Extended cache (72h TTL)',
       'Team API keys + RBAC',
@@ -617,8 +622,7 @@ function Pricing() {
   const [yearly, setYearly] = useState(false);
 
   return (
-    <section className="c3-pricing-section relative z-10">
-      {/* Pricing SVG filter */}
+    <section id="pricing" className="c3-pricing-section relative z-10">
       <svg style={{ position: 'absolute', width: 0, height: 0 }}>
         <filter id="c3-noise">
           <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" stitchTiles="stitch" />
@@ -630,7 +634,6 @@ function Pricing() {
         </filter>
       </svg>
 
-      {/* Watermark */}
       <div className="c3-watermark-container">
         <div className="c3-watermark-main">
           <span className="c3-watermark-line-1">Your API.</span>
@@ -638,7 +641,6 @@ function Pricing() {
         </div>
       </div>
 
-      {/* Toggle */}
       <div className="c3-toggle-wrap">
         <span className="text-sm text-white/60">Yearly</span>
         <button
@@ -649,7 +651,6 @@ function Pricing() {
         </button>
       </div>
 
-      {/* Grid */}
       <div className="c3-grid">
         {plans.map((plan) => (
           <div key={plan.tier} className={`c3-card ${plan.pro ? 'c3-card-pro' : ''}`}>
@@ -657,7 +658,7 @@ function Pricing() {
             <div className="c3-tier-large">
               ${yearly ? plan.price.yearly : plan.price.monthly}
               <span className="text-sm font-normal text-white/40">
-                /{yearly ? 'y' : 'm'}
+                /{yearly ? 'y' : 'mo'}
               </span>
             </div>
             <p className="c3-desc">{plan.desc}</p>
@@ -689,7 +690,6 @@ function FinalCTA() {
         transition={{ duration: 0.7 }}
         className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center"
       >
-        {/* Glow */}
         <div
           className="pointer-events-none absolute inset-0 opacity-30"
           style={{
@@ -700,20 +700,25 @@ function FinalCTA() {
 
         <div className="relative z-10">
           <h2 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.02]">
-            Close the tabs.
+            Stop parsing HTML.
             <br />
-            Open your API.
+            Just call the API.
           </h2>
           <p className="mt-6 text-white/60 max-w-md mx-auto text-sm leading-[1.6]">
-            Join thousands of builders, founders, and operators who use Aura to ship
-            structured data products instead of writing parsers.
+            Join thousands of developers who ship structured data products
+            instead of writing and maintaining scraping pipelines.
           </p>
           <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-            <AppleButton label="Start Building" />
-            <button className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/15 text-white text-sm font-medium px-5 py-3 hover:bg-white/5 transition-all">
-              Talk to sales
+            <Link to="/dashboard">
+              <AppleButton />
+            </Link>
+            <Link
+              to="/docs"
+              className="group inline-flex items-center justify-center gap-2 rounded-full border border-white/15 text-white text-sm font-medium px-5 py-3 hover:bg-white/5 transition-all"
+            >
+              Read the docs
               <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-            </button>
+            </Link>
           </div>
         </div>
       </motion.div>
@@ -729,13 +734,13 @@ function Footer() {
       <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-white/40">
           <LogoMark className="w-5 h-5" />
-          <span className="text-xs font-semibold tracking-wider uppercase">Aura</span>
+          <span className="text-xs font-semibold tracking-wider uppercase">Agent API</span>
         </div>
         <div className="flex items-center gap-5 text-xs text-white/40">
           <Link to="/docs" className="hover:text-white/70 transition-colors">Docs</Link>
           <Link to="/dashboard" className="hover:text-white/70 transition-colors">Dashboard</Link>
           <a href="https://github.com/ZachDreamZ/agent-api-gateway" className="hover:text-white/70 transition-colors" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <span className="text-[10px] text-white/20">© 2026 Aura</span>
+          <span className="text-[10px] text-white/20">© 2026 Agent API Gateway</span>
         </div>
       </div>
     </footer>
@@ -744,7 +749,7 @@ function Footer() {
 
 // ─── Page ───
 
-export default function AuraLanding() {
+export default function Landing() {
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#0c0c0c] text-white selection:bg-brand-aura/30">
       {/* Fixed background video */}
@@ -777,7 +782,7 @@ export default function AuraLanding() {
       <Hero />
       <MenuBar />
       <InboxMockup />
-      <FeatureTriage />
+      <Features />
       <LogoCloud />
       <Testimonials />
       <Pricing />
