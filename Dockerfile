@@ -1,4 +1,16 @@
-# ─── Single-stage: run API + Playwright ───
+# ─── Stage 1: Build frontend ───
+FROM node:22-slim AS frontend-builder
+
+WORKDIR /app
+COPY package*.json /app/
+
+RUN npm ci --include=dev && npm install react-router-dom
+
+COPY src/dashboard/ /app/src/dashboard/
+
+RUN npx vite build src/dashboard --config src/dashboard/vite.config.ts
+
+# ─── Stage 2: API + Playwright ───
 FROM node:22-slim
 
 # Playwright system deps (Bookworm-compatible names)
@@ -12,13 +24,16 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 COPY package*.json tsconfig.json .env.example /app/
 
-# Install deps (omit dev deps we don't need: dashboard build)
+# Install deps (omit dev deps)
 RUN npm ci --omit=dev && npm install tsx
 
 # Install Chromium for Playwright
 RUN npx playwright install chromium
 
 COPY src/ /app/src/
+
+# Copy pre-built frontend
+COPY --from=frontend-builder /app/dist/ /app/dist/
 
 ENV NODE_ENV=production
 EXPOSE 3000

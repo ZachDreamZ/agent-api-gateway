@@ -6,14 +6,14 @@ import path from 'path';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   root: '.',
-  base: '/dashboard/',
+  base: '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
   },
   build: {
-    outDir: '../../dist/dashboard',
+    outDir: '../../dist',
     emptyOutDir: true,
   },
   server: {

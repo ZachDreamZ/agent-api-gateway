@@ -1,3 +1,6 @@
+import { readFileSync, existsSync } from 'node:fs';
+import { join, extname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { getConfig } from './lib/config.js';
@@ -8,6 +11,31 @@ import { schemasRoutes } from './routes/schemas.js';
 import { usageRoutes } from './routes/usage.js';
 import { billingApp, billingPricing } from './routes/billing.js';
 import { apiKeysApp } from './routes/api-keys.js';
+
+// ─── Static file serving (built frontend) ───
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const DIST = join(__dirname, '..', '..', 'dist');
+
+const MIME: Record<string, string> = {
+  '.html': 'text/html',
+  '.js': 'application/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.svg': 'image/svg+xml',
+  '.ico': 'image/x-icon',
+  '.woff2': 'font/woff2',
+};
+
+function serveStatic(c: any, filePath: string) {
+  const full = join(DIST, filePath);
+  if (!existsSync(full)) return null;
+  const ext = extname(full);
+  const content = readFileSync(full);
+  return c.body(content, 200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+}
 
 // ─── App ───
 
@@ -20,6 +48,14 @@ app.use('/*', cors({ origin: getConfig().corsOrigin }));
 app.get('/health', (c) =>
   c.json({ status: 'ok', service: 'agent-api-gateway', version: '0.1.0' }),
 );
+
+// ─── Serve frontend for non-API routes ───
+
+app.get('/', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/docs', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/dashboard', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/dashboard/*', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 
 // ─── Public routes ───
 
