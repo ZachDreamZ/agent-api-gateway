@@ -1,32 +1,36 @@
 import type { ExtractionSchema } from '../shared/types.js';
 import { extractStructuredData as extractWithClaude } from './claude.js';
 import { extractWithGemini } from './gemini.js';
+import { extractWithOpenRouter } from './openrouter.js';
 
 // ─── LLM Router ───
-// Gemini Flash is free-tier default. Falls back to Claude when GEMINI_API_KEY
-// is not set but ANTHROPIC_API_KEY is. Configure via EXTRACTION_LLM env var.
+// Priority: openrouter > gemini > claude.
+// Configure via EXTRACTION_LLM env var (gemini, claude, or openrouter).
 
-export type ExtractionEngine = 'gemini' | 'claude';
+export type ExtractionEngine = 'gemini' | 'claude' | 'openrouter';
 
 function resolveEngine(schema?: ExtractionSchema): ExtractionEngine {
   const envVal = process.env['EXTRACTION_LLM']?.toLowerCase() as ExtractionEngine | undefined;
-  if (envVal === 'claude' || envVal === 'gemini') return envVal;
+  if (envVal === 'openrouter' || envVal === 'claude' || envVal === 'gemini') return envVal;
 
-  // Auto-detect: prefer Gemini if key is present
+  // Auto-detect: prefer OpenRouter if key is present
+  if (process.env['OPENROUTER_API_KEY']) return 'openrouter';
   if (process.env['GEMINI_API_KEY']) return 'gemini';
   if (process.env['ANTHROPIC_API_KEY']) return 'claude';
 
-  // Default to Gemini (will fail gracefully with clear error if no key set)
-  return 'gemini';
+  // Default
+  return 'openrouter';
 }
 
 export { extractStructuredData as extractWithClaude, ExtractionError } from './claude.js';
 export { extractWithGemini } from './gemini.js';
+export { extractWithOpenRouter } from './openrouter.js';
 export { resolveEngine };
 
 /**
  * Extract structured data from HTML using the configured LLM engine.
- * Default: Gemini Flash 2.0 (free tier). Falls back to Claude Sonnet 4.
+ * Default: OpenRouter Gemini 2.0 Flash (routes through OpenRouter API).
+ * Falls back to direct Gemini or Claude.
  */
 export async function extractStructuredData(opts: {
   schema: ExtractionSchema;
@@ -38,6 +42,16 @@ export async function extractStructuredData(opts: {
 
   if (engine === 'claude') {
     return extractWithClaude(opts);
+  }
+
+  if (engine === 'openrouter') {
+    const result = await extractWithOpenRouter(opts.html, opts.url, opts.schema);
+    return {
+      data: result.data ?? {},
+      raw: result.raw ? JSON.stringify(result.raw) : undefined,
+      model: 'google/gemini-2.0-flash-001 (via OpenRouter)',
+      latencyMs: result.latencyMs,
+    };
   }
 
   return extractWithGemini(opts);
