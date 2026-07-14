@@ -7,16 +7,19 @@
 @theme {
   --color-brand-aura: #3D81E3;
   --font-family-sans: 'Inter', system-ui, sans-serif;
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-200: #c7d2fe;
-  --color-brand-300: #a5b4fc;
-  --color-brand-400: #818cf8;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-700: #4338ca;
-  --color-brand-800: #3730a3;
-  --color-brand-900: #312e81;
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dbe8fe;
+  --color-brand-200: #bfd5fe;
+  --color-brand-300: #93b9fd;
+  --color-brand-400: #6094f8;
+  --color-brand-500: #3D81E3;
+  --color-brand-600: #2d64c0;
+  --color-brand-700: #244e9a;
+  --color-brand-800: #20407a;
+  --color-brand-900: #1e3664;
+
+  --glass-bg: rgba(255,255,255,0.02);
+  --glass-border: rgba(255,255,255,0.08);
 
   --color-surface-50: #fafafa;
   --color-surface-100: #f4f4f5;
@@ -44,7 +47,9 @@ html {
 body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+  background-color: #0c0c0c;
 }
 
 ::selection {
@@ -60,8 +65,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface-700);
+  background: rgba(255,255,255,0.08);
   border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.14);
 }
 
 /* ─── Animations ─── */
@@ -84,6 +92,23 @@ body {
 
 .animate-shiny {
   animation: shiny 6s linear infinite;
+}
+
+/* ─── Glass utilities ─── */
+
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.glass-card-hover {
+  transition: all 0.2s cubic-bezier(.22,1,.36,1);
+}
+.glass-card-hover:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.12);
 }
 
 /* ─── Liquid glass ─── */

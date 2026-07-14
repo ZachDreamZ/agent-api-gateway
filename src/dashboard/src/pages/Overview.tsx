@@ -42,28 +42,28 @@ function StatCard({
 }) {
   if (loading) {
     return (
-      <div className="rounded-lg border border-surface-800 bg-surface-900 p-4">
-        <div className="mb-2 h-3 w-20 animate-pulse rounded bg-surface-700" />
-        <div className="h-7 w-28 animate-pulse rounded bg-surface-700" />
+      <div className="rounded-lg glass-card p-4">
+        <div className="mb-2 h-3 w-20 animate-pulse rounded bg-white/10" />
+        <div className="h-7 w-28 animate-pulse rounded bg-white/10" />
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-surface-800 bg-surface-900 p-4 transition-colors hover:border-surface-700">
-      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-surface-500">{label}</p>
-      <p className="text-2xl font-bold tracking-tight">{value}</p>
-      {sub && <p className="mt-0.5 text-xs text-surface-500">{sub}</p>}
+    <div className="rounded-lg glass-card glass-card-hover p-4">
+      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-white/40">{label}</p>
+      <p className="text-2xl font-bold tracking-tight text-white">{value}</p>
+      {sub && <p className="mt-0.5 text-xs text-white/40">{sub}</p>}
     </div>
   );
 }
 
-// ─── Sparkline Chart (bar) ───
+// ─── Sparkline Chart ───
 
 function UsageChart({ data }: { data: DailyUsage[] }) {
   if (data.length === 0) {
     return (
-      <div className="flex h-40 items-center justify-center rounded-lg border border-surface-800 bg-surface-900 text-sm text-surface-500">
+      <div className="flex h-40 items-center justify-center rounded-lg glass-card text-sm text-white/40">
         No usage data yet
       </div>
     );
@@ -72,19 +72,19 @@ function UsageChart({ data }: { data: DailyUsage[] }) {
   const max = Math.max(...data.map((d) => d.count), 1);
 
   return (
-    <div className="rounded-lg border border-surface-800 bg-surface-900 p-4">
-      <h3 className="mb-3 text-sm font-medium text-surface-300">Last 7 Days</h3>
+    <div className="rounded-lg glass-card p-4">
+      <h3 className="mb-3 text-sm font-medium text-white/70">Last 7 Days</h3>
       <div className="flex items-end gap-2" style={{ height: 120 }}>
         {data.map((d) => {
           const pct = (d.count / max) * 100;
           return (
             <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
-              <span className="text-xs font-medium text-surface-400">{d.count}</span>
+              <span className="text-xs font-medium text-white/50">{d.count}</span>
               <div
                 className="w-full rounded-t bg-brand-600/60 transition-all hover:bg-brand-500"
                 style={{ height: `${Math.max(pct, 4)}%` }}
               />
-              <span className="text-[10px] text-surface-600">
+              <span className="text-[10px] text-white/30">
                 {new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' })}
               </span>
             </div>
@@ -136,8 +136,6 @@ export default function Overview() {
         }
       } catch (err) {
         if (!cancelled) {
-          const message = err instanceof Error ? err.message : 'Failed to load stats';
-          // Seed demo data since backend doesn't have these endpoints yet
           setStats({
             total_queries: 0,
             queries_today: 0,
@@ -162,16 +160,15 @@ export default function Overview() {
 
   if (error) {
     return (
-      <div className="rounded-lg border border-red-800 bg-red-900/20 px-6 py-4 text-red-400">
-        <p className="font-medium">Failed to load overview</p>
-        <p className="mt-1 text-sm">{error}</p>
+      <div className="rounded-lg glass-card border-red-500/20 px-6 py-4">
+        <p className="font-medium text-red-400">Failed to load overview</p>
+        <p className="mt-1 text-sm text-red-400/60">{error}</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Stat grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total Queries"
@@ -198,7 +195,6 @@ export default function Overview() {
         />
       </div>
 
-      {/* Secondary stats */}
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard
           label="Active Keys"
@@ -218,7 +214,6 @@ export default function Overview() {
         />
       </div>
 
-      {/* Chart */}
       <UsageChart data={chart} />
     </div>
   );

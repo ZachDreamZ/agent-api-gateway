@@ -41,10 +41,10 @@ function PlanCard({
 
   return (
     <div
-      className={`relative flex flex-col rounded-xl border p-6 transition-all ${
+      className={`relative flex flex-col rounded-xl glass-card p-6 transition-all ${
         tier.highlighted
-          ? 'border-brand-500/50 bg-brand-600/5 shadow-lg shadow-brand-900/20'
-          : 'border-surface-800 bg-surface-900 hover:border-surface-700'
+          ? 'border-brand-500/50 shadow-lg shadow-brand-900/20'
+          : 'glass-card-hover'
       }`}
     >
       {tier.highlighted && (
@@ -53,23 +53,23 @@ function PlanCard({
         </span>
       )}
 
-      <h3 className="text-lg font-bold">{tier.name}</h3>
-      <p className="mt-1 text-sm text-surface-400">{tier.description}</p>
+      <h3 className="text-lg font-bold text-white">{tier.name}</h3>
+      <p className="mt-1 text-sm text-white/50">{tier.description}</p>
 
       <p className="mt-4">
-        <span className="text-3xl font-bold">{tier.price}</span>
+        <span className="text-3xl font-bold text-white">{tier.price}</span>
         {tier.price_monthly > 0 && (
-          <span className="ml-1 text-sm text-surface-500">/month</span>
+          <span className="ml-1 text-sm text-white/40">/month</span>
         )}
       </p>
 
       <ul className="mt-5 flex-1 space-y-2">
         {tier.features.map((f, i) => (
           <li key={i} className="flex items-start gap-2 text-sm">
-            <span className={f.included ? 'text-green-400' : 'text-surface-600'}>
+            <span className={f.included ? 'text-green-400' : 'text-white/20'}>
               {f.included ? '✓' : '—'}
             </span>
-            <span className={f.included ? 'text-surface-200' : 'text-surface-600'}>
+            <span className={f.included ? 'text-white/70' : 'text-white/20'}>
               {f.text}
             </span>
           </li>
@@ -79,12 +79,12 @@ function PlanCard({
       <button
         onClick={() => onSelect(tier.id)}
         disabled={isCurrent || isFree || loading}
-        className={`mt-6 w-full rounded-lg py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 ${
+        className={`mt-6 w-full rounded-lg py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
           isCurrent
-            ? 'border border-surface-700 bg-surface-800 text-surface-400'
+            ? 'glass-card text-white/50'
             : tier.highlighted
               ? 'bg-brand-600 text-white hover:bg-brand-500'
-              : 'border border-surface-700 bg-surface-800 text-surface-200 hover:bg-surface-700'
+              : 'glass-card text-white/70 hover:bg-white/5'
         }`}
       >
         {isCurrent ? 'Current Plan' : isFree ? 'Free' : 'Subscribe'}
@@ -124,7 +124,6 @@ export default function Billing() {
         }
       } catch (err) {
         if (!cancelled) {
-          // Seed demo data since backend endpoints may not be wired yet
           setTiers([]);
           setCurrent(null);
           setError(null);
@@ -143,7 +142,6 @@ export default function Billing() {
     setError(null);
 
     try {
-      // Prompt for email if needed — in production use auth user
       const email = prompt('Enter your email for checkout:');
       if (!email) {
         setCheckoutLoading(null);
@@ -190,40 +188,39 @@ export default function Billing() {
       if (data.url) window.location.href = data.url;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Portal redirect failed');
+    } finally {
+      setCheckoutLoading(null);
     }
   }
-
-  // ─── Render ───
 
   if (loading) {
     return (
       <div className="grid gap-6 md:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-80 animate-pulse rounded-xl bg-surface-900" />
+          <div key={i} className="h-80 animate-pulse rounded-xl bg-white/5" />
         ))}
       </div>
     );
   }
 
-  // If no pricing data from backend, show inline message
   if (tiers.length === 0) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg border border-surface-800 bg-surface-900 p-6">
-          <h2 className="mb-2 text-lg font-bold">Current Plan</h2>
+        <div className="rounded-lg glass-card p-6">
+          <h2 className="mb-2 text-lg font-bold text-white">Current Plan</h2>
           {current ? (
             <div className="flex items-center gap-3">
               <span className="rounded bg-brand-600/20 px-2 py-0.5 text-sm font-medium text-brand-400 uppercase">
                 {current.tier}
               </span>
-              <span className="text-sm text-surface-400">{current.price}</span>
+              <span className="text-sm text-white/40">{current.price}</span>
             </div>
           ) : (
-            <p className="text-sm text-surface-500">Loading plan info...</p>
+            <p className="text-sm text-white/40">Loading plan info...</p>
           )}
         </div>
 
-        <div className="rounded-lg border border-dashed border-surface-700 p-8 text-center text-sm text-surface-500">
+        <div className="rounded-lg border border-dashed border-white/10 p-8 text-center text-sm text-white/40">
           Pricing data unavailable. Start the API server and ensure Stripe is configured.
         </div>
       </div>
@@ -232,20 +229,19 @@ export default function Billing() {
 
   return (
     <div>
-      {/* Current plan bar */}
       {current && (
-        <div className="mb-6 flex items-center justify-between rounded-lg border border-surface-800 bg-surface-900 px-5 py-3">
+        <div className="mb-6 flex items-center justify-between rounded-lg glass-card px-5 py-3">
           <div className="flex items-center gap-3">
-            <span className="text-sm text-surface-400">Current plan:</span>
+            <span className="text-sm text-white/40">Current plan:</span>
             <span className="rounded bg-brand-600/20 px-2 py-0.5 text-sm font-medium text-brand-400 uppercase">
               {current.tier}
             </span>
-            <span className="text-sm text-surface-500">{current.price}</span>
+            <span className="text-sm text-white/40">{current.price}</span>
           </div>
           {current.stripe_customer_id && (
             <button
               onClick={handlePortal}
-              className="rounded-lg border border-surface-700 px-3 py-1.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-lg glass-card px-3 py-1.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/5"
             >
               Manage Subscription
             </button>
@@ -254,12 +250,11 @@ export default function Billing() {
       )}
 
       {error && (
-        <div className="mb-4 rounded-lg border border-red-800 bg-red-900/20 px-4 py-3 text-sm text-red-400">
+        <div className="mb-4 rounded-lg glass-card border-red-500/20 px-4 py-3 text-sm text-red-400">
           {error}
         </div>
       )}
 
-      {/* Plan cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {tiers.map((tier) => (
           <PlanCard

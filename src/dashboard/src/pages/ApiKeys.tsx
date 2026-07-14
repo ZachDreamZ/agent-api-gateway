@@ -33,20 +33,20 @@ function KeyRow({
   toggling: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-surface-800 bg-surface-900 px-4 py-3 transition-colors hover:border-surface-700">
+    <div className="flex items-center justify-between rounded-lg glass-card glass-card-hover px-4 py-3">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span
             className={`h-2 w-2 rounded-full ${
-              item.active ? 'bg-green-500' : 'bg-surface-600'
+              item.active ? 'bg-green-500' : 'bg-white/30'
             }`}
           />
-          <span className="font-medium text-sm">{item.name}</span>
-          <code className="ml-2 rounded bg-surface-800 px-1.5 py-0.5 font-mono text-xs text-surface-400">
+          <span className="font-medium text-sm text-white">{item.name}</span>
+          <code className="ml-2 rounded bg-white/5 px-1.5 py-0.5 font-mono text-xs text-white/50">
             {item.key_prefix}...
           </code>
         </div>
-        <p className="mt-1 text-xs text-surface-500">
+        <p className="mt-1 text-xs text-white/40">
           Created {new Date(item.created_at).toLocaleDateString()}
           {item.last_used_at
             ? ` · Last used ${new Date(item.last_used_at).toLocaleDateString()}`
@@ -60,7 +60,7 @@ function KeyRow({
           disabled={toggling}
           className={`rounded px-2.5 py-1 text-xs font-medium transition-colors disabled:opacity-50 ${
             item.active
-              ? 'bg-surface-700 text-surface-300 hover:bg-surface-600'
+              ? 'bg-white/10 text-white/60 hover:bg-white/15'
               : 'bg-brand-600/20 text-brand-400 hover:bg-brand-600/30'
           }`}
         >
@@ -89,13 +89,13 @@ function NewKeyModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="mx-4 w-full max-w-lg rounded-xl border border-surface-700 bg-surface-900 p-6 shadow-2xl">
-        <h2 className="mb-1 text-lg font-bold">Key Created</h2>
-        <p className="mb-4 text-sm text-surface-400">
+      <div className="mx-4 w-full max-w-lg rounded-xl glass-card p-6 shadow-2xl">
+        <h2 className="mb-1 text-lg font-bold text-white">Key Created</h2>
+        <p className="mb-4 text-sm text-white/50">
           Copy this key now. You won&apos;t be able to see it again.
         </p>
 
-        <div className="mb-4 rounded-lg bg-surface-950 p-3">
+        <div className="mb-4 rounded-lg bg-black/40 p-3">
           <code className="block select-all break-all font-mono text-sm text-brand-400">
             {result.key}
           </code>
@@ -106,7 +106,7 @@ function NewKeyModal({
             navigator.clipboard.writeText(result.key).catch(() => {});
             onClose();
           }}
-          className="w-full rounded-lg bg-brand-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-500"
+          className="w-full rounded-lg bg-brand-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
         >
           Copy & Close
         </button>
@@ -190,13 +190,11 @@ export default function ApiKeys() {
     }
   }
 
-  // ─── Render ───
-
   if (loading) {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-16 animate-pulse rounded-lg bg-surface-900" />
+          <div key={i} className="h-16 animate-pulse rounded-lg bg-white/5" />
         ))}
       </div>
     );
@@ -205,13 +203,12 @@ export default function ApiKeys() {
   return (
     <div>
       {error && (
-        <div className="mb-4 rounded-lg border border-red-800 bg-red-900/20 px-4 py-3 text-sm text-red-400">
+        <div className="mb-4 rounded-lg glass-card border-red-500/20 px-4 py-3 text-sm text-red-400">
           {error}
           <button onClick={() => setError(null)} className="ml-2 underline">Dismiss</button>
         </div>
       )}
 
-      {/* Create */}
       <div className="mb-6 flex gap-2">
         <input
           type="text"
@@ -219,20 +216,19 @@ export default function ApiKeys() {
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
           placeholder="Key name (e.g. Production)"
-          className="flex-1 rounded-lg border border-surface-700 bg-surface-900 px-3 py-2 text-sm outline-none transition-colors placeholder:text-surface-600 focus:border-brand-600"
+          className="flex-1 rounded-lg glass-card px-3 py-2 text-sm outline-none transition-colors placeholder:text-white/30 focus:border-white/20 text-white"
         />
         <button
           onClick={handleCreate}
           disabled={creating || !name.trim()}
-          className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-500 disabled:opacity-50"
+          className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-500 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
         >
           {creating ? 'Creating...' : 'Create Key'}
         </button>
       </div>
 
-      {/* List */}
       {keys.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-surface-700 p-8 text-center text-sm text-surface-500">
+        <div className="rounded-lg border border-dashed border-white/10 p-8 text-center text-sm text-white/40">
           No API keys yet. Create one above.
         </div>
       ) : (
@@ -249,7 +245,6 @@ export default function ApiKeys() {
         </div>
       )}
 
-      {/* Modal */}
       {newKey && <NewKeyModal result={newKey} onClose={() => setNewKey(null)} />}
     </div>
   );
