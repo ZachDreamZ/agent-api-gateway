@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 're
 import Overview from './pages/Overview';
 import ApiKeys from './pages/ApiKeys';
 import Billing from './pages/Billing';
-import Landing from './pages/Landing';
+import Landing from './pages/AuraLanding';
 import Docs from './pages/Docs';
 
 // ─── User Info ───
