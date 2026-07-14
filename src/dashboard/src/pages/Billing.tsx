@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 
 // ─── Types ───
 
@@ -23,6 +24,43 @@ interface CurrentPlan {
   features: { text: string; included: boolean }[];
 }
 
+// ─── Icons ───
+
+function IconCheck({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+function IconX({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+function IconStar({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+function IconExternalLink({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  );
+}
+
 // ─── Plan Card ───
 
 function PlanCard({
@@ -40,55 +78,101 @@ function PlanCard({
   const isFree = tier.id === 'free';
 
   return (
-    <div
-      className={`relative flex flex-col rounded-xl glass-card p-6 transition-all ${
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`relative flex flex-col overflow-hidden rounded-2xl glass-card transition-all ${
         tier.highlighted
-          ? 'border-brand-500/50 shadow-lg shadow-brand-900/20'
+          ? 'border-brand-500/40 shadow-lg shadow-brand-900/20'
           : 'glass-card-hover'
       }`}
     >
+      {/* Highlighted badge */}
       {tier.highlighted && (
-        <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-brand-600 px-3 py-0.5 text-xs font-semibold text-white">
-          Popular
-        </span>
+        <div className="flex items-center justify-center gap-1.5 bg-brand-600/20 px-4 py-2 text-xs font-semibold text-brand-400">
+          <IconStar className="w-3 h-3" />
+          Most Popular
+        </div>
       )}
 
-      <h3 className="text-lg font-bold text-white">{tier.name}</h3>
-      <p className="mt-1 text-sm text-white/50">{tier.description}</p>
+      <div className="flex flex-1 flex-col p-6">
+        {/* Header */}
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-white">{tier.name}</h3>
+          <p className="mt-1 text-sm text-white/50">{tier.description}</p>
+        </div>
 
-      <p className="mt-4">
-        <span className="text-3xl font-bold text-white">{tier.price}</span>
-        {tier.price_monthly > 0 && (
-          <span className="ml-1 text-sm text-white/40">/month</span>
-        )}
-      </p>
+        {/* Price */}
+        <div className="mb-6">
+          <div className="flex items-baseline gap-1">
+            <span className="text-4xl font-bold tracking-tight text-white">{tier.price}</span>
+            {tier.price_monthly > 0 && (
+              <span className="text-sm text-white/40">/month</span>
+            )}
+          </div>
+          {tier.price_monthly > 0 && (
+            <p className="mt-1 text-xs text-white/30">
+              ${(tier.price_monthly * 12).toLocaleString()}/year billed annually
+            </p>
+          )}
+        </div>
 
-      <ul className="mt-5 flex-1 space-y-2">
-        {tier.features.map((f, i) => (
-          <li key={i} className="flex items-start gap-2 text-sm">
-            <span className={f.included ? 'text-green-400' : 'text-white/20'}>
-              {f.included ? '✓' : '—'}
-            </span>
-            <span className={f.included ? 'text-white/70' : 'text-white/20'}>
-              {f.text}
-            </span>
-          </li>
-        ))}
-      </ul>
+        {/* Features */}
+        <ul className="mb-6 flex-1 space-y-3">
+          {tier.features.map((f, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-sm">
+              {f.included ? (
+                <IconCheck className="mt-0.5 w-4 h-4 flex-shrink-0 text-emerald-400" />
+              ) : (
+                <IconX className="mt-0.5 w-4 h-4 flex-shrink-0 text-white/20" />
+              )}
+              <span className={f.included ? 'text-white/70' : 'text-white/25'}>
+                {f.text}
+              </span>
+            </li>
+          ))}
+        </ul>
 
-      <button
-        onClick={() => onSelect(tier.id)}
-        disabled={isCurrent || isFree || loading}
-        className={`mt-6 w-full rounded-lg py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
-          isCurrent
-            ? 'glass-card text-white/50'
-            : tier.highlighted
-              ? 'bg-brand-600 text-white hover:bg-brand-500'
-              : 'glass-card text-white/70 hover:bg-white/5'
-        }`}
-      >
-        {isCurrent ? 'Current Plan' : isFree ? 'Free' : 'Subscribe'}
-      </button>
+        {/* CTA */}
+        <button
+          onClick={() => onSelect(tier.id)}
+          disabled={isCurrent || isFree || loading}
+          className={`w-full rounded-xl py-3 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 disabled:opacity-50 ${
+            isCurrent
+              ? 'glass-card text-white/50 cursor-default'
+              : tier.highlighted
+                ? 'bg-brand-600 text-white hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-600/25'
+                : 'glass-card text-white/70 hover:bg-white/5 hover:text-white'
+          }`}
+        >
+          {isCurrent ? 'Current Plan' : isFree ? 'Free Forever' : 'Upgrade'}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Usage Bar ───
+
+function UsageBar({ used, limit, label }: { used: number; limit: number; label: string }) {
+  const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
+
+  return (
+    <div className="rounded-xl glass-card p-5">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="text-sm font-medium text-white/70">{label}</span>
+        <span className="text-xs text-white/40">
+          {used.toLocaleString()} / {limit.toLocaleString()}
+        </span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="h-full rounded-full bg-brand-500"
+        />
+      </div>
     </div>
   );
 }
@@ -188,16 +272,20 @@ export default function Billing() {
       if (data.url) window.location.href = data.url;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Portal redirect failed');
-    } finally {
-      setCheckoutLoading(null);
     }
   }
 
   if (loading) {
     return (
-      <div className="grid gap-6 md:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-80 animate-pulse rounded-xl bg-white/5" />
+          <motion.div
+            key={i}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: i * 0.1 }}
+            className="h-96 animate-pulse rounded-2xl bg-white/5"
+          />
         ))}
       </div>
     );
@@ -206,11 +294,11 @@ export default function Billing() {
   if (tiers.length === 0) {
     return (
       <div className="space-y-6">
-        <div className="rounded-lg glass-card p-6">
+        <div className="rounded-xl glass-card p-6">
           <h2 className="mb-2 text-lg font-bold text-white">Current Plan</h2>
           {current ? (
             <div className="flex items-center gap-3">
-              <span className="rounded bg-brand-600/20 px-2 py-0.5 text-sm font-medium text-brand-400 uppercase">
+              <span className="rounded-full bg-brand-600/20 px-3 py-1 text-sm font-medium text-brand-400 uppercase">
                 {current.tier}
               </span>
               <span className="text-sm text-white/40">{current.price}</span>
@@ -220,20 +308,26 @@ export default function Billing() {
           )}
         </div>
 
-        <div className="rounded-lg border border-dashed border-white/10 p-8 text-center text-sm text-white/40">
-          Pricing data unavailable. Start the API server and ensure Stripe is configured.
+        <div className="rounded-xl border border-dashed border-white/10 p-12 text-center">
+          <p className="text-sm text-white/40">Pricing data unavailable</p>
+          <p className="mt-1 text-xs text-white/30">Start the API server and ensure Stripe is configured</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="space-y-8">
+      {/* Current plan bar */}
       {current && (
-        <div className="mb-6 flex items-center justify-between rounded-lg glass-card px-5 py-3">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col gap-4 rounded-xl glass-card px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div className="flex items-center gap-3">
             <span className="text-sm text-white/40">Current plan:</span>
-            <span className="rounded bg-brand-600/20 px-2 py-0.5 text-sm font-medium text-brand-400 uppercase">
+            <span className="rounded-full bg-brand-600/20 px-3 py-1 text-sm font-medium text-brand-400 uppercase">
               {current.tier}
             </span>
             <span className="text-sm text-white/40">{current.price}</span>
@@ -241,22 +335,35 @@ export default function Billing() {
           {current.stripe_customer_id && (
             <button
               onClick={handlePortal}
-              className="rounded-lg glass-card px-3 py-1.5 text-sm font-medium text-white/60 transition-colors hover:bg-white/5"
+              className="inline-flex items-center gap-2 rounded-lg glass-card px-4 py-2 text-sm font-medium text-white/60 transition-all hover:bg-white/5 hover:text-white/80"
             >
               Manage Subscription
+              <IconExternalLink className="w-3.5 h-3.5" />
             </button>
           )}
-        </div>
+        </motion.div>
       )}
+
+      {/* Usage */}
+      <UsageBar
+        used={0}
+        limit={current?.queries_per_month ?? 0}
+        label="Queries this month"
+      />
 
       {error && (
-        <div className="mb-4 rounded-lg glass-card border-red-500/20 px-4 py-3 text-sm text-red-400">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-xl glass-card border-red-500/20 px-4 py-3 text-sm text-red-400"
+        >
           {error}
-        </div>
+        </motion.div>
       )}
 
+      {/* Plans grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {tiers.map((tier) => (
+        {tiers.map((tier, i) => (
           <PlanCard
             key={tier.id}
             tier={tier}
