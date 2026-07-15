@@ -13,7 +13,7 @@ async function grantTier(userId: string, tier: Tier, polarCustomerId: string | n
   const supabase = getSupabase();
   const update: Record<string, unknown> = { tier };
   if (polarCustomerId) update.stripe_customer_id = polarCustomerId;
-  const { error } = await supabase.from('users').update(update).eq('id', userId);
+  const { error } = await supabase.from('user').update(update).eq('id', userId);
   if (error) {
     console.error('[Polar] Failed to grant tier:', error.message);
     throw new Error(error.message);
@@ -23,7 +23,7 @@ async function grantTier(userId: string, tier: Tier, polarCustomerId: string | n
 
 async function revokeTier(userId: string): Promise<void> {
   const supabase = getSupabase();
-  const { error } = await supabase.from('users').update({ tier: 'free' }).eq('id', userId);
+  const { error } = await supabase.from('user').update({ tier: 'free' }).eq('id', userId);
   if (error) {
     console.error('[Polar] Failed to revoke tier:', error.message);
     throw new Error(error.message);

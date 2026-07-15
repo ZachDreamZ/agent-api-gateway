@@ -103,3 +103,13 @@ export const TIER_LIMITS: Record<Tier, { queries_per_month: number; rate_limit_r
 
 export const CREDIT_COST_PER_QUERY = 1;
 export const CACHE_TTL_SECONDS = 3600; // 1 hour
+
+// ─── Hono context variables (set by auth middleware) ───
+declare module 'hono' {
+  interface ContextVariableMap {
+    userId: string;
+    user: { id: string; email: string; stripe_customer_id?: string | null; tier?: string };
+    tier: Tier;
+    apiKey: { id: string };
+  }
+}

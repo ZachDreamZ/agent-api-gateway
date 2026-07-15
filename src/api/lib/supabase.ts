@@ -1,9 +1,9 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { getConfig } from './config.js';
 
-let client: SupabaseClient | null = null;
+let client: any = null;
 
-export function getSupabase(): SupabaseClient {
+export function getSupabase(): any {
   if (!client) {
     const cfg = getConfig();
     client = createClient(cfg.supabaseUrl, cfg.supabaseServiceRoleKey, {

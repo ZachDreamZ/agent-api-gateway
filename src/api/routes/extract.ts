@@ -41,7 +41,7 @@ async function getMonthlyCreditsUsed(userId: string): Promise<number> {
     return 0;
   }
 
-  return (data ?? []).reduce((sum, row) => sum + (row.credits_used ?? 0), 0);
+  return (data ?? []).reduce((sum: number, row: { credits_used?: number }) => sum + (row.credits_used ?? 0), 0);
 }
 
 async function logUsage(opts: {

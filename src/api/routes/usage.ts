@@ -29,7 +29,7 @@ router.get('/', async (c) => {
     }
 
     const creditsUsed = (data ?? []).reduce(
-      (sum, row) => sum + (row.credits_used ?? 0),
+      (sum: number, row: { credits_used?: number }) => sum + (row.credits_used ?? 0),
       0,
     );
     const monthlyLimit = TIER_LIMITS[tier].queries_per_month;

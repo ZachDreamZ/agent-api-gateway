@@ -20,13 +20,13 @@ setInterval(() => {
 
 export const rateLimitMiddleware: MiddlewareHandler = async (c, next) => {
   const tier = c.get('tier');
-  const apiKeyId = c.get('apiKey').id;
+  const userId = c.get('userId');
   const limit = TIER_LIMITS[tier].rate_limit_rpm;
 
   const now = Date.now();
   const cutoff = now - 60_000;
 
-  let timestamps = windows.get(apiKeyId) ?? [];
+  let timestamps = windows.get(userId) ?? [];
   timestamps = timestamps.filter((t) => t > cutoff);
 
   if (timestamps.length >= limit) {
@@ -45,7 +45,7 @@ export const rateLimitMiddleware: MiddlewareHandler = async (c, next) => {
   }
 
   timestamps.push(now);
-  windows.set(apiKeyId, timestamps);
+  windows.set(userId, timestamps);
 
   c.header('X-RateLimit-Limit', String(limit));
   c.header('X-RateLimit-Remaining', String(limit - timestamps.length));

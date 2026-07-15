@@ -1,23 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { apiKey } from '../lib/auth';
 
-// ─── Types ───
+// ─── Types (Better Auth apiKey shape) ───
 
 interface ApiKeyItem {
   id: string;
-  key_prefix: string;
-  name: string;
-  active: boolean;
-  last_used_at: string | null;
-  created_at: string;
+  name: string | null;
+  prefix: string | null;
+  start: string | null;
+  enabled: boolean;
+  createdAt: string;
+  lastRequest: string | null;
 }
 
 interface NewKeyResult {
   key: string;
   id: string;
-  name: string;
-  prefix: string;
-  created_at: string;
+  name: string | null;
+  prefix: string | null;
+  createdAt: string;
 }
 
 // ─── Icons ───
@@ -123,6 +125,7 @@ function KeyRow({
   toggling: boolean;
 }) {
   const [showKey, setShowKey] = useState(false);
+  const displayStart = item.start || item.prefix || 'sk';
 
   return (
     <motion.div
@@ -134,24 +137,24 @@ function KeyRow({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2.5">
             <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-              item.active ? 'bg-brand-600/20' : 'bg-white/5'
+              item.enabled ? 'bg-brand-600/20' : 'bg-white/5'
             }`}>
-              <IconKey className={`w-4 h-4 ${item.active ? 'text-brand-400' : 'text-white/30'}`} />
+              <IconKey className={`w-4 h-4 ${item.enabled ? 'text-brand-400' : 'text-white/30'}`} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm text-white">{item.name}</span>
+                <span className="font-medium text-sm text-white">{item.name || 'Untitled key'}</span>
                 <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                  item.active
+                  item.enabled
                     ? 'bg-emerald-500/15 text-emerald-400'
                     : 'bg-white/5 text-white/40'
                 }`}>
-                  {item.active ? 'Active' : 'Disabled'}
+                  {item.enabled ? 'Active' : 'Disabled'}
                 </span>
               </div>
               <div className="mt-0.5 flex items-center gap-2">
                 <code className="font-mono text-xs text-white/40">
-                  {item.key_prefix}...{showKey ? '****' : ''}
+                  {displayStart}...{showKey ? '****' : ''}
                 </code>
                 <button
                   onClick={() => setShowKey(!showKey)}
@@ -160,14 +163,14 @@ function KeyRow({
                 >
                   {showKey ? <IconEyeOff className="w-3 h-3" /> : <IconEye className="w-3 h-3" />}
                 </button>
-                <CopyButton text={`${item.key_prefix}...`} />
+                <CopyButton text={`${displayStart}...`} />
               </div>
             </div>
           </div>
           <p className="mt-2 ml-[42px] text-xs text-white/30">
-            Created {new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-            {item.last_used_at
-              ? ` · Last used ${new Date(item.last_used_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+            Created {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            {item.lastRequest
+              ? ` · Last used ${new Date(item.lastRequest).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
               : ' · Never used'}
           </p>
         </div>
@@ -177,12 +180,12 @@ function KeyRow({
             onClick={() => onToggle(item.id)}
             disabled={toggling}
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all disabled:opacity-50 ${
-              item.active
+              item.enabled
                 ? 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80'
                 : 'bg-brand-600/20 text-brand-400 hover:bg-brand-600/30'
             }`}
           >
-            {item.active ? 'Disable' : 'Enable'}
+            {item.enabled ? 'Disable' : 'Enable'}
           </button>
           <button
             onClick={() => onRevoke(item.id)}
@@ -338,14 +341,12 @@ export default function ApiKeys() {
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
   const [toggling, setToggling] = useState<string | null>(null);
-  const [revokeTarget, setRevokeTarget] = useState<ApiKeys | null>(null);
+  const [revokeTarget, setRevokeTarget] = useState<ApiKeyItem | null>(null);
 
   const loadKeys = useCallback(async () => {
     try {
-      const res = await fetch('/v1/api-keys');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = (await res.json()) as { keys: ApiKeyItem[] };
-      setKeys(data.keys);
+      const res = await apiKey.list();
+      setKeys((res.data as ApiKeyItem[]) ?? []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load keys');
@@ -360,14 +361,15 @@ export default function ApiKeys() {
     if (!name.trim()) return;
     setCreating(true);
     try {
-      const res = await fetch('/v1/api-keys', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim() }),
+      const res = await apiKey.create({ name: name.trim() });
+      if (!res.data) throw new Error('No key returned');
+      setNewKey({
+        key: res.data.key as string,
+        id: res.data.id,
+        name: res.data.name,
+        prefix: res.data.prefix,
+        createdAt: res.data.createdAt ?? new Date().toISOString(),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const result = (await res.json()) as NewKeyResult;
-      setNewKey(result);
       setName('');
       await loadKeys();
     } catch (err) {
@@ -380,8 +382,7 @@ export default function ApiKeys() {
   async function handleToggle(id: string) {
     setToggling(id);
     try {
-      const res = await fetch(`/v1/api-keys/${id}/toggle`, { method: 'PATCH' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await apiKey.update({ id, enabled: !keys.find((k) => k.id === id)?.enabled });
       await loadKeys();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to toggle key');
@@ -394,8 +395,7 @@ export default function ApiKeys() {
     if (!revokeTarget) return;
     setToggling(revokeTarget.id);
     try {
-      const res = await fetch(`/v1/api-keys/${revokeTarget.id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await apiKey.delete({ id: revokeTarget.id });
       setRevokeTarget(null);
       await loadKeys();
     } catch (err) {
@@ -474,12 +474,12 @@ export default function ApiKeys() {
         </motion.div>
       ) : (
         <div className="space-y-2">
-          {keys.map((item, i) => (
+          {keys.map((item) => (
             <KeyRow
               key={item.id}
               item={item}
               onToggle={handleToggle}
-              onRevoke={(id) => setRevokeTarget(item as ApiKeys)}
+              onRevoke={(id) => setRevokeTarget(keys.find((k) => k.id === id) ?? null)}
               toggling={toggling === item.id}
             />
           ))}
@@ -493,7 +493,7 @@ export default function ApiKeys() {
       <ConfirmDialog
         open={!!revokeTarget}
         title="Revoke API Key"
-        message={`Are you sure you want to revoke "${revokeTarget?.name}"? This action cannot be undone and the key will stop working immediately.`}
+        message={`Are you sure you want to revoke "${revokeTarget?.name || 'this key'}"? This action cannot be undone and the key will stop working immediately.`}
         confirmLabel="Revoke Key"
         onConfirm={handleRevoke}
         onCancel={() => setRevokeTarget(null)}

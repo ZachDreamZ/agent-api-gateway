@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import Overview from './pages/Overview';
 import ApiKeys from './pages/ApiKeys';
 import Billing from './pages/Billing';
 import Landing from './pages/AuraLanding';
 import Docs from './pages/Docs';
+import Auth from './pages/Auth';
+import { useSession, signOut } from './lib/auth';
 
 // ─── SVG Icons ───
 
@@ -88,6 +90,21 @@ function LogoMark({ className = 'w-5 h-5' }: { className?: string }) {
 
 // ─── User Info ───
 
+// ─── Route protection ───
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { data: session, isPending } = useSession();
+  if (isPending) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#0c0c0c] text-white/40">
+        Loading…
+      </div>
+    );
+  }
+  if (!session) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 interface UserInfo {
   tier: string;
   queries_per_month: number;
@@ -157,7 +174,17 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       <div className="border-t border-white/10 px-5 py-4">
-        <Link to="/docs" className="flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors" onClick={onNavigate}>
+        <button
+          onClick={async () => {
+            await signOut();
+            window.location.href = '/';
+          }}
+          className="flex w-full items-center gap-2 text-xs text-white/40 transition-colors hover:text-white/70"
+        >
+          <IconDocs className="w-3.5 h-3.5" />
+          Sign out
+        </button>
+        <Link to="/docs" className="mt-2 flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors" onClick={onNavigate}>
           <IconDocs className="w-3.5 h-3.5" />
           API Docs
         </Link>
@@ -288,7 +315,15 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
-        <Route path="/dashboard/*" element={<DashboardLayout />} />
+        <Route path="/login" element={<Auth />} />
+        <Route
+          path="/dashboard/*"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

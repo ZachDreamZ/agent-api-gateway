@@ -3,7 +3,7 @@ import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { getConfig } from './lib/config.js';
+import { getConfig, parseCorsOrigins } from './lib/config.js';
 import { authMiddleware } from './middleware/auth.js';
 import { rateLimitMiddleware } from './middleware/rate-limit.js';
 import { extractRoutes } from './routes/extract.js';
@@ -11,7 +11,8 @@ import { schemasRoutes } from './routes/schemas.js';
 import { usageRoutes } from './routes/usage.js';
 import { billingApp, billingPricing } from './routes/billing.js';
 import { webhookApp } from '../billing/webhooks-polar.js';
-import { apiKeysApp } from './routes/api-keys.js';
+import { auth } from '../auth/auth.js';
+// app.route('/v1/api-keys', apiKeysApp); — replaced by Better Auth apiKey plugin
 
 // ─── Static file serving (built frontend) ───
 
@@ -42,13 +43,31 @@ function serveStatic(c: any, filePath: string) {
 
 const app = new Hono();
 
-app.use('/*', cors({ origin: getConfig().corsOrigin }));
+// CORS scoped to the API surface. The dashboard is served same-origin, so we
+// never use a wildcard. Better Auth sets its own CORS on /api/auth/* — applying
+// a global cors() there would emit duplicate ACAO headers and break the browser.
+const corsOrigins = parseCorsOrigins(getConfig().corsOrigin);
+app.use('/v1/*', cors({ origin: corsOrigins, credentials: corsOrigins !== '*' }));
+
+// ─── Security headers ───
+app.use('/*', async (c, next) => {
+  await next();
+  c.header('X-Content-Type-Options', 'nosniff');
+  c.header('X-Frame-Options', 'DENY');
+  c.header('Referrer-Policy', 'no-referrer');
+  c.header('X-XSS-Protection', '0');
+  c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+});
 
 // ─── Health ───
 
 app.get('/health', (c) =>
   c.json({ status: 'ok', service: 'agent-api-gateway', version: '0.1.0' }),
 );
+
+// ─── Better Auth (user sessions + API keys) ───
+
+app.all('/api/auth/*', (c) => auth.handler(c.req.raw));
 
 // ─── Serve frontend for non-API routes ───
 
@@ -72,7 +91,6 @@ app.use('/v1/*', authMiddleware, rateLimitMiddleware);
 
 app.route('/v1/extract', extractRoutes);
 app.route('/v1/usage', usageRoutes);
-app.route('/v1/api-keys', apiKeysApp);
 app.route('/v1/billing', billingApp);
 
 // ─── Polar webhook (no auth) ───

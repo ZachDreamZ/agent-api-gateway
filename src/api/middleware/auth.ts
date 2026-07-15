@@ -1,70 +1,27 @@
-import { createHash } from 'node:crypto';
 import type { MiddlewareHandler } from 'hono';
-import type { DbUser, DbApiKey, Tier } from '../../shared/types.js';
-import { getSupabase } from '../lib/supabase.js';
-import { getConfig } from '../lib/config.js';
+import { auth, type AuthUser } from '../../auth/auth.js';
+import type { Tier } from '@shared/types';
 
-// Extend Hono context variables
-declare module 'hono' {
-  interface ContextVariableMap {
-    user: DbUser;
-    apiKey: DbApiKey;
-    tier: Tier;
-  }
-}
-
-function hashKey(key: string): string {
-  return createHash('sha256').update(key).digest('hex');
-}
-
+// Replaces the old API-key lookup. Validates either a Better Auth session
+// cookie (dashboard) or a Bearer API key (programmatic clients) and exposes
+// the resolved user + tier to downstream routes.
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
-  const authHeader = c.req.header('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return c.json({ error: 'Missing or invalid Authorization header. Use: Bearer sk-xxx' }, 401);
-  }
-
-  const rawKey = authHeader.slice(7).trim();
-  const prefix = getConfig().apiKeyPrefix;
-  if (!rawKey.startsWith(prefix)) {
-    return c.json({ error: `Invalid API key format. Key must start with "${prefix}"` }, 401);
-  }
-
-  const keyHash = hashKey(rawKey);
-  const supabase = getSupabase();
-
-  const { data: apiKey, error } = await supabase
-    .from('api_keys')
-    .select('*, user:user_id(*)')
-    .eq('key_hash', keyHash)
-    .single<DbApiKey & { user: DbUser }>();
-
-  if (error || !apiKey) {
-    return c.json({ error: 'Invalid API key' }, 401);
-  }
-
-  if (!apiKey.active) {
-    return c.json({ error: 'API key is deactivated' }, 401);
-  }
-
-  // Stamp context
-  c.set('user', apiKey.user);
-  c.set('apiKey', {
-    id: apiKey.id,
-    user_id: apiKey.user_id,
-    key_hash: apiKey.key_hash,
-    name: apiKey.name,
-    active: apiKey.active,
-    last_used_at: apiKey.last_used_at,
-    created_at: apiKey.created_at,
+  const session = await auth.api.getSession({
+    headers: c.req.raw.headers,
+    query: { disableCookieCache: true },
   });
-  c.set('tier', apiKey.user.tier as Tier);
 
-  // Update last_used_at asynchronously (fire-and-forget)
-  supabase
-    .from('api_keys')
-    .update({ last_used_at: new Date().toISOString() })
-    .eq('id', apiKey.id)
-    .then(() => {}, () => {});
+  if (!session) {
+    return c.json(
+      { error: 'Unauthorized. Send a valid API key as `Authorization: Bearer <key>`.' },
+      401,
+    );
+  }
+
+  const user = session.user as AuthUser & { tier?: string };
+  c.set('userId', user.id);
+  c.set('user', user);
+  c.set('tier', (user.tier ?? 'free') as Tier);
 
   await next();
 };

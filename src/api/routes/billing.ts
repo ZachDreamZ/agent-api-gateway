@@ -66,7 +66,7 @@ billingApp.post('/checkout', zValidator('json', checkoutSchema), async (c) => {
     const userEmail = email || user.email;
     const userId = user.id;
 
-    const result = await createCheckoutSession(user.stripe_customer_id, tier, userId, userEmail);
+    const result = await createCheckoutSession(user.stripe_customer_id ?? null, tier, userId, userEmail);
 
     return c.json({
       url: result.url,
@@ -97,10 +97,10 @@ billingApp.post('/portal', zValidator('json', portalSchema), async (c) => {
     const userId = user.id;
 
     // Get-or-create the Polar customer, persisting the ID on the user row.
-    let customerId = user.stripe_customer_id;
+    let customerId: string | null = user.stripe_customer_id ?? null;
     if (!customerId) {
       customerId = await createCustomer(user.email, userId);
-      await getSupabase().from('users').update({ stripe_customer_id: customerId }).eq('id', userId);
+      await getSupabase().from('user').update({ stripe_customer_id: customerId }).eq('id', userId);
     }
 
     const url = await createCustomerPortalSession(customerId, return_url);
