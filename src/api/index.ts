@@ -90,15 +90,52 @@ app.get('/api/dbcheck', async (c) => {
     if (v6.length > 0) { dnsV6 = true; if (!resolved) resolved = v6[0]; }
   } catch { /* IPv6 not available */ }
 
-  // Connection test
+  // Connection test — try different strategies
   let connOk = false, connError = '';
-  const pool = new pg.Pool({
-    host: resolved || host,
-    port, user, password, database,
-    ssl: { rejectUnauthorized: false, servername: host },
-    connectionTimeoutMillis: 8000,
-    max: 1,
-  });
+  
+  // Strategy 1: native DNS (let pg resolve)
+  let nativePool = null;
+  try {
+    nativePool = new pg.Pool({
+      connectionString: process.env['DATABASE_URL'],
+      ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 8000,
+      max: 1,
+    });
+    const r = await nativePool.query('SELECT 1 as ok');
+    connOk = true;
+    await nativePool.end();
+    const tables = await nativePool.query(
+      'SELECT table_name FROM information_schema.tables WHERE table_schema=$1 AND table_name=ANY($2)',
+      ['public', ['user','session','account','_migration_history','usage_logs']]
+    );
+    const found = tables.rows.map(r => r.table_name);
+    return c.json({ host, strategy: 'native', dnsV4, dnsV6, resolved, connOk, tables: found });
+  } catch (e) {
+    connError = e.message;
+    if (nativePool) await nativePool.end().catch(() => {});
+  }
+  
+  // Strategy 2: resolved IPv6 via pooler or direct resolution
+  // Use resolved IP directly (the existing strategy)
+  try {
+    const pool = new pg.Pool({
+      host: resolved || host,
+      port, user, password, database,
+      ssl: { rejectUnauthorized: false, servername: host },
+      connectionTimeoutMillis: 8000,
+      max: 1,
+    });
+    const r = await pool.query('SELECT 1 as ok');
+    connOk = true;
+    await pool.end();
+    return c.json({ host, strategy: 'resolved', dnsV4, dnsV6, resolved, connOk, connError: undefined });
+  } catch (e) {
+    connError = connError + ' | resolved: ' + e.message;
+    await pool.end().catch(() => {});
+  }
+
+  return c.json({ host, strategy: 'both_failed', dnsV4, dnsV6, resolved, connOk, connError, dbUrlSet: !!process.env['DATABASE_URL'] });
   try {
     const r = await pool.query('SELECT 1 as ok');
     connOk = true;
@@ -118,18 +155,7 @@ app.get('/api/dbcheck', async (c) => {
 
 // ─── Better Auth (user sessions + API keys) ───
 
-app.all('/api/auth/*', async (c) => {
-  try {
-    const res = await auth.handler(c.req.raw);
-    return res;
-  } catch (err) {
-    console.error('[auth] handler error:', err);
-    return c.json({
-      error: 'Auth handler error',
-      detail: err instanceof Error ? err.message : String(err),
-    }, 500);
-  }
-});
+app.all('/api/auth/*', (c) => auth.handler(c.req.raw));
 
 // ─── Serve frontend for non-API routes ───
 
@@ -183,8 +209,7 @@ if (process.env['NODE_ENV'] !== 'test') {
     // Run DB migration before accepting requests
     await runMigration();
 
-    // Initialize Better Auth (connects to Postgres via resolved DNS)
-    await auth.init();
+    // Better Auth initializes synchronously with Render Postgres (IPv4)
 
     const { serve: honoServe } = await import('@hono/node-server');
     honoServe(
