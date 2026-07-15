@@ -121,6 +121,9 @@ if (process.env['NODE_ENV'] !== 'test') {
     // Run DB migration before accepting requests
     await runMigration();
 
+    // Initialize Better Auth (connects to Postgres via resolved DNS)
+    await auth.init();
+
     const { serve: honoServe } = await import('@hono/node-server');
     honoServe(
       { fetch: app.fetch, port: cfg.port },
