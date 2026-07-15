@@ -66,9 +66,38 @@ app.get('/health', (c) =>
   c.json({ status: 'ok', service: 'agent-api-gateway', version: '0.1.0' }),
 );
 
+// ─── DB health (used for deployment verification) ───
+app.get('/api/dbcheck', async (c) => {
+  try {
+    const { default: pg } = await import('pg');
+    const { Resolver } = await import('node:dns/promises');
+    const url = new URL(process.env['DATABASE_URL'] || '');
+    const host = url.hostname;
+    // Quick DNS test
+    const resolver = new Resolver();
+    resolver.setServers(['8.8.8.8']);
+    let dnsOk = false;
+    try { await resolver.resolve4(host); dnsOk = true; } catch { dnsOk = false; }
+    return c.json({ host, dnsOk, dbUrlSet: !!process.env['DATABASE_URL'] });
+  } catch (err) {
+    return c.json({ error: err instanceof Error ? err.message : String(err) }, 500);
+  }
+});
+
 // ─── Better Auth (user sessions + API keys) ───
 
-app.all('/api/auth/*', (c) => auth.handler(c.req.raw));
+app.all('/api/auth/*', async (c) => {
+  try {
+    const res = await auth.handler(c.req.raw);
+    return res;
+  } catch (err) {
+    console.error('[auth] handler error:', err);
+    return c.json({
+      error: 'Auth handler error',
+      detail: err instanceof Error ? err.message : String(err),
+    }, 500);
+  }
+});
 
 // ─── Serve frontend for non-API routes ───
 
@@ -107,7 +136,8 @@ app.notFound((c) =>
 
 app.onError((err, c) => {
   console.error('[unhandled]', err);
-  return c.json({ error: 'Internal server error' }, 500);
+  const isProd = process.env['NODE_ENV'] === 'production';
+  return c.json({ error: 'Internal server error', detail: isProd ? undefined : err.message }, 500);
 });
 
 // ─── Start ───
