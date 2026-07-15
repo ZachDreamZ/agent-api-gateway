@@ -69,87 +69,27 @@ app.get('/health', (c) =>
 // ─── DB health (used for deployment verification) ───
 app.get('/api/dbcheck', async (c) => {
   const { default: pg } = await import('pg');
-  const { Resolver } = await import('node:dns/promises');
-  const url = new URL(process.env['DATABASE_URL'] || '');
-  const host = url.hostname;
-  const port = parseInt(url.port || '5432', 10);
-  const user = decodeURIComponent(url.username);
-  const password = decodeURIComponent(url.password);
-  const database = url.pathname.replace(/^\//, '');
-
-  // DNS test
-  const resolver = new Resolver();
-  resolver.setServers(['8.8.8.8']);
-  let dnsV4 = false, dnsV6 = false, resolved = '';
-  try {
-    const v4 = await resolver.resolve4(host);
-    if (v4.length > 0) { dnsV4 = true; resolved = v4[0]; }
-  } catch { /* IPv4 not available */ }
-  try {
-    const v6 = await resolver.resolve6(host);
-    if (v6.length > 0) { dnsV6 = true; if (!resolved) resolved = v6[0]; }
-  } catch { /* IPv6 not available */ }
-
-  // Connection test — try different strategies
-  let connOk = false, connError = '';
-  
-  // Strategy 1: native DNS (let pg resolve)
-  let nativePool = null;
-  try {
-    nativePool = new pg.Pool({
-      connectionString: process.env['DATABASE_URL'],
-      ssl: { rejectUnauthorized: false },
-      connectionTimeoutMillis: 8000,
-      max: 1,
-    });
-    const r = await nativePool.query('SELECT 1 as ok');
-    connOk = true;
-    await nativePool.end();
-    const tables = await nativePool.query(
-      'SELECT table_name FROM information_schema.tables WHERE table_schema=$1 AND table_name=ANY($2)',
-      ['public', ['user','session','account','_migration_history','usage_logs']]
-    );
-    const found = tables.rows.map(r => r.table_name);
-    return c.json({ host, strategy: 'native', dnsV4, dnsV6, resolved, connOk, tables: found });
-  } catch (e) {
-    connError = e.message;
-    if (nativePool) await nativePool.end().catch(() => {});
-  }
-  
-  // Strategy 2: resolved IPv6 via pooler or direct resolution
-  // Use resolved IP directly (the existing strategy)
+  const connStr = process.env['DATABASE_URL'];
   try {
     const pool = new pg.Pool({
-      host: resolved || host,
-      port, user, password, database,
-      ssl: { rejectUnauthorized: false, servername: host },
+      connectionString: connStr,
       connectionTimeoutMillis: 8000,
       max: 1,
     });
+    // Check connectivity
     const r = await pool.query('SELECT 1 as ok');
-    connOk = true;
-    await pool.end();
-    return c.json({ host, strategy: 'resolved', dnsV4, dnsV6, resolved, connOk, connError: undefined });
-  } catch (e) {
-    connError = connError + ' | resolved: ' + e.message;
-    await pool.end().catch(() => {});
-  }
-
-  return c.json({ host, strategy: 'both_failed', dnsV4, dnsV6, resolved, connOk, connError, dbUrlSet: !!process.env['DATABASE_URL'] });
-  try {
-    const r = await pool.query('SELECT 1 as ok');
-    connOk = true;
-    // Check tables
+    const ok = r.rows[0]?.ok === 1;
+    // Check Better Auth tables exist
     const tables = await pool.query(
-      `SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('user','session','account','_migration_history','usage_logs')`
+      `SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name=ANY($1)`,
+      [['user','session','account','verification','apikey','_migration_history']]
     );
-    const found = tables.rows.map(r => r.table_name);
+    const found = tables.rows.map(row => row.table_name);
     await pool.end();
-    return c.json({ host, resolved, dnsV4, dnsV6, connOk, tables: found });
-  } catch (e) {
-    connError = e.message;
-    await pool.end().catch(() => {});
-    return c.json({ host, resolved, dnsV4, dnsV6, connOk, connError, dbUrlSet: !!process.env['DATABASE_URL'] });
+    return c.json({ connOk: ok, dbUrlSet: !!connStr, tables: found });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    return c.json({ connOk: false, dbUrlSet: !!connStr, error: msg }, 500);
   }
 });
 
