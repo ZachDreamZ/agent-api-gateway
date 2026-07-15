@@ -1,4 +1,5 @@
 import { readFileSync, existsSync } from 'node:fs';
+import { runMigration } from './lib/migrate.js';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Hono } from 'hono';
@@ -117,6 +118,9 @@ export default app;
 
 if (process.env['NODE_ENV'] !== 'test') {
   const serve = async () => {
+    // Run DB migration before accepting requests
+    await runMigration();
+
     const { serve: honoServe } = await import('@hono/node-server');
     honoServe(
       { fetch: app.fetch, port: cfg.port },
