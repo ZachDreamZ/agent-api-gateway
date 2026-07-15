@@ -4,7 +4,7 @@ FROM node:22-slim AS frontend-builder
 WORKDIR /app
 COPY package*.json /app/
 
-RUN npm install --legacy-peer-deps && npm install react-router-dom
+RUN npm ci --legacy-peer-deps && npm install react-router-dom
 
 COPY src/dashboard/ /app/src/dashboard/
 
@@ -25,7 +25,7 @@ WORKDIR /app
 COPY package*.json tsconfig.json .env.example /app/
 
 # Install deps (omit dev deps)
-RUN npm install --omit=dev --legacy-peer-deps && npm install tsx
+RUN npm ci --omit=dev --legacy-peer-deps && npm install tsx
 
 # Install Chromium for Playwright
 RUN npx playwright install chromium
