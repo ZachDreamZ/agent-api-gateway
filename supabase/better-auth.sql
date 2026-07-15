@@ -1,10 +1,9 @@
 -- Better Auth migration — Agent API Gateway
 -- Run ONCE in the Supabase SQL Editor (Project → SQL → New query → paste → Run).
 --
--- Creates the 5 Better Auth tables (text IDs, camelCase columns) with the
--- tier / stripe_customer_id additional fields on "user", converts the existing
--- usage_logs.user_id / api_key_id from UUID -> text to match Better Auth's
--- cuid IDs, and drops the old users / api_keys tables that this auth replaces.
+-- Creates the 5 Better Auth tables (text IDs, camelCase columns) and the
+-- usage_logs table for API usage tracking. Drops only the old api_keys table.
+-- NOTE: signalos shares this Supabase project — its `users` table is NOT dropped.
 
 -- ─── Better Auth: user ───
 CREATE TABLE IF NOT EXISTS public."user" (
@@ -89,12 +88,26 @@ CREATE TABLE IF NOT EXISTS public."apikey" (
 CREATE INDEX IF NOT EXISTS "apikey_referenceId_idx" ON public."apikey"("referenceId");
 CREATE INDEX IF NOT EXISTS "apikey_key_idx" ON public."apikey"("key");
 
--- ─── Re-point usage_logs at Better Auth IDs (UUID -> text) ───
-ALTER TABLE public.usage_logs DROP CONSTRAINT IF EXISTS usage_logs_user_id_fkey;
-ALTER TABLE public.usage_logs DROP CONSTRAINT IF EXISTS usage_logs_api_key_id_fkey;
-ALTER TABLE public.usage_logs ALTER COLUMN user_id    TYPE text USING user_id::text;
-ALTER TABLE public.usage_logs ALTER COLUMN api_key_id TYPE text USING api_key_id::text;
-
--- ─── Drop the old tables this auth replaces ───
+-- ─── Drop OLD agent-api-gateway tables only (not signalos's `users`) ───
+-- NOTE: signalos uses the same Supabase project and its `users` table must survive.
+-- We only drop `api_keys` which was created by agent-api-gateway's earlier auth.
 DROP TABLE IF EXISTS public.api_keys CASCADE;
-DROP TABLE IF EXISTS public.users CASCADE;
+
+-- DO NOT DROP public.users — signalos shares this database.
+
+-- ─── Create usage_logs if it does not exist yet ───
+CREATE TABLE IF NOT EXISTS public.usage_logs (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      TEXT NOT NULL,
+  api_key_id   TEXT,
+  endpoint     TEXT NOT NULL,
+  schema       TEXT,
+  url          TEXT,
+  cached       BOOLEAN NOT NULL DEFAULT false,
+  latency_ms   INTEGER NOT NULL DEFAULT 0,
+  credits_used INTEGER NOT NULL DEFAULT 1,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_usage_logs_user_id     ON public.usage_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_usage_logs_created_at  ON public.usage_logs(created_at);
+CREATE INDEX IF NOT EXISTS idx_usage_logs_user_month  ON public.usage_logs(user_id, created_at);
