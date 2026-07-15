@@ -68,19 +68,51 @@ app.get('/health', (c) =>
 
 // ─── DB health (used for deployment verification) ───
 app.get('/api/dbcheck', async (c) => {
+  const { default: pg } = await import('pg');
+  const { Resolver } = await import('node:dns/promises');
+  const url = new URL(process.env['DATABASE_URL'] || '');
+  const host = url.hostname;
+  const port = parseInt(url.port || '5432', 10);
+  const user = decodeURIComponent(url.username);
+  const password = decodeURIComponent(url.password);
+  const database = url.pathname.replace(/^\//, '');
+
+  // DNS test
+  const resolver = new Resolver();
+  resolver.setServers(['8.8.8.8']);
+  let dnsV4 = false, dnsV6 = false, resolved = '';
   try {
-    const { default: pg } = await import('pg');
-    const { Resolver } = await import('node:dns/promises');
-    const url = new URL(process.env['DATABASE_URL'] || '');
-    const host = url.hostname;
-    // Quick DNS test
-    const resolver = new Resolver();
-    resolver.setServers(['8.8.8.8']);
-    let dnsOk = false;
-    try { await resolver.resolve4(host); dnsOk = true; } catch { dnsOk = false; }
-    return c.json({ host, dnsOk, dbUrlSet: !!process.env['DATABASE_URL'] });
-  } catch (err) {
-    return c.json({ error: err instanceof Error ? err.message : String(err) }, 500);
+    const v4 = await resolver.resolve4(host);
+    if (v4.length > 0) { dnsV4 = true; resolved = v4[0]; }
+  } catch { /* IPv4 not available */ }
+  try {
+    const v6 = await resolver.resolve6(host);
+    if (v6.length > 0) { dnsV6 = true; if (!resolved) resolved = v6[0]; }
+  } catch { /* IPv6 not available */ }
+
+  // Connection test
+  let connOk = false, connError = '';
+  const pool = new pg.Pool({
+    host: resolved || host,
+    port, user, password, database,
+    ssl: { rejectUnauthorized: false, servername: host },
+    connectionTimeoutMillis: 8000,
+    max: 1,
+  });
+  try {
+    const r = await pool.query('SELECT 1 as ok');
+    connOk = true;
+    // Check tables
+    const tables = await pool.query(
+      `SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name IN ('user','session','account','_migration_history','usage_logs')`
+    );
+    const found = tables.rows.map(r => r.table_name);
+    await pool.end();
+    return c.json({ host, resolved, dnsV4, dnsV6, connOk, tables: found });
+  } catch (e) {
+    connError = e.message;
+    await pool.end().catch(() => {});
+    return c.json({ host, resolved, dnsV4, dnsV6, connOk, connError, dbUrlSet: !!process.env['DATABASE_URL'] });
   }
 });
 
