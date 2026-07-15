@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY package*.json tsconfig.json .env.example /app/
+COPY package*.json tsconfig.json .env.example supabase/ /app/
 
 # Install deps (omit dev deps)
 RUN npm install --omit=dev --legacy-peer-deps && npm install tsx
