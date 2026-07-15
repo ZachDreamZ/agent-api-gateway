@@ -43,5 +43,12 @@
     "tsx": "^4.19.0",
     "typescript": "^7.0.2",
     "vite": "^6.0.0"
+  },
+  "overrides": {
+    "better-auth": { "zod": "^4.4.3" },
+    "@better-auth/core": { "zod": "^4.4.3" },
+    "@better-auth/api-key": { "zod": "^4.4.3" },
+    "better-call": { "zod": "^4.4.3" },
+    "@polar-sh/sdk": { "zod": "^4.4.3" }
   }
 }
