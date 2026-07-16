@@ -19,3 +19,27 @@ export async function signInWithGitHub(callbackURL = '/dashboard') {
     callbackURL,
   });
 }
+
+/** Resend the verification email (email/password accounts only) */
+export async function resendVerificationEmail(email: string, callbackURL = '/dashboard') {
+  return authClient.sendVerificationEmail({
+    email,
+    callbackURL,
+  });
+}
+
+/** Request a password reset link */
+export async function requestPasswordReset(email: string, redirectTo = '/reset-password') {
+  return authClient.requestPasswordReset({
+    email,
+    redirectTo,
+  });
+}
+
+/** Complete password reset with token from email link */
+export async function resetPassword(newPassword: string, token: string) {
+  return authClient.resetPassword({
+    newPassword,
+    token,
+  });
+}

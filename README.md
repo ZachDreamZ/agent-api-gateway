@@ -43,8 +43,19 @@ Polar public support email for org **NexusCore** (domain matches organization we
 
 ## Auth
 
-- Email + password (Better Auth)
+- Email + password (Better Auth) with **required email verification**
+- Password reset via email
 - **GitHub OAuth** (optional): set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
+
+### Email verification
+
+Email/password accounts must verify before a session is created.
+
+1. Set `RESEND_API_KEY` (and optionally `EMAIL_FROM` on a verified domain).
+2. On sign-up, Better Auth emails a one-hour verification link.
+3. Unverified sign-in is blocked and can resend the link from `/login`.
+
+Locally without Resend, verification links are printed to the API console (not production).
 
 Create an OAuth App at https://github.com/settings/developers
 

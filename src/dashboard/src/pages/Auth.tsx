@@ -1,11 +1,18 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { signIn, signUp, signInWithGitHub } from '../lib/auth';
+import { Mail } from 'lucide-react';
+import {
+  signIn,
+  signUp,
+  signInWithGitHub,
+  resendVerificationEmail,
+  requestPasswordReset,
+} from '../lib/auth';
 import { AmbientBg, LogoMark, Spinner } from '../components/Brand';
 import { easeOut, scaleIn } from '../lib/motion';
 
-type Mode = 'signin' | 'signup';
+type Mode = 'signin' | 'signup' | 'check-email' | 'forgot';
 
 function GitHubIcon({ className = 'w-4 h-4' }: { className?: string }) {
   return (
@@ -15,29 +22,71 @@ function GitHubIcon({ className = 'w-4 h-4' }: { className?: string }) {
   );
 }
 
+function isUnverifiedError(message: string): boolean {
+  const m = message.toLowerCase();
+  return (
+    m.includes('verif') ||
+    m.includes('email not verified') ||
+    m.includes('not verified') ||
+    m.includes('confirm your email')
+  );
+}
+
 export default function Auth() {
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [githubLoading, setGithubLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const navigate = useNavigate();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setInfo(null);
     try {
-      if (mode === 'signin') {
-        const res = await signIn.email({ email, password });
-        if (res.error) throw new Error(res.error.message || 'Sign in failed');
-      } else {
-        const res = await signUp.email({ email, password, name });
-        if (res.error) throw new Error(res.error.message || 'Sign up failed');
+      if (mode === 'forgot') {
+        const res = await requestPasswordReset(email, `${window.location.origin}/reset-password`);
+        if (res.error) throw new Error(res.error.message || 'Could not send reset email');
+        setInfo('If that address has an account, a reset link is on the way.');
+        return;
       }
-      navigate('/dashboard');
+
+      if (mode === 'signin') {
+        const res = await signIn.email({
+          email,
+          password,
+          callbackURL: `${window.location.origin}/dashboard`,
+        });
+        if (res.error) {
+          const msg = res.error.message || 'Sign in failed';
+          if (isUnverifiedError(msg)) {
+            setMode('check-email');
+            setInfo('Verify your email before signing in. We can resend the link below.');
+            return;
+          }
+          throw new Error(msg);
+        }
+        navigate('/dashboard');
+        return;
+      }
+
+      // signup
+      const res = await signUp.email({
+        email,
+        password,
+        name,
+        callbackURL: `${window.location.origin}/dashboard`,
+      });
+      if (res.error) throw new Error(res.error.message || 'Sign up failed');
+      // requireEmailVerification: no session until verified
+      setMode('check-email');
+      setInfo('Account created. Check your inbox for a verification link.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
@@ -53,7 +102,6 @@ export default function Auth() {
       if (res?.error) {
         throw new Error(res.error.message || 'GitHub sign-in failed');
       }
-      // Browser redirects to GitHub; if we return, something failed silently
     } catch (err) {
       setError(
         err instanceof Error
@@ -64,12 +112,48 @@ export default function Auth() {
     }
   }
 
+  async function handleResend() {
+    if (!email.trim()) {
+      setError('Enter your email above first.');
+      return;
+    }
+    setResendLoading(true);
+    setError(null);
+    try {
+      const res = await resendVerificationEmail(email, `${window.location.origin}/dashboard`);
+      if (res.error) throw new Error(res.error.message || 'Could not resend');
+      setInfo('Verification email sent. Check your inbox and spam folder.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not resend verification email');
+    } finally {
+      setResendLoading(false);
+    }
+  }
+
+  const title =
+    mode === 'signup'
+      ? 'Create your account'
+      : mode === 'check-email'
+        ? 'Verify your email'
+        : mode === 'forgot'
+          ? 'Reset password'
+          : 'Welcome back';
+
+  const subtitle =
+    mode === 'signup'
+      ? 'Free tier. Confirm your email to activate the account.'
+      : mode === 'check-email'
+        ? `We sent a link to ${email || 'your email'}. Open it to finish setup.`
+        : mode === 'forgot'
+          ? 'We will email a one-time reset link.'
+          : 'Sign in to manage keys and usage';
+
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4 py-12" style={{ background: 'var(--color-bg-app)' }}>
       <AmbientBg intensity="strong" />
 
       <motion.div
-        key={mode}
+        key={mode === 'check-email' ? 'check' : mode}
         initial={scaleIn.initial}
         animate={scaleIn.animate}
         transition={{ duration: 0.4, ease: easeOut }}
@@ -83,10 +167,10 @@ export default function Auth() {
             </span>
           </Link>
           <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
-            {mode === 'signin' ? 'Welcome back' : 'Create your account'}
+            {title}
           </h1>
           <p className="mt-1.5 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
-            {mode === 'signin' ? 'Sign in to manage keys and usage' : 'Free tier. No card required.'}
+            {subtitle}
           </p>
         </div>
 
@@ -103,107 +187,218 @@ export default function Auth() {
               {error}
             </motion.div>
           )}
+          {info && !error && (
+            <motion.div
+              key={info}
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mb-4 rounded-md px-3 py-2 text-sm"
+              style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+            >
+              {info}
+            </motion.div>
+          )}
         </AnimatePresence>
 
-        <button
-          type="button"
-          onClick={handleGitHub}
-          disabled={githubLoading || loading}
-          className="btn btn-secondary w-full mb-4"
-          style={{ fontWeight: 600 }}
-        >
-          {githubLoading ? <Spinner /> : <GitHubIcon />}
-          Continue with GitHub
-        </button>
+        {mode === 'check-email' ? (
+          <div className="space-y-4 text-center">
+            <div
+              className="mx-auto flex h-12 w-12 items-center justify-center rounded-full"
+              style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+            >
+              <Mail className="w-5 h-5" />
+            </div>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+              Click the link in the email to verify. The link expires in one hour.
+            </p>
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resendLoading}
+              className="btn btn-primary w-full"
+            >
+              {resendLoading ? <Spinner /> : 'Resend verification email'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary w-full"
+              onClick={() => {
+                setMode('signin');
+                setInfo(null);
+                setError(null);
+              }}
+            >
+              Back to sign in
+            </button>
+          </div>
+        ) : (
+          <>
+            {mode !== 'forgot' && (
+              <>
+                <button
+                  type="button"
+                  onClick={handleGitHub}
+                  disabled={githubLoading || loading}
+                  className="btn btn-secondary w-full mb-4"
+                  style={{ fontWeight: 600 }}
+                >
+                  {githubLoading ? <Spinner /> : <GitHubIcon />}
+                  Continue with GitHub
+                </button>
 
-        <div className="relative mb-4 flex items-center gap-3">
-          <div className="h-px flex-1" style={{ background: 'var(--color-border-subtle)' }} />
-          <span className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--color-text-disabled)' }}>
-            or email
-          </span>
-          <div className="h-px flex-1" style={{ background: 'var(--color-border-subtle)' }} />
-        </div>
+                <div className="relative mb-4 flex items-center gap-3">
+                  <div className="h-px flex-1" style={{ background: 'var(--color-border-subtle)' }} />
+                  <span className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--color-text-disabled)' }}>
+                    or email
+                  </span>
+                  <div className="h-px flex-1" style={{ background: 'var(--color-border-subtle)' }} />
+                </div>
+              </>
+            )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <AnimatePresence mode="wait">
-            {mode === 'signup' && (
-              <motion.div
-                key="name"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-              >
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <AnimatePresence mode="wait">
+                {mode === 'signup' && (
+                  <motion.div
+                    key="name"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Jane Doe"
+                      required
+                      autoComplete="name"
+                      className="input"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <div>
                 <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                  Name
+                  Email
                 </label>
                 <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Jane Doe"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
                   required
-                  autoComplete="name"
+                  autoComplete="email"
                   className="input"
                 />
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
 
-          <div>
-            <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              autoComplete="email"
-              className="input"
-            />
-          </div>
+              {mode !== 'forgot' && (
+                <div>
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <label className="block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                      Password
+                    </label>
+                    {mode === 'signin' && (
+                      <button
+                        type="button"
+                        className="text-[11px] link-accent"
+                        onClick={() => {
+                          setMode('forgot');
+                          setError(null);
+                          setInfo(null);
+                        }}
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    required
+                    minLength={10}
+                    autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+                    className="input"
+                  />
+                  {mode === 'signup' && (
+                    <p className="mt-1.5 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
+                      At least 10 characters. We will email a verification link.
+                    </p>
+                  )}
+                </div>
+              )}
 
-          <div>
-            <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-              minLength={10}
-              autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-              className="input"
-            />
-            {mode === 'signup' && (
-              <p className="mt-1.5 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
-                At least 10 characters
-              </p>
-            )}
-          </div>
+              <button type="submit" disabled={loading || githubLoading} className="btn btn-primary w-full btn-shine">
+                {loading ? (
+                  <Spinner />
+                ) : mode === 'signup' ? (
+                  'Create account'
+                ) : mode === 'forgot' ? (
+                  'Send reset link'
+                ) : (
+                  'Sign in'
+                )}
+              </button>
+            </form>
 
-          <button type="submit" disabled={loading || githubLoading} className="btn btn-primary w-full btn-shine">
-            {loading ? <Spinner /> : mode === 'signin' ? 'Sign in' : 'Create account'}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
-          {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-          <button
-            type="button"
-            onClick={() => {
-              setMode(mode === 'signin' ? 'signup' : 'signin');
-              setError(null);
-            }}
-            className="font-medium link-accent"
-          >
-            {mode === 'signin' ? 'Sign up' : 'Sign in'}
-          </button>
-        </p>
+            <p className="mt-6 text-center text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+              {mode === 'forgot' ? (
+                <>
+                  Remembered it?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('signin');
+                      setError(null);
+                      setInfo(null);
+                    }}
+                    className="font-medium link-accent"
+                  >
+                    Sign in
+                  </button>
+                </>
+              ) : mode === 'signin' ? (
+                <>
+                  Don&apos;t have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('signup');
+                      setError(null);
+                      setInfo(null);
+                    }}
+                    className="font-medium link-accent"
+                  >
+                    Sign up
+                  </button>
+                </>
+              ) : (
+                <>
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('signin');
+                      setError(null);
+                      setInfo(null);
+                    }}
+                    className="font-medium link-accent"
+                  >
+                    Sign in
+                  </button>
+                </>
+              )}
+            </p>
+          </>
+        )}
 
         <div className="mt-4 text-center">
           <Link to="/" className="text-xs link" style={{ color: 'var(--color-text-disabled)' }}>

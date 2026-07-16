@@ -146,6 +146,8 @@ app.get('/health', (c) =>
     version: '0.1.0',
     // Public capability flags (no secrets)
     github_oauth: Boolean(process.env['GITHUB_CLIENT_ID'] && process.env['GITHUB_CLIENT_SECRET']),
+    email_transport: Boolean(process.env['RESEND_API_KEY']),
+    email_verification: true,
   }),
 );
 
@@ -192,6 +194,8 @@ app.all('/api-key/*', (c) => auth.handler(c.req.raw));
 app.get('/', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/docs', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/login', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/verify-email', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/reset-password', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/privacy', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/terms', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/dashboard', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));

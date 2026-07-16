@@ -3,6 +3,11 @@ import { betterAuth } from 'better-auth';
 import { apiKey } from '@better-auth/api-key';
 import { bearer } from 'better-auth/plugins';
 import { Pool } from 'pg';
+import {
+  isEmailTransportConfigured,
+  sendPasswordResetEmailMessage,
+  sendVerificationEmailMessage,
+} from './email.js';
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -21,27 +26,58 @@ if (githubOAuthEnabled) {
   console.log('[auth] GitHub OAuth disabled (set GITHUB_CLIENT_ID + GITHUB_CLIENT_SECRET)');
 }
 
+if (isEmailTransportConfigured()) {
+  console.log('[auth] Email transport: Resend');
+} else {
+  console.log('[auth] Email transport: dev console (set RESEND_API_KEY for production mail)');
+}
+
 export const auth = betterAuth({
   database: pool,
   appName: 'Agent API Gateway',
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
+
+  // ─── Email verification (email/password accounts) ───
+  emailVerification: {
+    sendOnSignUp: true,
+    sendOnSignIn: true,
+    autoSignInAfterVerification: true,
+    expiresIn: 60 * 60, // 1 hour
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendVerificationEmailMessage({
+        email: user.email,
+        name: user.name,
+        url,
+      });
+      console.log(JSON.stringify({
+        event: 'auth.verification_email_queued',
+        userId: user.id,
+        timestamp: new Date().toISOString(),
+      }));
+    },
+  },
+
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 10,
     maxPasswordLength: 128,
+    // Block sessions until the address is confirmed (email/password only).
+    // GitHub OAuth users are verified via the provider.
+    requireEmailVerification: true,
+    revokeSessionsOnPasswordReset: true,
+    resetPasswordTokenExpiresIn: 60 * 30, // 30 minutes
     sendResetPassword: async ({ user, url }) => {
-      // Never log reset URLs or full emails in production (token leak risk).
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`[auth] Password reset link for ${user.email}: ${url}`);
-      } else {
-        console.log(JSON.stringify({
-          event: 'auth.password_reset_requested',
-          userId: user.id,
-          timestamp: new Date().toISOString(),
-        }));
-      }
-      // TODO: send via transactional email (SUPPORT_EMAIL / Resend) when configured.
+      await sendPasswordResetEmailMessage({
+        email: user.email,
+        name: user.name,
+        url,
+      });
+      console.log(JSON.stringify({
+        event: 'auth.password_reset_requested',
+        userId: user.id,
+        timestamp: new Date().toISOString(),
+      }));
     },
   },
   // GitHub OAuth (developers). Callback: {BETTER_AUTH_URL}/api/auth/callback/github
@@ -96,6 +132,8 @@ export const auth = betterAuth({
       '/api/auth/forget-password': { window: 300, max: 3 },
       '/api/auth/reset-password': { window: 300, max: 5 },
       '/api/auth/request-password-reset': { window: 300, max: 3 },
+      '/api/auth/send-verification-email': { window: 300, max: 3 },
+      '/api/auth/verify-email': { window: 60, max: 20 },
     },
   },
 

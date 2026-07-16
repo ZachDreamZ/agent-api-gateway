@@ -17,6 +17,7 @@ import Landing from './pages/AuraLanding';
 import Docs from './pages/Docs';
 import Auth from './pages/Auth';
 import Legal from './pages/Legal';
+import ResetPassword from './pages/ResetPassword';
 import { useSession, signOut } from './lib/auth';
 import { LogoMark, AmbientBg, LoadingScreen } from './components/Brand';
 import { easeOut, pageTransition, fadeUp } from './lib/motion';
@@ -254,6 +255,7 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/login" element={<Auth />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/privacy" element={<Legal kind="privacy" />} />
         <Route path="/terms" element={<Legal kind="terms" />} />
         <Route
