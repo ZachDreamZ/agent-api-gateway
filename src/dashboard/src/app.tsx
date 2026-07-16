@@ -222,8 +222,17 @@ function UserBar({ user }: { user: UserInfo | null }) {
 
 // ─── Dashboard Layout ───
 
+// ─── Page transition variants ───
+
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+};
+
 function DashboardLayout() {
   const user = useUser();
+  const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Prevent body scroll when mobile menu is open
@@ -253,11 +262,22 @@ function DashboardLayout() {
       <main className="min-h-screen lg:ml-60">
         <div className="mx-auto max-w-5xl px-4 pt-20 pb-12 lg:px-8 lg:pt-8 xl:max-w-6xl 2xl:max-w-7xl 3xl:max-w-[calc(100vw-18rem)]">
           <UserBar user={user} />
-          <Routes>
-            <Route index element={<Overview />} />
-            <Route path="api-keys" element={<ApiKeys />} />
-            <Route path="billing" element={<Billing />} />
-          </Routes>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={location.pathname}
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Routes location={location}>
+                <Route index element={<Overview />} />
+                <Route path="api-keys" element={<ApiKeys />} />
+                <Route path="billing" element={<Billing />} />
+              </Routes>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
     </div>
