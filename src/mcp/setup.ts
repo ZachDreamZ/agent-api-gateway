@@ -1,25 +1,48 @@
 /**
  * MCP setup utilities for Agent API Gateway.
- * Generates mcp.json config that Claude Desktop and Cursor can consume.
+ * Generates config snippets for Claude Desktop, Cursor, and VS Code.
+ * Never embeds real API keys in docs — placeholders only.
  */
 
 export interface McpGatewayConfig {
-  apiBaseUrl: string;
-  apiKey: string;
-  mcpPort?: number;
+  apiBaseUrl?: string;
+  /** Placeholder only in generated configs — user replaces with real key */
+  apiKeyPlaceholder?: string;
 }
 
-export function getMcpConfigJson(config: McpGatewayConfig): object {
-  const url = config.mcpPort
-    ? `http://localhost:${config.mcpPort}`
-    : config.apiBaseUrl.replace("/v1", "/mcp");
-
+export function getMcpStdioConfig(config: McpGatewayConfig = {}): object {
+  const key = config.apiKeyPlaceholder || 'sk-your-api-key';
   return {
     mcpServers: {
-      "agent-api-gateway": {
-        url,
-        headers: {
-          Authorization: `Bearer ${config.apiKey}`,
+      'agent-api-gateway': {
+        command: 'npx',
+        args: ['tsx', 'src/mcp/index.ts'],
+        env: {
+          AGENT_API_KEY: key,
+          API_BASE_URL: config.apiBaseUrl || 'https://agentapigw.dpdns.org/v1',
+        },
+      },
+    },
+  };
+}
+
+/** Cursor-style project config (.cursor/mcp.json) */
+export function getCursorMcpConfig(config: McpGatewayConfig = {}): object {
+  return getMcpStdioConfig(config);
+}
+
+/** VS Code Copilot mcp.json servers block */
+export function getVscodeMcpConfig(config: McpGatewayConfig = {}): object {
+  const key = config.apiKeyPlaceholder || 'sk-your-api-key';
+  return {
+    servers: {
+      'agent-api-gateway': {
+        type: 'stdio',
+        command: 'npx',
+        args: ['tsx', 'src/mcp/index.ts'],
+        env: {
+          AGENT_API_KEY: key,
+          API_BASE_URL: config.apiBaseUrl || 'https://agentapigw.dpdns.org/v1',
         },
       },
     },
@@ -27,42 +50,21 @@ export function getMcpConfigJson(config: McpGatewayConfig): object {
 }
 
 export function printMcpSetupInstructions(): void {
-  console.log(`
-─━ Agent API Gateway — MCP Setup ━─────────────────────────
+  const sample = JSON.stringify(getMcpStdioConfig(), null, 2);
+  console.error(`
+Agent API Gateway — MCP setup
 
-Claude Desktop:
-  Add to ~/Library/Application Support/Claude/claude_desktop_config.json:
-  {
-    "mcpServers": {
-      "agent-api-gateway": {
-        "command": "npx",
-        "args": ["@agent-api-gateway/mcp-server"]
-      }
-    }
-  }
+1. Create an API key in the dashboard (https://agentapigw.dpdns.org/dashboard/api-keys)
+2. Add this to Claude Desktop config (or Cursor .cursor/mcp.json):
 
-Cursor:
-  Add to .cursor/mcp.json in your project:
-  {
-    "mcpServers": {
-      "agent-api-gateway": {
-        "command": "npx",
-        "args": ["@agent-api-gateway/mcp-server"]
-      }
-    }
-  }
+${sample}
 
-VSCode + Copilot:
-  Add to .vscode/mcp.json:
-  {
-    "servers": {
-      "agent-api-gateway": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["@agent-api-gateway/mcp-server"]
-      }
-    }
-  }
+3. Never commit AGENT_API_KEY or .env files.
 
-───────────────────────────────────────────────────────────`);
+Tools: extract, extract_product, extract_article, extract_company, list_schemas, get_usage
+`);
+}
+
+if (process.argv[1]?.includes('setup')) {
+  printMcpSetupInstructions();
 }

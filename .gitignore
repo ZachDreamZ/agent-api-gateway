@@ -1,6 +1,17 @@
 node_modules/
 dist/
 .env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+secrets/
+credentials/
+*.secret
+.github-oauth-tmp.json
+scripts/oauth-debug.png
+scripts/oauth-secret-debug.png
 *.log
 .playwright/
 .dockerignore
@@ -8,7 +19,7 @@ render-cli/
 *.ps1
 set-env*
 
-.github-oauth-tmp.json
-scripts/oauth-debug.png
-scripts/oauth-secret-debug.png
+
+pooltest.mjs
+*test*.local.*
 

@@ -198,6 +198,8 @@ app.get('/verify-email', (c) => serveStatic(c, 'index.html') || c.json({ error: 
 app.get('/reset-password', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/privacy', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/terms', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/aup', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/acceptable-use', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/dashboard', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/dashboard/*', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/favicon.ico', (c) => serveStatic(c, 'favicon.svg') || serveStatic(c, 'favicon.ico') || c.newResponse(null, 204));
@@ -262,9 +264,15 @@ app.notFound((c) =>
 // ─── Error handler ───
 
 app.onError((err, c) => {
-  console.error('[unhandled]', err);
+  // Lazy import-safe redaction for unhandled errors
+  const msg = err instanceof Error ? err.message : String(err);
+  const redacted = msg
+    .replace(/\bBearer\s+[A-Za-z0-9._\-+=/]{8,}/gi, 'Bearer ***')
+    .replace(/\bsk-[A-Za-z0-9_-]{8,}\b/g, 'sk-***')
+    .replace(/\b((?:postgres|postgresql):\/\/)([^:@/\s]+):([^@/\s]+)@/gi, '$1$2:***@');
+  console.error('[unhandled]', redacted);
   const isProd = process.env['NODE_ENV'] === 'production';
-  return c.json({ error: 'Internal server error', detail: isProd ? undefined : err.message }, 500);
+  return c.json({ error: 'Internal server error', detail: isProd ? undefined : redacted }, 500);
 });
 
 // ─── Start ───

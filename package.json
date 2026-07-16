@@ -9,9 +9,12 @@
     "typecheck": "tsc --noEmit --checkers 4",
     "test": "tsx --test tests/**/*.test.ts",
     "test:product": "tsx --test tests/product-core.test.ts",
+    "check:secrets": "node scripts/check-secrets.mjs",
     "build:dashboard": "vite build src/dashboard",
     "build": "tsc && vite build src/dashboard",
-    "start": "node dist/api/index.js"
+    "start": "node dist/api/index.js",
+    "mcp": "tsx src/mcp/index.ts",
+    "mcp:setup": "tsx src/mcp/setup.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",

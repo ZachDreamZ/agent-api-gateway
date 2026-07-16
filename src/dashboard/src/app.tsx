@@ -258,6 +258,8 @@ export default function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/privacy" element={<Legal kind="privacy" />} />
         <Route path="/terms" element={<Legal kind="terms" />} />
+        <Route path="/aup" element={<Legal kind="aup" />} />
+        <Route path="/acceptable-use" element={<Legal kind="aup" />} />
         <Route
           path="/dashboard/*"
           element={

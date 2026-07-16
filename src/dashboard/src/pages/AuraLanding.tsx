@@ -731,6 +731,8 @@ function Footer() {
           <a href="/health" className="link">Status</a>
           <Link to="/privacy" className="link">Privacy</Link>
           <Link to="/terms" className="link">Terms</Link>
+          <Link to="/aup" className="link">AUP</Link>
+          <Link to="/docs#mcp" className="link">MCP</Link>
           <a href="mailto:support@agentapigw.dpdns.org" className="link">Support</a>
           <a
             href="https://github.com/ZachDreamZ/agent-api-gateway"

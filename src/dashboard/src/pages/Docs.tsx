@@ -88,9 +88,11 @@ const SECTIONS = [
   { id: 'extract', label: 'POST /v1/extract' },
   { id: 'usage', label: 'GET /v1/usage' },
   { id: 'pricing', label: 'GET /v1/pricing' },
+  { id: 'mcp', label: 'MCP server' },
   { id: 'examples', label: 'Examples' },
   { id: 'errors', label: 'Error Handling' },
   { id: 'limits', label: 'Rate Limits & Quotas' },
+  { id: 'legal', label: 'Legal' },
 ];
 
 function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onNavigate?: () => void }) {
@@ -457,7 +459,7 @@ export default function Docs() {
               <strong style={{ color: 'var(--color-text-primary)' }}>Base URL</strong>
             </p>
             <code className="mt-1 block rounded-lg px-3 py-2 font-mono text-sm" style={{ background: 'var(--color-bg-app)', color: 'var(--color-accent-base)' }}>
-              https://agent-api-gateway.onrender.com
+              https://agentapigw.dpdns.org
             </code>
           </div>
 
@@ -651,6 +653,86 @@ export default function Docs() {
           </SubSection>
         </Section>
 
+        {/* MCP */}
+        <Section id="mcp" title="MCP server">
+          <Para>
+            Agent API ships a Model Context Protocol (MCP) stdio server so agents in Claude Desktop,
+            Cursor, and VS Code can call extraction tools with your API key. Keys stay in local env only;
+            never put them in git.
+          </Para>
+
+          <SubSection title="Tools">
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tool</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code className="code-inline" style={{ color: 'var(--color-accent-base)' }}>extract</code></td>
+                    <td>URL + schema (product | article | company)</td>
+                  </tr>
+                  <tr>
+                    <td><code className="code-inline" style={{ color: 'var(--color-accent-base)' }}>extract_product</code></td>
+                    <td>Product fields only</td>
+                  </tr>
+                  <tr>
+                    <td><code className="code-inline" style={{ color: 'var(--color-accent-base)' }}>extract_article</code></td>
+                    <td>Article fields only</td>
+                  </tr>
+                  <tr>
+                    <td><code className="code-inline" style={{ color: 'var(--color-accent-base)' }}>extract_company</code></td>
+                    <td>Company fields only</td>
+                  </tr>
+                  <tr>
+                    <td><code className="code-inline" style={{ color: 'var(--color-accent-base)' }}>list_schemas</code></td>
+                    <td>List schema definitions</td>
+                  </tr>
+                  <tr>
+                    <td><code className="code-inline" style={{ color: 'var(--color-accent-base)' }}>get_usage</code></td>
+                    <td>Credits and plan for the current key</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </SubSection>
+
+          <SubSection title="Claude Desktop / Cursor config">
+            <Code lang="json">
+{`{
+  "mcpServers": {
+    "agent-api-gateway": {
+      "command": "npx",
+      "args": ["tsx", "src/mcp/index.ts"],
+      "env": {
+        "AGENT_API_KEY": "sk-your-api-key",
+        "API_BASE_URL": "https://agentapigw.dpdns.org/v1"
+      }
+    }
+  }
+}`}
+            </Code>
+            <Para>
+              From a checkout of this repo: run <code className="code-inline">npm install</code>, mint a key in the dashboard,
+              then point the config at the repo path (or use absolute paths for <code className="code-inline">tsx</code> / entry).
+              CLI: <code className="code-inline">AGENT_API_KEY=sk-… npm run mcp</code>
+            </Para>
+          </SubSection>
+
+          <div
+            className="rounded-md px-4 py-3"
+            style={{ background: 'var(--color-accent-subtle)', border: '1px solid oklch(0.74 0.12 195 / 0.25)' }}
+          >
+            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+              <strong style={{ color: 'var(--color-accent-base)' }}>Security:</strong> store keys in env or your MCP host secrets.
+              Do not commit <code className="code-inline">.env</code> or paste live keys into public configs.
+            </p>
+          </div>
+        </Section>
+
         {/* Examples */}
         <Section id="examples" title="Examples">
           <SubSection title="Extract an article (cURL)">
@@ -814,6 +896,17 @@ print(data['data']['title'])`}
               Start free
             </Link>
           </div>
+        </Section>
+
+        <Section id="legal" title="Legal">
+          <Para>
+            Use of the API, dashboard, and MCP tools is governed by our policies.
+          </Para>
+          <ul className="list-disc pl-5 space-y-2 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <li><Link to="/privacy" className="link-accent">Privacy Policy</Link></li>
+            <li><Link to="/terms" className="link-accent">Terms of Service</Link></li>
+            <li><Link to="/aup" className="link-accent">Acceptable Use Policy</Link></li>
+          </ul>
         </Section>
       </main>
     </div>

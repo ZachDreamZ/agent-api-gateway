@@ -90,8 +90,33 @@ Agent  POST /v1/extract { url, schema }
         → { name, price, in_stock, ... }
 ```
 
+## MCP server
+
+```bash
+export AGENT_API_KEY=sk-your-key   # from dashboard; never commit
+export API_BASE_URL=https://agentapigw.dpdns.org/v1
+npm run mcp
+```
+
+Tools: `extract`, `extract_product`, `extract_article`, `extract_company`, `list_schemas`, `get_usage`.  
+Setup guide: [docs/mcp.md](docs/mcp.md)
+
+## Legal
+
+- [Privacy Policy](https://agentapigw.dpdns.org/privacy)
+- [Terms of Service](https://agentapigw.dpdns.org/terms)
+- [Acceptable Use Policy](https://agentapigw.dpdns.org/aup)
+
+## Security hygiene
+
+- `.env` is gitignored; use `.env.example` for placeholders only
+- Never commit API keys, OAuth secrets, or database URLs
+- `npm run check:secrets` scans tracked files for high-risk patterns
+- Server/MCP errors redact secrets before logging or client responses
+
 ## Docs
 
 - [API reference](docs/api-reference.md)
+- [MCP server](docs/mcp.md)
 - [Agent onboarding](docs/agent-onboarding.md)
 - [Self-hosting](docs/self-hosting.md)
