@@ -11,6 +11,16 @@ const pool = connectionString
   ? new Pool({ connectionString, max: 5, connectionTimeoutMillis: 10000 })
   : new Pool();
 
+const githubClientId = process.env.GITHUB_CLIENT_ID?.trim();
+const githubClientSecret = process.env.GITHUB_CLIENT_SECRET?.trim();
+const githubOAuthEnabled = Boolean(githubClientId && githubClientSecret);
+
+if (githubOAuthEnabled) {
+  console.log('[auth] GitHub OAuth enabled');
+} else {
+  console.log('[auth] GitHub OAuth disabled (set GITHUB_CLIENT_ID + GITHUB_CLIENT_SECRET)');
+}
+
 export const auth = betterAuth({
   database: pool,
   appName: 'Agent API Gateway',
@@ -32,6 +42,22 @@ export const auth = betterAuth({
         }));
       }
       // TODO: send via transactional email (SUPPORT_EMAIL / Resend) when configured.
+    },
+  },
+  // GitHub OAuth (developers). Callback: {BETTER_AUTH_URL}/api/auth/callback/github
+  socialProviders: githubOAuthEnabled
+    ? {
+        github: {
+          clientId: githubClientId!,
+          clientSecret: githubClientSecret!,
+          // user:email is requested by Better Auth for GitHub by default
+        },
+      }
+    : {},
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: githubOAuthEnabled ? ['github'] : [],
     },
   },
   user: {
@@ -65,6 +91,8 @@ export const auth = betterAuth({
     customRules: {
       '/api/auth/sign-in/email': { window: 60, max: 5 },
       '/api/auth/sign-up/email': { window: 60, max: 3 },
+      '/api/auth/sign-in/social': { window: 60, max: 10 },
+      '/api/auth/callback/github': { window: 60, max: 20 },
       '/api/auth/forget-password': { window: 300, max: 3 },
       '/api/auth/reset-password': { window: 300, max: 5 },
       '/api/auth/request-password-reset': { window: 300, max: 3 },

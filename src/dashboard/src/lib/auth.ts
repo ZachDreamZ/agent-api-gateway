@@ -11,3 +11,11 @@ export const authClient = createAuthClient({
 
 export const { signIn, signUp, signOut, useSession, getSession } = authClient;
 export const apiKey = authClient.apiKey;
+
+/** GitHub OAuth: redirects to GitHub then back to callbackURL */
+export async function signInWithGitHub(callbackURL = '/dashboard') {
+  return signIn.social({
+    provider: 'github',
+    callbackURL,
+  });
+}

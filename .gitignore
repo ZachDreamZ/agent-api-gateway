@@ -7,3 +7,8 @@ dist/
 render-cli/
 *.ps1
 set-env*
+
+.github-oauth-tmp.json
+scripts/oauth-debug.png
+scripts/oauth-secret-debug.png
+

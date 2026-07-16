@@ -41,6 +41,23 @@ Polar public support email for org **NexusCore** (domain matches organization we
 | `article` | title, author, date, reading_time, excerpt, content_summary, topics |
 | `company` | name, description, founded, size, funding_total, industry, location, competitors |
 
+## Auth
+
+- Email + password (Better Auth)
+- **GitHub OAuth** (optional): set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
+
+Create an OAuth App at https://github.com/settings/developers
+
+| Field | Value |
+|-------|--------|
+| Homepage URL | `https://agentapigw.dpdns.org` |
+| Authorization callback URL | `https://agentapigw.dpdns.org/api/auth/callback/github` |
+
+Existing app (prod): Client ID `Ov23liFQUYnTkcewcq2W` → https://github.com/settings/applications/3733447  
+Generate a client secret there (GitHub sudo may require password), then set both env vars on Render and restart.
+
+`GET /health` includes `"github_oauth": true|false` so you can confirm config without leaking secrets.
+
 ## Local development
 
 ```bash

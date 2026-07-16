@@ -836,10 +836,113 @@ a.sr-only:focus {
   animation: signal-pulse 2.2s ease-out infinite;
 }
 
+.signal-dot-ok {
+  background: var(--color-success);
+  box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0.45);
+  animation: signal-pulse-ok 2.4s ease-out infinite;
+}
+
 @keyframes signal-pulse {
   0% { box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0.45); }
   70% { box-shadow: 0 0 0 8px oklch(0.74 0.12 195 / 0); }
   100% { box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0); }
+}
+
+@keyframes signal-pulse-ok {
+  0% { box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0.4); }
+  70% { box-shadow: 0 0 0 8px oklch(0.72 0.14 155 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0); }
+}
+
+/* Button sheen (Animista-style, restrained) */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    oklch(1 0 0 / 0.18) 48%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  transition: none;
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  animation: sheen-sweep 0.7s var(--ease-out) 1;
+}
+@keyframes sheen-sweep {
+  to { transform: translateX(120%); }
+}
+
+/* Soft border beam on hero playground (pure CSS) */
+.beam-border {
+  position: relative;
+  border-radius: var(--radius-lg);
+}
+.beam-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--beam-angle, 0deg),
+    transparent 0%,
+    oklch(0.74 0.12 195 / 0.55) 12%,
+    transparent 28%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: beam-spin 6s linear infinite;
+  pointer-events: none;
+  opacity: 0.7;
+}
+@property --beam-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes beam-spin {
+  to { --beam-angle: 360deg; }
+}
+
+/* Status chip */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  font-family: var(--font-family-mono);
+  letter-spacing: 0.02em;
+  padding: 0.25rem 0.55rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-surface);
+  color: var(--color-text-secondary);
+}
+
+/* Copy feedback flash */
+.copy-flash {
+  animation: copy-pop 0.35s var(--ease-out);
+}
+@keyframes copy-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.04); }
+  100% { transform: scale(1); }
 }
 
 /* ─── Glass / frosted chrome ─────────────────────────────────────────────── */
@@ -944,7 +1047,10 @@ a.sr-only:focus {
   .ambient-orb-a,
   .ambient-orb-b,
   .signal-dot,
-  .chart-bar {
+  .signal-dot-ok,
+  .chart-bar,
+  .beam-border::before,
+  .btn-shine:hover::after {
     animation: none !important;
   }
 }

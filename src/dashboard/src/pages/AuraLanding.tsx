@@ -11,6 +11,9 @@ import {
   Layers,
   Zap,
   Shield,
+  Copy,
+  Terminal,
+  Lock,
 } from 'lucide-react';
 import { LogoMark, AmbientBg, SectionLabel, Reveal } from '../components/Brand';
 import { easeOut } from '../lib/motion';
@@ -19,6 +22,25 @@ import { easeOut } from '../lib/motion';
 // Agent API Gateway — Landing
 // Signature: interactive schema playground (request → typed JSON)
 // ═══════════════════════════════════════════════════════════════════════════
+
+function StatusChip() {
+  const [ok, setOk] = useState<boolean | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/health')
+      .then((r) => r.ok)
+      .then((v) => { if (!cancelled) setOk(v); })
+      .catch(() => { if (!cancelled) setOk(false); });
+    return () => { cancelled = true; };
+  }, []);
+
+  return (
+    <span className="status-chip" title="Live /health probe">
+      <span className={ok === false ? 'signal-dot' : 'signal-dot signal-dot-ok'} style={ok === false ? { background: 'var(--color-error)' } : undefined} />
+      {ok === null ? 'Checking…' : ok ? 'API operational' : 'API degraded'}
+    </span>
+  );
+}
 
 // ─── Navbar ───
 
@@ -38,13 +60,14 @@ function Navbar() {
           <span className="text-sm font-semibold tracking-tight">Agent API</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-7">
+        <div className="hidden md:flex items-center gap-6">
+          <StatusChip />
           <a href="#how" className="link text-sm">How it works</a>
-          <a href="#features" className="link text-sm">Features</a>
+          <a href="#quickstart" className="link text-sm">Quickstart</a>
           <a href="#pricing" className="link text-sm">Pricing</a>
           <Link to="/docs" className="link text-sm">Docs</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
-          <Link to="/dashboard" className="btn btn-primary text-xs" style={{ padding: '0.45rem 1rem' }}>
+          <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem' }}>
             Open dashboard
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -186,7 +209,8 @@ function SchemaPlayground() {
   const sample = SCHEMAS[schema];
 
   return (
-    <div className="code-block overflow-hidden shadow-[var(--shadow-lg)]">
+    <div className="beam-border">
+    <div className="code-block overflow-hidden shadow-[var(--shadow-lg)] relative z-[1]">
       <div
         className="flex flex-wrap items-center gap-2 px-4 py-3"
         style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}
@@ -240,6 +264,7 @@ function SchemaPlayground() {
         </motion.div>
       </AnimatePresence>
     </div>
+    </div>
   );
 }
 
@@ -269,19 +294,19 @@ function Hero() {
               Structured web data for AI agents.
             </h1>
             <p className="mt-5 max-w-md text-[0.95rem] leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-              Send a public page URL and a schema type. Get typed fields back —
-              product, article, or company — without maintaining scrapers.
+              Send a public page URL and a schema type. Get typed fields back:
+              product, article, or company. No scraper farm to maintain.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Link to="/dashboard" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>
-                Start free
+              <Link to="/login" className="btn btn-primary btn-shine" style={{ padding: '0.75rem 1.5rem' }}>
+                Sign in with GitHub
               </Link>
               <a href="/buy" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
-                Buy starter — $1
+                Buy starter $1
               </a>
             </div>
             <p className="mt-4 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-              Free tier · 1,000 credits for $1 one-time · No card required to try
+              Free tier · 1,000 credits for $1 one-time · Email signup also available
             </p>
           </motion.div>
 
@@ -295,6 +320,120 @@ function Hero() {
           </motion.div>
         </div>
       </div>
+    </section>
+  );
+}
+
+// ─── Quickstart (Stripe/Resend-style first call) ───
+
+const CURL_SNIPPET = `curl -X POST https://agentapigw.dpdns.org/v1/extract \\
+  -H "Authorization: Bearer sk-your-key" \\
+  -H "Content-Type: application/json" \\
+  -d '{"url":"https://example.com/product","schema":"product"}'`;
+
+function Quickstart() {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(CURL_SNIPPET);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard may be blocked */
+    }
+  }
+
+  return (
+    <section id="quickstart" className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-20">
+      <Reveal>
+        <SectionLabel>Quickstart</SectionLabel>
+        <h2 className="text-display max-w-xl mb-3" style={{ color: 'var(--color-text-primary)' }}>
+          First call in under a minute.
+        </h2>
+        <p className="text-sm max-w-lg mb-8" style={{ color: 'var(--color-text-secondary)' }}>
+          Create an account, mint a key in the dashboard, then hit <span className="text-mono text-xs">POST /v1/extract</span>.
+        </p>
+      </Reveal>
+
+      <Reveal delay={0.06}>
+        <ol className="grid md:grid-cols-3 gap-4 mb-8">
+          {[
+            { n: '1', t: 'Create account', d: 'GitHub OAuth or email. Free tier starts with 100 queries/month.' },
+            { n: '2', t: 'Mint an API key', d: 'Dashboard → API Keys. Secrets are shown once; store them safely.' },
+            { n: '3', t: 'Call /v1/extract', d: 'Pass a public URL and schema. Credits only move on success paths you use.' },
+          ].map((s) => (
+            <li key={s.n} className="surface surface-hover p-5 list-none">
+              <span className="text-mono text-xs" style={{ color: 'var(--color-accent-base)' }}>{s.n}</span>
+              <h3 className="mt-2 text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{s.t}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>{s.d}</p>
+            </li>
+          ))}
+        </ol>
+      </Reveal>
+
+      <Reveal delay={0.1}>
+        <div className="code-block overflow-hidden">
+          <div
+            className="flex items-center justify-between gap-3 px-4 py-2.5"
+            style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}
+          >
+            <span className="flex items-center gap-2 text-eyebrow">
+              <Terminal className="w-3.5 h-3.5" />
+              cURL
+            </span>
+            <button
+              type="button"
+              onClick={copy}
+              className={`btn btn-ghost text-xs ${copied ? 'copy-flash' : ''}`}
+              style={{ padding: '0.25rem 0.6rem' }}
+            >
+              {copied ? <Check className="w-3.5 h-3.5" style={{ color: 'var(--color-success)' }} /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+          <pre className="p-4 text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+            <code>{CURL_SNIPPET}</code>
+          </pre>
+        </div>
+        <p className="mt-3 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+          Full field maps and error codes live in the <Link to="/docs" className="link-accent">API docs</Link>.
+        </p>
+      </Reveal>
+    </section>
+  );
+}
+
+// ─── Trust strip (what good API products surface) ───
+
+const trustItems = [
+  { icon: Shield, title: 'SSRF-safe fetches', body: 'Private hosts, metadata endpoints, and credentialed URLs are blocked before scrape.' },
+  { icon: Lock, title: 'Keys + rate limits', body: 'Bearer keys, per-key RPM caps, and monthly quotas by plan.' },
+  { icon: Zap, title: 'Cache on success', body: 'Repeat lookups hit a short TTL so you do not pay twice for the same page.' },
+  { icon: Layers, title: 'Schema-locked JSON', body: 'product, article, company. Stable shapes for agents to parse.' },
+];
+
+function TrustStrip() {
+  return (
+    <section className="mx-auto max-w-6xl px-5 md:px-6 py-12 md:py-16">
+      <Reveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {trustItems.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.title}
+                className="surface p-4"
+                style={{ animationDelay: `${i * 40}ms` }}
+              >
+                <Icon className="w-4 h-4 mb-3" style={{ color: 'var(--color-accent-base)' }} strokeWidth={1.75} />
+                <h3 className="text-xs font-semibold" style={{ color: 'var(--color-text-primary)' }}>{item.title}</h3>
+                <p className="mt-1.5 text-[11px] leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>{item.body}</p>
+              </div>
+            );
+          })}
+        </div>
+      </Reveal>
     </section>
   );
 }
@@ -589,6 +728,9 @@ function Footer() {
           <Link to="/docs" className="link">Docs</Link>
           <Link to="/dashboard" className="link">Dashboard</Link>
           <a href="/buy" className="link">Pricing</a>
+          <a href="/health" className="link">Status</a>
+          <Link to="/privacy" className="link">Privacy</Link>
+          <Link to="/terms" className="link">Terms</Link>
           <a href="mailto:support@agentapigw.dpdns.org" className="link">Support</a>
           <a
             href="https://github.com/ZachDreamZ/agent-api-gateway"
@@ -618,7 +760,9 @@ export default function Landing() {
         <Navbar />
         <main>
           <Hero />
+          <TrustStrip />
           <HowItWorks />
+          <Quickstart />
           <Features />
           <Pricing />
           <FinalCTA />
