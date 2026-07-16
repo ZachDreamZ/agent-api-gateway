@@ -15,7 +15,7 @@ function LogoMark({ className = 'w-5 h-5' }: { className?: string }) {
 
 // ─── Copy Button ───
 
-function CopyButton({ text }: { text: string }) {
+function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -31,7 +31,7 @@ function CopyButton({ text }: { text: string }) {
       style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', gap: '0.25rem' }}
     >
       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-      {copied ? 'Copied' : 'Copy'}
+      {copied ? 'Copied' : label}
     </button>
   );
 }
@@ -94,7 +94,7 @@ const SECTIONS = [
 
 function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onNavigate?: () => void }) {
   return (
-    <aside className="flex h-full w-56 flex-col" style={{ borderRight: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
+    <aside className="flex h-full w-60 flex-col" style={{ borderRight: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
       <Link to="/" className="flex items-center gap-2 px-5 pt-5 pb-4 link" onClick={onNavigate}>
         <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
         <span className="text-xs font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>AgentAPI Docs</span>
@@ -184,6 +184,202 @@ function MobileSidebar({ open, onClose, activeSection }: { open: boolean; onClos
   );
 }
 
+// ─── Copy Docs as .md ───
+
+function DocsCopyMdButton() {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    const md = generateDocsMd();
+    await navigator.clipboard.writeText(md);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="btn btn-ghost"
+      style={{ fontSize: '0.8125rem', padding: '0.5rem 0.875rem', gap: '0.375rem', whiteSpace: 'nowrap' }}
+    >
+      {copied ? <Check className="w-3.5 h-3.5" /> : <BookOpen className="w-3.5 h-3.5" />}
+      {copied ? 'Copied as .md' : 'Copy as .md'}
+    </button>
+  );
+
+  function generateDocsMd(): string {
+    return `# AgentAPI — API Reference
+
+Extract structured web data with one API call.
+
+**Base URL:** \`https://agent-api-gateway.onrender.com\`
+
+---
+
+## Overview
+
+AgentAPI extracts structured data from any public URL. Send a URL and a schema type, receive clean JSON. Designed for AI agents — no markdown parsing, no raw HTML.
+
+**Pricing model:** Credit-based. Each successful extraction deducts 1 credit. Failed extractions do not count against your quota. Cached hits are free.
+
+---
+
+## Authentication
+
+Two authentication methods are supported. Both use the \`Authorization\` header.
+
+### API Key (recommended for automated use)
+
+\`\`\`
+Authorization: Bearer sk-your-api-key
+\`\`\`
+
+Create and manage API keys from the Dashboard → API Keys. API keys are persistent and ideal for server-side integration.
+
+### Session Token (for dashboard use)
+
+\`\`\`
+Authorization: Bearer your-session-token
+\`\`\`
+
+Sign in to the dashboard to obtain a session token. Tokens expire after 7 days. Use API keys for production integrations.
+
+---
+
+## Extraction Schemas
+
+Each schema returns a structured JSON object matching the page type. Fields are nullable — if a field cannot be extracted, it returns \`null\`.
+
+| Schema | Core Fields | Use Case |
+|--------|-------------|----------|
+| \`product\` | name, price, currency, description, availability, specs, image_url, rating, variants | E-commerce product pages |
+| \`article\` | title, author, date, reading_time, excerpt, content_summary, topics, image_url | Blogs, news articles, documentation |
+| \`company\` | name, description, founded_year, size_range, funding_total, industry, location, competitors | Company pages, Crunchbase, LinkedIn profiles |
+
+---
+
+## POST /v1/extract
+
+Extract structured data from any public URL. Returns the schema-matched fields plus usage metadata.
+
+### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| \`url\` | string | Yes | Public URL to extract data from |
+| \`schema\` | string | Yes | One of: \`product\`, \`article\`, \`company\` |
+| \`options.wait_for\` | string | No | CSS selector to wait for before extracting |
+| \`options.country\` | string | No | ISO country code for geo-targeted content |
+| \`options.extract_raw\` | boolean | No | Include raw extracted text alongside structured output |
+
+### Response — 200 OK
+
+\`\`\`json
+{
+  "success": true,
+  "data": { },
+  "usage": {
+    "credits_used": 1,
+    "credits_remaining": 1499
+  },
+  "cached": false,
+  "latency_ms": 4231
+}
+\`\`\`
+
+---
+
+## GET /v1/usage
+
+Check your current plan tier, credits used, and remaining quota for the current billing period.
+
+\`\`\`json
+{
+  "tier": "free",
+  "credits_used": 0,
+  "credits_limit": 100,
+  "credits_remaining": 100
+}
+\`\`\`
+
+---
+
+## GET /v1/pricing
+
+List available pricing plans and their features. No authentication required.
+
+\`\`\`json
+{
+  "tiers": [
+    { "id": "free", "name": "Free", "price": 0, "queries_per_month": 100, "rate_limit_rpm": 10 }
+  ]
+}
+\`\`\`
+
+---
+
+## Examples
+
+### cURL (article)
+\`\`\`bash
+curl -X POST https://agent-api-gateway.onrender.com/v1/extract \\
+  -H "Authorization: Bearer sk-your-api-key" \\
+  -H "Content-Type: application/json" \\
+  -d '{"url": "https://en.wikipedia.org/wiki/Artificial_intelligence", "schema": "article"}'
+\`\`\`
+
+### Node.js / TypeScript
+\`\`\`typescript
+const res = await fetch('https://agent-api-gateway.onrender.com/v1/extract', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer sk-your-api-key',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ url: '...', schema: 'article' }),
+});
+const data = await res.json();
+\`\`\`
+
+### Python
+\`\`\`python
+import requests
+resp = requests.post(
+    'https://agent-api-gateway.onrender.com/v1/extract',
+    headers={'Authorization': 'Bearer sk-your-api-key'},
+    json={'url': '...', 'schema': 'article'}
+)
+data = resp.json()
+\`\`\`
+
+---
+
+## Error Handling
+
+| Status | Meaning | Typical Cause |
+|--------|---------|---------------|
+| 200 | Success | Extraction completed |
+| 400 | Bad Request | Missing or invalid url or schema |
+| 401 | Unauthorized | Missing or invalid API key |
+| 429 | Too Many Requests | Rate limit exceeded or monthly quota exhausted |
+| 502 | Bad Gateway | Extraction failed — unreachable URL, timeout, or LLM error |
+
+---
+
+## Rate Limits & Quotas
+
+| Tier | Monthly Credits | Rate Limit | Concurrent | Price |
+|------|----------------|------------|------------|-------|
+| Free | 100 | 10 req/min | 1 | Free |
+| Hobby | 5,000 | 60 req/min | 5 | $29/mo |
+| Pro | 100,000 | 300 req/min | 20 | $99/mo |
+| Scale | Custom | Custom | Custom | Contact us |
+
+**Cache policy:** Successful extractions are cached for 24 hours. Cache hits do not deduct credits. Bypass the cache by including a unique query parameter.
+`;
+  }
+}
+
 // ─── Docs Page ───
 
 export default function Docs() {
@@ -231,19 +427,24 @@ export default function Docs() {
 
       {/* Desktop: fixed sidebar on left edge + centered content */}
       <div className="hidden lg:block">
-        <div className="fixed left-0 top-0 z-40 h-screen w-52 border-r" style={{ borderColor: 'var(--color-border-subtle)', background: 'var(--color-bg-app)' }}>
+        <div className="fixed left-0 top-0 z-40 h-screen w-60 border-r" style={{ borderColor: 'var(--color-border-subtle)', background: 'var(--color-bg-app)' }}>
           <DocsSidebar activeSection={activeSection} />
         </div>
       </div>
 
       {/* Centered content — sidebar is fixed, so content doesn't offset */}
-      <main className="mx-auto min-h-screen px-6 pt-20 pb-16 lg:pl-64 lg:pr-8 lg:pt-12" style={{ maxWidth: '48rem' }}>
+      <main className="mx-auto min-h-screen px-6 pt-20 pb-16 lg:pl-64 lg:pr-8 lg:pt-12 docs-body" style={{ maxWidth: '72rem' }}>
         <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm link lg:hidden" style={{ color: 'var(--color-text-tertiary)' }}>
           ← Home
         </Link>
 
-                <h1 className="mb-2 text-3xl font-bold tracking-tight">API Reference</h1>
-        <p className="mb-8 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Extract structured web data with one API call.</p>
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h1 className="mb-2 text-3xl font-bold tracking-tight">API Reference</h1>
+            <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Extract structured web data with one API call.</p>
+          </div>
+          <DocsCopyMdButton />
+        </div>
 
         {/* Overview */}
         <Section id="overview" title="Overview">
