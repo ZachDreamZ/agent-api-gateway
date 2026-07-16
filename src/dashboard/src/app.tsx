@@ -251,7 +251,7 @@ function DashboardLayout() {
 
       {/* Main content */}
       <main className="min-h-screen lg:ml-60">
-        <div className="mx-auto max-w-5xl px-4 pt-20 pb-12 lg:px-8 lg:pt-8">
+        <div className="mx-auto max-w-5xl px-4 pt-20 pb-12 lg:px-8 lg:pt-8 xl:max-w-6xl 2xl:max-w-7xl 3xl:max-w-[calc(100vw-18rem)]">
           <UserBar user={user} />
           <Routes>
             <Route index element={<Overview />} />

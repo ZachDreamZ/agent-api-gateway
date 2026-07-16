@@ -233,7 +233,7 @@ export default function Docs() {
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} activeSection={activeSection} />
 
       {/* Main content */}
-      <main className="mx-auto max-w-3xl px-4 pt-20 pb-12 lg:ml-56 lg:px-10 lg:pt-12">
+      <main className="mx-auto max-w-3xl px-4 pt-20 pb-12 lg:ml-56 lg:px-10 lg:pt-12 xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl">
         <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm link lg:hidden" style={{ color: 'var(--color-text-tertiary)' }}>
           ← Home
         </Link>

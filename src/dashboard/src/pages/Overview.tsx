@@ -314,7 +314,7 @@ export default function Overview() {
         <div className="lg:col-span-3">
           <UsageChart data={chart} />
         </div>
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 xl:col-span-2 2xl:col-span-2">
           <ActivityFeed />
         </div>
       </div>

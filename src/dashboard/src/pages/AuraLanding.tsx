@@ -136,7 +136,7 @@ function Hero() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[0.95] max-w-4xl mx-auto"
+        className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold tracking-tight leading-[0.95] max-w-4xl mx-auto"
         style={{ color: 'var(--color-text-primary)' }}
       >
         Your API.{' '}
@@ -147,7 +147,7 @@ function Hero() {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-6 max-w-lg mx-auto text-sm leading-relaxed"
+        className="mt-6 max-w-lg mx-auto text-sm leading-relaxed xl:max-w-xl xl:text-base 2xl:max-w-2xl 2xl:text-lg"
         style={{ color: 'var(--color-text-secondary)' }}
       >
         One endpoint for structured web data. AI agents send a URL and schema type,
