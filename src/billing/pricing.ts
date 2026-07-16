@@ -84,7 +84,8 @@ export const TIER_PRICING: Record<Tier, TierPricing> = {
     id: 'scale',
     name: 'Scale',
     description: 'For companies embedding in product',
-    price_monthly: 0, // custom pricing
+    // -1 = custom / contact sales (must not format as "Free")
+    price_monthly: -1,
     queries_per_month: 100000,
     rate_limit_rpm: 1000,
     concurrent_requests: 100,
@@ -109,6 +110,7 @@ export function getPricingByTier(tier: Tier): TierPricing {
 }
 
 export function formatPrice(cents: number): string {
+  if (cents < 0) return 'Custom';
   if (cents === 0) return 'Free';
   return `$${(cents / 100).toFixed(0)}/mo`;
 }

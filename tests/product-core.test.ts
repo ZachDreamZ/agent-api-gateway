@@ -97,6 +97,9 @@ describe('pricing catalog (paid value proposition)', () => {
     assert.ok(hobby.queries_per_month > free.queries_per_month);
     assert.equal(formatPrice(hobby.price_monthly), '$29/mo');
     assert.equal(formatPrice(0), 'Free');
+    assert.equal(formatPrice(-1), 'Custom');
+    assert.equal(getPricingByTier('scale').price_monthly, -1);
+    assert.equal(formatPrice(getPricingByTier('scale').price_monthly), 'Custom');
   });
 
   it('every tier has a non-empty feature list describing what buyers get', () => {
