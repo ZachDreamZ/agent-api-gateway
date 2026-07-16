@@ -130,47 +130,62 @@ function Navbar() {
 // ─── Hero (solid headline, no gradient) ───
 
 function Hero() {
+  const heroVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    },
+  };
+  const childVariants = {
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
   return (
-    <section className="pt-32 pb-20 px-6 text-center relative z-10">
-      <motion.h1
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold tracking-tight leading-[0.95] max-w-4xl mx-auto"
-        style={{ color: 'var(--color-text-primary)' }}
-      >
-        Your API.{' '}
-        <span style={{ color: 'var(--color-accent-base)' }}>Revitalized.</span>
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-6 max-w-lg mx-auto text-sm leading-relaxed xl:max-w-xl xl:text-base 2xl:max-w-2xl 2xl:text-lg"
-        style={{ color: 'var(--color-text-secondary)' }}
-      >
-        One endpoint for structured web data. AI agents send a URL and schema type,
-        get clean JSON back. No parsing, no markdown — just the fields you need.
-      </motion.p>
-
+    <section className="pt-32 pb-20 px-6 text-center relative z-10 overflow-hidden">
       <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-8 flex flex-col items-center gap-3"
+        variants={heroVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <Link to="/dashboard">
-          <button className="btn btn-primary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
-            Get Started Free
-          </button>
-        </Link>
-        <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>1,500 free queries/month · No credit card</span>
+        <motion.h1
+          variants={childVariants}
+          className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold tracking-tight leading-[0.95] max-w-4xl mx-auto"
+          style={{ color: 'var(--color-text-primary)' }}
+        >
+          Your API.{" "}
+          <span style={{ color: 'var(--color-accent-base)' }}>Revitalized.</span>
+        </motion.h1>
+
+        <motion.p
+          variants={childVariants}
+          className="mt-6 max-w-lg mx-auto text-sm leading-relaxed xl:max-w-xl xl:text-base 2xl:max-w-2xl 2xl:text-lg"
+          style={{ color: 'var(--color-text-secondary)' }}
+        >
+          One endpoint for structured web data. AI agents send a URL and schema type,
+          get clean JSON back. No parsing, no markdown — just the fields you need.
+        </motion.p>
+
+        <motion.div
+          variants={childVariants}
+          className="mt-8 flex flex-col items-center gap-3"
+        >
+          <Link to="/dashboard">
+            <button className="btn btn-primary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
+              Get Started Free
+            </button>
+          </Link>
+          <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>1,500 free queries/month · No credit card</span>
+        </motion.div>
       </motion.div>
     </section>
   );
 }
-
 // ─── API Demo (replaces InboxMockup + MenuBar — no chrome) ───
 
 function ApiDemo() {
@@ -281,7 +296,14 @@ function Features() {
         </div>
         <div className="space-y-3">
           {featureList.map((feat) => (
-            <div key={feat.label} className="surface surface-hover p-4">
+            <motion.div
+              key={feat.label}
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="surface surface-hover p-4"
+            >
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{feat.label}</span>
                 <span className="badge badge-active">{feat.tag}</span>
@@ -291,7 +313,7 @@ function Features() {
                   <li key={item} className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>{item}</li>
                 ))}
               </ul>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -306,18 +328,29 @@ const logos = ['Linear', 'Vercel', 'Figma', 'Stripe', 'Ramp', 'Notion'];
 function LogoCloud() {
   return (
     <section className="max-w-6xl mx-auto px-6 py-20 relative z-10">
-      <p className="text-xs uppercase tracking-widest text-center" style={{ color: 'var(--color-text-tertiary)' }}>
+      <motion.p
+        initial={{ opacity: 0, y: 8 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="text-xs uppercase tracking-widest text-center"
+        style={{ color: 'var(--color-text-tertiary)' }}
+      >
         Used by engineering teams shipping structured data products
-      </p>
+      </motion.p>
       <div className="mt-8 grid grid-cols-3 sm:grid-cols-6 gap-6">
-        {logos.map((name) => (
-          <div
+        {logos.map((name, idx) => (
+          <motion.div
             key={name}
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.08, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="text-sm font-bold tracking-tight text-center cursor-default"
             style={{ color: 'var(--color-text-disabled)' }}
           >
             {name}
-          </div>
+          </motion.div>
         ))}
       </div>
     </section>
