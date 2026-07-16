@@ -11,8 +11,8 @@ async function findUserById(userId: string): Promise<(AuthUser & { tier?: string
   });
   try {
     const { rows } = await pool.query(
-      `SELECT id, name, email, email_verified as "emailVerified",
-              image, created_at as "createdAt", updated_at as "updatedAt",
+      `SELECT id, name, email, "emailVerified",
+              image, "createdAt", "updatedAt",
               tier, stripe_customer_id
        FROM "user" WHERE id = $1`,
       [userId],
