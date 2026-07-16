@@ -39,7 +39,16 @@ export const auth = betterAuth({
     'https://agentapigw.dpdns.org',
   ],
   plugins: [
-    apiKey({ enableSessionForAPIKeys: true }),
+    apiKey({
+      enableSessionForAPIKeys: true,
+      // Allow clients to send API key as Authorization: Bearer <key>
+      apiKeyHeaders: ['authorization'],
+      customAPIKeyGetter: (ctx) => {
+        const auth = ctx.headers?.get('authorization');
+        if (!auth) return null;
+        return auth.startsWith('Bearer ') ? auth.slice(7) : null;
+      },
+    }),
     bearer(),
   ],
 });

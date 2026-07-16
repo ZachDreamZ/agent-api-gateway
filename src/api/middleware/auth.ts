@@ -6,40 +6,28 @@ import type { Tier } from '@shared/types';
 // cookie (dashboard) or a Bearer API key (programmatic clients) and exposes
 // the resolved user + tier to downstream routes.
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
-  // Direct GET to Better Auth's get-session endpoint
-  const req = c.req.raw;
-  const baseUrl = new URL(req.url);
-  baseUrl.pathname = '/api/auth/get-session';
-  const sessionReq = new Request(baseUrl, {
-    method: 'GET',
-    headers: req.headers,
-  });
-
-  let sessionRes: Response;
+  // Validate session via Better Auth. We pass the full Request object so
+  // Better Auth can read cookies and the Authorization header (which the
+  // apiKey plugin now parses via customAPIKeyGetter).
+  let session;
   try {
-    sessionRes = await auth.handler(sessionReq);
+    session = await auth.api.getSession({
+      request: c.req.raw,
+      query: { disableCookieCache: true },
+    });
   } catch (err) {
-    console.error('[auth] handler error:', err);
-    return c.json({ error: 'Unauthorized' }, 401);
+    console.error('[auth] getSession error:', err);
+    return c.json(
+      { error: 'Unauthorized. Send a valid API key as `Authorization: Bearer <key>`.' },
+      401,
+    );
   }
 
-  const body = await sessionRes.clone().text();
-  console.log('[auth] get-session status:', sessionRes.status, 'body:', body.substring(0, 200));
-
-  if (!sessionRes.ok) {
-    return c.json({ error: 'Unauthorized. Send a valid API key.' }, 401);
-  }
-
-  let session: { user: AuthUser; session: any } | null = null;
-  try {
-    session = JSON.parse(body);
-  } catch {
-    console.error('[auth] JSON parse failed');
-    return c.json({ error: 'Unauthorized' }, 401);
-  }
-
-  if (!session || !session.user) {
-    return c.json({ error: 'Unauthorized. Send a valid API key.' }, 401);
+  if (!session) {
+    return c.json(
+      { error: 'Unauthorized. Send a valid API key as `Authorization: Bearer <key>`.' },
+      401,
+    );
   }
 
   const user = session.user as AuthUser & { tier?: string };
