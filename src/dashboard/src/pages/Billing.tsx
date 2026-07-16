@@ -283,7 +283,7 @@ export default function Billing() {
           {current.stripe_customer_id && (
             <button
               onClick={handlePortal}
-              className="btn btn-secondary"
+              className="btn btn-secondary w-full sm:w-auto"
               style={{ fontSize: '0.8125rem' }}
             >
               Manage Subscription

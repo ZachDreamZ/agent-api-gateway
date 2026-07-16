@@ -17,6 +17,9 @@
   --font-family-sans: 'Inter', system-ui, sans-serif;
   --font-family-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
+  /* Responsive breakpoints */
+  --breakpoint-3xl: 1920px;
+
   /* Core palette (OKLCH) — single anchor: brand blue */
   --color-bg-app: oklch(0.141 0.005 285);
   --color-bg-surface: oklch(0.185 0.006 285);
@@ -428,10 +431,20 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
+@media (max-width: 480px) {
+  .dialog-panel {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    min-height: 100dvh;
+  }
+}
+
 /* ─── Table ──────────────────────────────────────────────────────────────── */
 
 .table-wrap {
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-lg);
   font-size: 0.875rem;

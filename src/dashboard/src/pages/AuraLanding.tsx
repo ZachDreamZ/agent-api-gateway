@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -41,6 +41,16 @@ function SectionEyebrow({ label }: { label: string }) {
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileOpen]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50" style={{ background: 'var(--color-bg-app)', borderBottom: '1px solid var(--color-border-subtle)' }}>

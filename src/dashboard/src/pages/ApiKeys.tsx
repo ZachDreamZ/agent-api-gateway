@@ -76,29 +76,29 @@ function KeyRow({
       animate={{ opacity: 1, y: 0 }}
       className="surface surface-hover p-4"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-start gap-2.5">
             <div
-              className="flex h-8 w-8 items-center justify-center rounded-lg"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
               style={{ background: item.enabled ? 'var(--color-accent-subtle)' : 'var(--color-bg-hover)' }}
             >
               <KeyRound className="w-4 h-4" style={{ color: item.enabled ? 'var(--color-accent-base)' : 'var(--color-text-disabled)' }} />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-sm" style={{ color: 'var(--color-text-primary)' }}>{item.name || 'Untitled key'}</span>
-                <span className={item.enabled ? 'badge badge-active' : 'badge badge-inactive'}>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-medium text-sm truncate" style={{ color: 'var(--color-text-primary)' }}>{item.name || 'Untitled key'}</span>
+                <span className={item.enabled ? 'badge badge-active shrink-0' : 'badge badge-inactive shrink-0'}>
                   {item.enabled ? 'Active' : 'Disabled'}
                 </span>
               </div>
-              <div className="mt-0.5 flex items-center gap-2">
-                <code className="text-xs" style={{ color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-family-mono)' }}>
+              <div className="mt-0.5 flex items-center gap-2 flex-wrap">
+                <code className="text-xs truncate max-w-[160px] sm:max-w-none" style={{ color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-family-mono)' }}>
                   {displayStart}...{showKey ? '****' : ''}
                 </code>
                 <button
                   onClick={() => setShowKey(!showKey)}
-                  className="interactive"
+                  className="interactive shrink-0"
                   style={{ color: 'var(--color-text-tertiary)' }}
                   aria-label={showKey ? 'Hide key' : 'Show key'}
                 >
@@ -116,8 +116,8 @@ function KeyRow({
           </p>
         </div>
 
-        {/* Actions always visible (not hover-only) */}
-        <div className="flex items-center gap-2">
+        {/* Actions */}
+        <div className="flex items-center gap-2 sm:self-center">
           <button
             onClick={() => onToggle(item.id)}
             disabled={toggling}
@@ -129,7 +129,7 @@ function KeyRow({
           <button
             onClick={() => onRevoke(item.id)}
             disabled={toggling}
-            className="btn btn-ghost"
+            className="btn btn-ghost shrink-0"
             style={{ color: 'var(--color-error)', fontSize: '0.75rem', padding: '0.375rem' }}
             aria-label="Revoke key"
           >
@@ -376,7 +376,7 @@ export default function ApiKeys() {
       {/* Create new key */}
       <div className="surface p-4 mb-6">
         <p className="mb-3 text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Create new key</p>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
             value={name}
@@ -388,7 +388,7 @@ export default function ApiKeys() {
           <button
             onClick={handleCreate}
             disabled={creating || !name.trim()}
-            className="btn btn-primary"
+            className="btn btn-primary shrink-0"
           >
             {creating ? (
               <span className="inline-block h-4 w-4 animate-spin rounded-full border-2" style={{ borderColor: 'var(--color-text-tertiary)', borderTopColor: 'white' }} />

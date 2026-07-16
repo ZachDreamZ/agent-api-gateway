@@ -226,6 +226,16 @@ function DashboardLayout() {
   const user = useUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       {/* Desktop sidebar */}

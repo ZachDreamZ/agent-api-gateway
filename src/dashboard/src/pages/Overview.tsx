@@ -140,7 +140,7 @@ function UsageChart({ data }: { data: DailyUsage[] }) {
           {data.reduce((sum, d) => sum + d.count, 0).toLocaleString()} total
         </span>
       </div>
-      <div className="flex items-end gap-1.5" style={{ height: 140 }}>
+      <div className="flex items-end gap-1.5" style={{ height: 'clamp(80px, 20vw, 140px)' }}>
         {data.map((d, i) => {
           const pct = (d.count / max) * 100;
           return (
