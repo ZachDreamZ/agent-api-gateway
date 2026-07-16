@@ -135,19 +135,17 @@ app.get('/health', (c) =>
   c.json({ status: 'ok', service: 'agent-api-gateway', version: '0.1.0' }),
 );
 
-// ─── DB health (deployment verification only — gated, minimal disclosure) ───
+// ─── DB health (gated — never public without ADMIN_HEALTH_TOKEN) ───
 app.get('/api/dbcheck', async (c) => {
-  const isProd = process.env['NODE_ENV'] === 'production';
-  // In production require an explicit admin token; never expose table lists publicly.
   const adminToken = process.env['ADMIN_HEALTH_TOKEN'];
-  if (isProd) {
-    if (!adminToken) {
-      return c.json({ error: 'Not found' }, 404);
-    }
-    const provided = c.req.header('x-admin-token') || c.req.query('token') || '';
-    if (provided !== adminToken) {
-      return c.json({ error: 'Not found' }, 404);
-    }
+  // Always require a shared secret. Without it, the endpoint does not exist.
+  if (!adminToken) {
+    return c.json({ error: 'Not found' }, 404);
+  }
+  const provided = c.req.header('x-admin-token') || '';
+  // Constant-time-ish compare length then equality (good enough for admin probe token)
+  if (provided.length !== adminToken.length || provided !== adminToken) {
+    return c.json({ error: 'Not found' }, 404);
   }
 
   const { default: pg } = await import('pg');
@@ -161,11 +159,9 @@ app.get('/api/dbcheck', async (c) => {
     const r = await pool.query('SELECT 1 as ok');
     const ok = r.rows[0]?.ok === 1;
     await pool.end();
-    // Minimal response — no table enumeration in any environment over the wire in prod path
     return c.json({ connOk: ok, dbUrlSet: !!connStr });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    return c.json({ connOk: false, dbUrlSet: !!connStr, error: isProd ? 'Database check failed' : msg }, 500);
+  } catch {
+    return c.json({ connOk: false, dbUrlSet: !!connStr, error: 'Database check failed' }, 500);
   }
 });
 
