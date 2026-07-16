@@ -221,19 +221,22 @@ export default function Docs() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
-      {/* Desktop sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
-        <DocsSidebar activeSection={activeSection} />
-      </div>
-
       {/* Mobile header */}
       <MobileHeader onMenuOpen={() => setMobileMenuOpen(true)} />
 
       {/* Mobile sidebar */}
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} activeSection={activeSection} />
 
-      {/* Main content */}
-      <main className="mx-auto max-w-3xl px-4 pt-20 pb-12 lg:ml-56 lg:px-10 lg:pt-12 xl:max-w-4xl 2xl:max-w-5xl 3xl:max-w-6xl">
+      {/* Desktop layout: centered sidebar + content */}
+      <div className="lg:flex lg:justify-center">
+        <div className="lg:flex lg:w-full lg:max-w-7xl xl:max-w-[90rem]">
+          {/* Desktop sidebar */}
+          <div className="hidden lg:sticky lg:top-0 lg:z-40 lg:block lg:h-screen lg:w-56 lg:shrink-0 lg:self-start">
+            <DocsSidebar activeSection={activeSection} />
+          </div>
+
+          {/* Main content */}
+          <main className="min-w-0 flex-1 px-4 pt-20 pb-12 lg:px-10 lg:pt-12">
         <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm link lg:hidden" style={{ color: 'var(--color-text-tertiary)' }}>
           ← Home
         </Link>
@@ -552,7 +555,9 @@ print(data['data']['title'])`}
             </Link>
           </div>
         </Section>
-      </main>
+          </main>
+        </div>
+      </div>
     </div>
   );
 }
