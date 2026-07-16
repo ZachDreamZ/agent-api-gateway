@@ -18,10 +18,20 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   emailAndPassword: {
     enabled: true,
-    minPasswordLength: 8,
+    minPasswordLength: 10,
     maxPasswordLength: 128,
     sendResetPassword: async ({ user, url }) => {
-      console.log(`[auth] Password reset link for ${user.email}: ${url}`);
+      // Never log reset URLs or full emails in production (token leak risk).
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[auth] Password reset link for ${user.email}: ${url}`);
+      } else {
+        console.log(JSON.stringify({
+          event: 'auth.password_reset_requested',
+          userId: user.id,
+          timestamp: new Date().toISOString(),
+        }));
+      }
+      // TODO: send via transactional email (SUPPORT_EMAIL / Resend) when configured.
     },
   },
   user: {
@@ -50,9 +60,14 @@ export const auth = betterAuth({
   rateLimit: {
     enabled: true,
     storage: 'database',
+    window: 60,
+    max: 30,
     customRules: {
       '/api/auth/sign-in/email': { window: 60, max: 5 },
       '/api/auth/sign-up/email': { window: 60, max: 3 },
+      '/api/auth/forget-password': { window: 300, max: 3 },
+      '/api/auth/reset-password': { window: 300, max: 5 },
+      '/api/auth/request-password-reset': { window: 300, max: 3 },
     },
   },
 
@@ -110,12 +125,15 @@ export const auth = betterAuth({
 
   // ─── Advanced security ───
   advanced: {
-    useSecureCookies: true,
+    useSecureCookies: process.env.NODE_ENV === 'production' || process.env.BETTER_AUTH_URL?.startsWith('https://'),
     defaultCookieAttributes: {
-      sameSite: 'strict',
+      sameSite: 'lax', // lax allows Polar checkout return navigation to keep session
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production' || process.env.BETTER_AUTH_URL?.startsWith('https://'),
+      path: '/',
     },
     ipAddress: {
-      ipAddressHeaders: ['x-forwarded-for'],
+      ipAddressHeaders: ['x-forwarded-for', 'cf-connecting-ip', 'x-real-ip'],
       disableIpTracking: false,
     },
   },

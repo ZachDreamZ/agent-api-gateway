@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { runMigration } from './lib/migrate.js';
-import { join, extname } from 'node:path';
+import { join, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
@@ -33,11 +33,24 @@ const MIME: Record<string, string> = {
 };
 
 function serveStatic(c: any, filePath: string) {
-  const full = join(DIST, filePath);
+  const distRoot = resolve(DIST);
+  const full = resolve(distRoot, filePath);
+  // Path traversal guard — resolved path must stay inside DIST
+  const rel = full.slice(distRoot.length);
+  if (full !== distRoot && !rel.startsWith('\\') && !rel.startsWith('/')) return null;
   if (!existsSync(full)) return null;
   const ext = extname(full);
   const content = readFileSync(full);
-  return c.body(content, 200, { 'Content-Type': MIME[ext] || 'application/octet-stream' });
+  const headers: Record<string, string> = {
+    'Content-Type': MIME[ext] || 'application/octet-stream',
+  };
+  // HTML shell must not be cached long — deploys would otherwise leave users on stale SPA
+  if (ext === '.html' || filePath === 'index.html') {
+    headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+  } else if (filePath.startsWith('assets/')) {
+    headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+  }
+  return c.body(content, 200, headers);
 }
 
 // ─── App ───
@@ -80,9 +93,14 @@ app.use('/*', async (c, next) => {
   await next();
   c.header('X-Content-Type-Options', 'nosniff');
   c.header('X-Frame-Options', 'DENY');
-  c.header('Referrer-Policy', 'no-referrer');
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
   c.header('X-XSS-Protection', '0');
-  c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+  c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=(), usb=()');
+  c.header('Cross-Origin-Opener-Policy', 'same-origin');
+  c.header('Cross-Origin-Resource-Policy', 'same-origin');
+  c.header('X-DNS-Prefetch-Control', 'off');
+  // Remove fingerprinting headers if any upstream set them
+  c.header('X-Powered-By', '');
 
   // HSTS — enabled globally. Safe because:
   // - Local dev (localhost) is HTTP-only; HSTS only matters over HTTPS.
@@ -93,17 +111,20 @@ app.use('/*', async (c, next) => {
   // Content-Security-Policy
   // The SPA is same-origin. Fonts load from Google Fonts CDN.
   // Tailwind/motion use inline styles, so 'unsafe-inline' for style-src is required.
+  // form-action allows Polar hosted checkout redirects from same-origin /buy.
   const csp = [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: https:",
     "connect-src 'self'",
     "base-uri 'self'",
-    "form-action 'self'",
+    "form-action 'self' https://polar.sh https://*.polar.sh https://checkout.polar.sh",
+    "frame-src 'none'",
     "frame-ancestors 'none'",
     "object-src 'none'",
+    "upgrade-insecure-requests",
   ].join('; ');
   c.header('Content-Security-Policy', csp);
 });
@@ -114,8 +135,21 @@ app.get('/health', (c) =>
   c.json({ status: 'ok', service: 'agent-api-gateway', version: '0.1.0' }),
 );
 
-// ─── DB health (used for deployment verification) ───
+// ─── DB health (deployment verification only — gated, minimal disclosure) ───
 app.get('/api/dbcheck', async (c) => {
+  const isProd = process.env['NODE_ENV'] === 'production';
+  // In production require an explicit admin token; never expose table lists publicly.
+  const adminToken = process.env['ADMIN_HEALTH_TOKEN'];
+  if (isProd) {
+    if (!adminToken) {
+      return c.json({ error: 'Not found' }, 404);
+    }
+    const provided = c.req.header('x-admin-token') || c.req.query('token') || '';
+    if (provided !== adminToken) {
+      return c.json({ error: 'Not found' }, 404);
+    }
+  }
+
   const { default: pg } = await import('pg');
   const connStr = process.env['DATABASE_URL'];
   try {
@@ -124,21 +158,13 @@ app.get('/api/dbcheck', async (c) => {
       connectionTimeoutMillis: 8000,
       max: 1,
     });
-    // Check connectivity
     const r = await pool.query('SELECT 1 as ok');
     const ok = r.rows[0]?.ok === 1;
-    // Check Better Auth tables exist
-    const tables = await pool.query(
-      `SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_name=ANY($1)`,
-      [['user','session','account','verification','apikey','_migration_history']]
-    );
-    const found = tables.rows.map(row => row.table_name);
     await pool.end();
-    return c.json({ connOk: ok, dbUrlSet: !!connStr, tables: found });
+    // Minimal response — no table enumeration in any environment over the wire in prod path
+    return c.json({ connOk: ok, dbUrlSet: !!connStr });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    // dbcheck is an internal debug endpoint — only expose details in dev
-    const isProd = process.env['NODE_ENV'] === 'production';
     return c.json({ connOk: false, dbUrlSet: !!connStr, error: isProd ? 'Database check failed' : msg }, 500);
   }
 });

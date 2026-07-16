@@ -2,83 +2,86 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Sparkles,
   ChevronRight,
   Menu,
   X,
   ArrowRight,
-  LucideIcon,
+  Check,
+  Box,
+  Layers,
+  Zap,
+  Shield,
 } from 'lucide-react';
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Agent API Gateway — Landing Page (Hallmark · Workbench genre)
+// Agent API Gateway — Landing
+// Signature: interactive schema playground (request → typed JSON)
+// Honest product page — no fake logos, no invented testimonials
 // ═══════════════════════════════════════════════════════════════════════════
 
-// ─── Logo Mark ───
-
-function LogoMark({ className = 'w-6 h-6' }: { className?: string }) {
+function LogoMark({ className = 'w-6 h-6', style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <svg viewBox="0 0 256 256" fill="currentColor" className={className}>
+    <svg viewBox="0 0 256 256" fill="currentColor" className={className} style={style} aria-hidden>
       <path d="M 0 128 C 70.692 128 128 185.308 128 256 L 64 256 C 64 220.654 35.346 192 0 192 Z M 256 192 C 220.654 192 192 220.654 192 256 L 128 256 C 128 185.308 185.308 128 256 128 Z M 128 0 C 128 70.692 70.692 128 0 128 L 0 64 C 35.346 64 64 35.346 64 0 Z M 192 0 C 192 35.346 220.654 64 256 64 L 256 128 C 185.308 128 128 70.692 128 0 Z" />
     </svg>
   );
 }
 
-// ─── Section Eyebrow ───
-
-function SectionEyebrow({ label }: { label: string }) {
+function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-3 mb-5">
-      <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--color-accent-base)' }} />
-      <span className="text-xs uppercase tracking-widest font-medium" style={{ color: 'var(--color-text-tertiary)' }}>
-        {label}
-      </span>
-    </div>
+    <p className="text-eyebrow mb-4" style={{ color: 'var(--color-accent-base)' }}>
+      {children}
+    </p>
   );
 }
 
-// ─── Navbar (centered links pattern) ───
+// ─── Navbar ───
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = mobileOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50" style={{ background: 'var(--color-bg-app)', borderBottom: '1px solid var(--color-border-subtle)' }}>
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2 link" style={{ color: 'var(--color-text-primary)' }}>
+    <header
+      className="fixed top-0 left-0 right-0 z-50"
+      style={{
+        background: 'oklch(0.145 0.018 255 / 0.85)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid var(--color-border-subtle)',
+      }}
+    >
+      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-6" aria-label="Primary">
+        <Link to="/" className="flex items-center gap-2.5" style={{ color: 'var(--color-text-primary)' }}>
           <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-          <span className="text-sm font-semibold tracking-tight">AgentAPI</span>
+          <span className="text-sm font-semibold tracking-tight">Agent API</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          <a href="#features" className="link text-sm" style={{ color: 'var(--color-text-secondary)' }}>Features</a>
-          <a href="#pricing" className="link text-sm" style={{ color: 'var(--color-text-secondary)' }}>Pricing</a>
-          <Link to="/docs" className="link text-sm" style={{ color: 'var(--color-text-secondary)' }}>Docs</Link>
-          <Link to="/dashboard" className="btn btn-primary text-xs" style={{ padding: '0.5rem 1.25rem' }}>
-            Dashboard
+        <div className="hidden md:flex items-center gap-7">
+          <a href="#how" className="link text-sm">How it works</a>
+          <a href="#features" className="link text-sm">Features</a>
+          <a href="#pricing" className="link text-sm">Pricing</a>
+          <Link to="/docs" className="link text-sm">Docs</Link>
+          <Link to="/login" className="link text-sm">Sign in</Link>
+          <Link to="/dashboard" className="btn btn-primary text-xs" style={{ padding: '0.45rem 1rem' }}>
+            Open dashboard
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
         <button
+          type="button"
           onClick={() => setMobileOpen(true)}
-          className="flex h-9 w-9 items-center justify-center rounded-lg md:hidden interactive"
+          className="flex h-9 w-9 items-center justify-center rounded-md md:hidden interactive"
           style={{ color: 'var(--color-text-secondary)' }}
           aria-label="Open menu"
         >
           <Menu className="w-5 h-5" />
         </button>
-      </div>
+      </nav>
 
       <AnimatePresence>
         {mobileOpen && (
@@ -88,423 +91,350 @@ function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-40 md:hidden"
-              style={{ background: 'oklch(0 0 0 / 0.6)' }}
+              style={{ background: 'oklch(0 0 0 / 0.55)' }}
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed inset-y-0 right-0 z-50 flex w-64 flex-col md:hidden"
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed inset-y-0 right-0 z-50 flex w-72 flex-col md:hidden"
               style={{ background: 'var(--color-bg-elevated)', borderLeft: '1px solid var(--color-border-subtle)' }}
+              role="dialog"
+              aria-label="Mobile menu"
             >
               <div className="flex items-center justify-between px-5 pt-5 pb-4" style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
-                <span className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Menu</span>
-                <button onClick={() => setMobileOpen(false)} className="interactive" style={{ color: 'var(--color-text-secondary)' }} aria-label="Close menu">
-                  <X className="w-5 h-5" />
+                <span className="text-sm font-semibold">Menu</span>
+                <button type="button" onClick={() => setMobileOpen(false)} className="interactive p-1" aria-label="Close menu">
+                  <X className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
                 </button>
               </div>
-              <div className="flex-1 space-y-1 px-3 pt-3">
-                <a href="#features" onClick={() => setMobileOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
-                  Features
-                </a>
-                <a href="#pricing" onClick={() => setMobileOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
-                  Pricing
-                </a>
-                <Link to="/docs" onClick={() => setMobileOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+              <div className="flex flex-col gap-1 p-3">
+                {[
+                  { href: '#how', label: 'How it works' },
+                  { href: '#features', label: 'Features' },
+                  { href: '#pricing', label: 'Pricing' },
+                ].map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-md px-3 py-2.5 text-sm link"
+                    style={{ color: 'var(--color-text-secondary)' }}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <Link to="/docs" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Docs
                 </Link>
-                <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm font-medium" style={{ color: 'var(--color-accent-base)' }}>
-                  Dashboard →
+                <Link to="/login" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+                  Sign in
+                </Link>
+                <Link to="/dashboard" onClick={() => setMobileOpen(false)} className="btn btn-primary mt-3 w-full">
+                  Open dashboard
                 </Link>
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
-    </nav>
+    </header>
   );
 }
 
-// ─── Hero (solid headline, no gradient) ───
+// ─── Schema playground (signature) ───
 
-function Hero() {
-  const heroVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.1 },
-    },
-  };
-  const childVariants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
-
-  return (
-    <section className="relative pt-32 pb-20 px-6 text-center z-10 overflow-hidden">
-      {/* Ambient glow */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: 'radial-gradient(800px circle at 50% -10%, oklch(0.62 0.18 260 / 0.08), transparent 60%)',
-        }}
-      />
-      <motion.div
-        className="relative"
-        variants={heroVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={childVariants} className="mb-4">
-          <span
-            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold uppercase tracking-widest"
-            style={{
-              background: 'var(--color-accent-subtle)',
-              color: 'var(--color-accent-base)',
-              borderRadius: '9999px',
-              border: '1px solid oklch(0.62 0.18 260 / 0.2)',
-            }}
-          >
-            <Sparkles className="w-3 h-3" />
-            Now in beta
-          </span>
-        </motion.div>
-
-        <motion.h1
-          variants={childVariants}
-          className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[0.95] max-w-4xl mx-auto"
-          style={{ color: 'var(--color-text-primary)' }}
-        >
-          One API for{" "}
-          <span
-            style={{
-              background: 'linear-gradient(135deg, var(--color-accent-base) 0%, oklch(0.65 0.22 240) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            structured web data
-          </span>
-          .
-        </motion.h1>
-
-        <motion.p
-          variants={childVariants}
-          className="mt-6 max-w-xl mx-auto text-sm leading-relaxed xl:text-base"
-          style={{ color: 'var(--color-text-secondary)' }}
-        >
-          AI agents send a URL and schema type, get clean JSON back.
-          No parsing, no markdown&mdash;just the fields you need.
-        </motion.p>
-
-        <motion.div
-          variants={childVariants}
-          className="mt-8 flex flex-col items-center gap-3"
-        >
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <Link to="/dashboard">
-              <button className="btn btn-primary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
-                Get Started Free
-              </button>
-            </Link>
-            <a href="/buy" className="btn btn-secondary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
-              Buy Starter Pack — $1
-            </a>
-          </div>
-          <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-            Free tier available &middot; Starter Pack: 1,000 credits for $1 (one-time)
-          </span>
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-// ─── API Demo (replaces InboxMockup + MenuBar — no chrome) ───
-
-function ApiDemo() {
-  return (
-    <section className="max-w-4xl mx-auto px-6 pb-16 relative z-10">
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="code-block overflow-hidden"
-      >
-        {/* Header bar — traffic-light dots */}
-        <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
-          <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--color-error)' }} />
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--color-warning)' }} />
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--color-success)' }} />
-          </div>
-          <span className="text-xs font-medium" style={{ color: 'var(--color-text-tertiary)' }}>API Playground</span>
-          <div className="ml-auto flex items-center gap-2">
-            <span className="badge badge-active">200 OK</span>
-            <span className="text-[10px] tabular-nums" style={{ color: 'var(--color-text-disabled)' }}>2.3s</span>
-          </div>
-        </div>
-
-        {/* Side-by-side request/response */}
-        <div className="grid md:grid-cols-2">
-          {/* Request */}
-          <div className="p-4" style={{ borderRight: '1px solid var(--color-border-subtle)' }}>
-            <p className="text-eyebrow mb-3">Request</p>
-            <pre className="text-xs leading-relaxed text-mono" style={{ color: 'var(--color-text-secondary)' }}>
-{`curl -X POST /v1/extract \\
-  -H "Authorization: Bearer sk-..." \\
-  -d '{
-    "url": "https://store.example.com/...",
-    "schema": "product"
-  }'`}
-            </pre>
-          </div>
-
-          {/* Response */}
-          <div className="p-4">
-            <p className="text-eyebrow mb-3">Response</p>
-            <pre className="text-xs leading-relaxed text-mono" style={{ color: 'var(--color-text-secondary)' }}>
-{`{
+const SCHEMAS = {
+  product: {
+    label: 'product',
+    request: `{
+  "url": "https://store.example.com/headphones",
+  "schema": "product"
+}`,
+    response: `{
   "success": true,
   "data": {
     "name": "Studio Headphones Pro",
     "price": 249.99,
     "currency": "USD",
     "rating": 4.7,
-    "in_stock": true,
-    "variants": [
-      "Matte Black",
-      "Silver",
-      "Midnight"
-    ]
+    "in_stock": true
   },
-  "usage": {
-    "credits_used": 1,
-    "credits_remaining": 1499
+  "latency_ms": 1842
+}`,
   },
-  "latency_ms": 2347
-}`}
-            </pre>
-          </div>
+  article: {
+    label: 'article',
+    request: `{
+  "url": "https://news.example.com/post/42",
+  "schema": "article"
+}`,
+    response: `{
+  "success": true,
+  "data": {
+    "title": "Shipping agents that scrape less",
+    "author": "Maya Chen",
+    "published_at": "2026-03-12",
+    "topics": ["agents", "data"]
+  },
+  "latency_ms": 1621
+}`,
+  },
+  company: {
+    label: 'company',
+    request: `{
+  "url": "https://example.com/about",
+  "schema": "company"
+}`,
+    response: `{
+  "success": true,
+  "data": {
+    "name": "Nimbus Labs",
+    "description": "Infrastructure for agent workflows",
+    "location": "Remote",
+    "founded": 2021
+  },
+  "latency_ms": 2014
+}`,
+  },
+} as const;
+
+type SchemaKey = keyof typeof SCHEMAS;
+
+function SchemaPlayground() {
+  const [schema, setSchema] = useState<SchemaKey>('product');
+  const sample = SCHEMAS[schema];
+
+  return (
+    <div className="code-block overflow-hidden shadow-[var(--shadow-lg)]">
+      <div
+        className="flex flex-wrap items-center gap-2 px-4 py-3"
+        style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}
+      >
+        <span className="text-eyebrow mr-2">POST /v1/extract</span>
+        <div className="flex gap-1" role="tablist" aria-label="Schema type">
+          {(Object.keys(SCHEMAS) as SchemaKey[]).map((key) => (
+            <button
+              key={key}
+              type="button"
+              role="tab"
+              aria-selected={schema === key}
+              onClick={() => setSchema(key)}
+              className="rounded px-2.5 py-1 text-xs font-medium transition-colors"
+              style={{
+                background: schema === key ? 'var(--color-accent-subtle)' : 'transparent',
+                color: schema === key ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
+                border: `1px solid ${schema === key ? 'oklch(0.74 0.12 195 / 0.3)' : 'transparent'}`,
+              }}
+            >
+              {key}
+            </button>
+          ))}
         </div>
-      </motion.div>
+        <span className="ml-auto badge badge-active">200</span>
+      </div>
+      <div className="grid md:grid-cols-2">
+        <div className="p-4 md:border-r" style={{ borderColor: 'var(--color-border-subtle)' }}>
+          <p className="text-eyebrow mb-3">Request</p>
+          <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+            <code>{sample.request}</code>
+          </pre>
+        </div>
+        <div className="p-4">
+          <p className="text-eyebrow mb-3">Response</p>
+          <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+            <code>{sample.response}</code>
+          </pre>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Hero ───
+
+function Hero() {
+  return (
+    <section id="start" className="relative pt-28 pb-16 md:pt-36 md:pb-24 px-5 md:px-6 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden />
+      <div
+        className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-40"
+        style={{ background: 'radial-gradient(closest-side, var(--color-accent-subtle), transparent)' }}
+        aria-hidden
+      />
+
+      <div className="relative mx-auto max-w-6xl">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="text-eyebrow mb-5">URL + schema → validated JSON</p>
+            <h1 className="text-display-lg" style={{ color: 'var(--color-text-primary)' }}>
+              Structured web data for AI agents.
+            </h1>
+            <p className="mt-5 max-w-md text-[0.95rem] leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+              Send a public page URL and a schema type. Get typed fields back —
+              product, article, or company — without maintaining scrapers.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Link to="/dashboard" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>
+                Start free
+              </Link>
+              <a href="/buy" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
+                Buy starter — $1
+              </a>
+            </div>
+            <p className="mt-4 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+              Free tier · 1,000 credits for $1 one-time · No card required to try
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <SchemaPlayground />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── How it works ───
+
+const steps = [
+  { n: '01', title: 'Call the API', body: 'POST a URL and one of three schemas with your API key.' },
+  { n: '02', title: 'We extract & validate', body: 'The page is read, structured against the schema, and checked before return.' },
+  { n: '03', title: 'Cache & meter usage', body: 'Successful results are cached; credits and rate limits apply per plan.' },
+];
+
+function HowItWorks() {
+  return (
+    <section id="how" className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
+      <SectionLabel>How it works</SectionLabel>
+      <h2 className="text-display max-w-xl mb-12" style={{ color: 'var(--color-text-primary)' }}>
+        Three steps from URL to usable fields.
+      </h2>
+      <ol className="grid md:grid-cols-3 gap-6">
+        {steps.map((s) => (
+          <li key={s.n} className="surface p-6">
+            <span className="text-mono text-xs font-medium tabular-nums" style={{ color: 'var(--color-accent-base)' }}>
+              {s.n}
+            </span>
+            <h3 className="mt-3 text-base font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+              {s.title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+              {s.body}
+            </p>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
 
 // ─── Features ───
 
-const featureList = [
+const features = [
   {
-    label: 'Schemas',
-    tag: '3 built-in',
-    items: ['Product — name, price, rating, variants, availability', 'Article — title, author, date, topics, excerpt', 'Company — name, description, funding, location'],
+    icon: Layers,
+    title: 'Built-in schemas',
+    body: 'Product, article, and company out of the box. Fields stay consistent so agents can depend on shape.',
   },
   {
-    label: 'Smart Cache',
-    tag: 'sub-10ms hits',
-    items: ['24h default TTL on successful extractions', 'Auto-invalidation on schema version change', 'Zero-latency cache reads for repeat queries'],
+    icon: Zap,
+    title: 'Smart cache',
+    body: 'Successful extractions cache with a TTL. Repeat lookups skip the full pipeline when still fresh.',
   },
   {
-    label: 'LLM Engine',
-    tag: 'Gemini powered',
-    items: ['Gemini-powered extraction and validation', 'Auto-retry with backoff on malformed responses', 'Schema-constrained output — no drift'],
+    icon: Box,
+    title: 'REST + MCP',
+    body: 'Call via HTTPS with a bearer key, or wire the MCP server into agent tool-calling stacks.',
   },
   {
-    label: 'Integrations',
-    tag: 'API + SDK + MCP',
-    items: ['REST API with curl, Node.js SDK, Python SDK', 'MCP server for AI agent tool-calling', 'Bearer token auth with per-key rate limiting'],
+    icon: Shield,
+    title: 'Keys & limits',
+    body: 'Per-key rate limits, monthly quotas by tier, and signed Polar billing for paid plans.',
   },
 ];
 
 function Features() {
   return (
-    <section id="features" className="max-w-6xl mx-auto px-6 py-24 relative z-10">
-      <SectionEyebrow label="Capabilities" />
-      <div className="grid md:grid-cols-2 gap-12 items-start">
-        <div>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.02] mb-4" style={{ color: 'var(--color-text-primary)' }}>
-            Extract any page in a single call.
-          </h2>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-            Send a URL and a schema type. The LLM-powered engine reads every page,
-            understands its structure, and returns validated JSON. No raw HTML,
-            no markdown parsing — just the fields your agent needs.
-          </p>
-        </div>
-        <div className="space-y-3">
-          {featureList.map((feat) => (
-            <motion.div
-              key={feat.label}
-              initial={{ opacity: 0, x: -12 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="surface surface-hover relative overflow-hidden"
-              style={{ padding: '1rem' }}
-            >
-              {/* Accent bar */}
+    <section id="features" className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
+      <SectionLabel>Capabilities</SectionLabel>
+      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end mb-12">
+        <h2 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
+          Built for agents that need fields, not HTML.
+        </h2>
+        <p className="text-sm leading-relaxed max-w-md lg:justify-self-end" style={{ color: 'var(--color-text-secondary)' }}>
+          One extraction endpoint. You choose the schema; we return validated JSON and usage metadata.
+        </p>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-4">
+        {features.map((f) => {
+          const Icon = f.icon;
+          return (
+            <div key={f.title} className="surface surface-hover p-6">
               <div
-                className="absolute left-0 top-0 bottom-0 w-0.5 opacity-0"
-                style={{
-                  background: 'var(--color-accent-base)',
-                  transition: 'opacity var(--dur-normal) var(--ease-out)',
-                }}
-              />
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{feat.label}</span>
-                <span className="badge badge-active">{feat.tag}</span>
+                className="mb-4 flex h-9 w-9 items-center justify-center rounded-md"
+                style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+              >
+                <Icon className="w-4 h-4" strokeWidth={1.75} />
               </div>
-              <ul className="space-y-1">
-                {feat.items.map((item) => (
-                  <li key={item} className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>{item}</li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─── Placeholder LogoCloud (truncated) ───
-
-const logos = ['Linear', 'Vercel', 'Figma', 'Stripe', 'Ramp', 'Notion'];
-
-function LogoCloud() {
-  return (
-    <section className="max-w-6xl mx-auto px-6 py-20 relative z-10">
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="text-xs uppercase tracking-widest text-center"
-        style={{ color: 'var(--color-text-tertiary)' }}
-      >
-        Used by engineering teams shipping structured data products
-      </motion.p>
-      <div className="mt-8 grid grid-cols-3 sm:grid-cols-6 gap-6">
-        {logos.map((name, idx) => (
-          <motion.div
-            key={name}
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.08, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold tracking-tight cursor-default surface"
-            style={{ color: 'var(--color-text-disabled)' }}
-          >
-            {name}
-          </motion.div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ─── Testimonials ───
-
-const testimonials = [
-  {
-    quote: 'We replaced three separate scraping scripts with a single API call. The structured output eliminated all our post-processing code.',
-    name: 'Engineering Lead',
-    role: 'AI Infrastructure',
-  },
-  {
-    quote: 'The schema routing is what sold us. Product pages, articles, company profiles — one endpoint handles all of them correctly.',
-    name: 'Senior Developer',
-    role: 'Data Pipeline Team',
-  },
-  {
-    quote: 'Cache hits in under 10ms on our repeat queries. Monday morning pipeline failures went from weekly to zero.',
-    name: 'Platform Engineer',
-    role: 'ML Platform',
-  },
-];
-
-function Testimonials() {
-  return (
-    <section className="max-w-6xl mx-auto px-6 py-20 relative z-10">
-      <SectionEyebrow label="From the field" />
-      <div className="grid md:grid-cols-3 gap-4">
-        {testimonials.map((t, i) => (
-          <div key={i} className="surface p-6 relative">
-            {/* Decorative quote mark */}
-            <div className="absolute top-3 right-4 text-4xl leading-none select-none pointer-events-none" style={{ color: 'var(--color-accent-subtle)' }}>
-              &ldquo;
+              <h3 className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+                {f.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+                {f.body}
+              </p>
             </div>
-            <blockquote className="text-sm leading-relaxed relative" style={{ color: 'var(--color-text-secondary)' }}>
-              {t.quote}
-            </blockquote>
-            <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
-              <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>{t.name}</p>
-              <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>{t.role}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
 }
 
-// ─── Pricing (no noise filter, no watermark) ───
+// ─── Pricing ───
 
 const plans = [
+  {
+    tier: 'Free',
+    price: '$0',
+    period: '',
+    desc: 'Try the API and ship a prototype.',
+    features: ['100 queries / month', 'Product & article schemas', '1-hour cache TTL', '1 API key', 'REST + MCP'],
+    highlighted: false,
+    cta: 'Create free account',
+    href: '/dashboard',
+    external: false,
+  },
   {
     tier: 'Starter Pack',
     price: '$1',
     period: ' once',
-    desc: 'One-time credits pack — no subscription.',
-    features: [
-      '1,000 extraction credits',
-      'All schemas (product, article, company)',
-      'Instant Polar checkout',
-      'Perfect for agents & prototypes',
-      'No monthly commitment',
-    ],
+    desc: 'One-time credits — no subscription.',
+    features: ['1,000 extraction credits', 'All schemas', 'Instant checkout', 'No monthly commitment'],
     highlighted: true,
     cta: 'Buy for $1',
     href: '/buy',
     external: true,
   },
   {
-    tier: 'Free',
-    price: '$0',
-    desc: 'For developers testing structured extraction.',
-    features: [
-      '100 queries / month',
-      'Product & article schemas',
-      'Basic cache (1h TTL)',
-      '1 API key',
-      'REST API + MCP access',
-    ],
-    highlighted: false,
-    cta: 'Get Started Free',
-    href: '/dashboard',
-    external: false,
-  },
-  {
     tier: 'Hobby',
     price: '$29',
     period: '/mo',
-    desc: 'For solo builders and side projects.',
-    features: [
-      'Up to 5,000 queries / month',
-      'All schemas (product, article, company)',
-      'Smart cache (24h TTL)',
-      'Usage analytics + metrics',
-      'Email support',
-    ],
+    desc: 'Solo builders and side projects.',
+    features: ['5,000 queries / month', 'All schemas', '24h cache TTL', 'Usage analytics', 'Email support'],
     highlighted: false,
-    cta: 'Upgrade',
+    cta: 'Subscribe',
     href: '/buy?sku=hobby',
     external: true,
   },
@@ -512,14 +442,8 @@ const plans = [
     tier: 'Pro',
     price: '$99',
     period: '/mo',
-    desc: 'For production agent workloads.',
-    features: [
-      'Up to 25,000 queries / month',
-      'Custom schema definitions',
-      'Extended cache (72h TTL)',
-      'Team API keys + RBAC',
-      'Priority support + SLA',
-    ],
+    desc: 'Production agent workloads.',
+    features: ['25,000 queries / month', 'Custom schema path*', '72h cache TTL', 'Team keys', 'Priority support'],
     highlighted: false,
     cta: 'Go Pro',
     href: '/buy?sku=pro',
@@ -529,37 +453,53 @@ const plans = [
 
 function Pricing() {
   return (
-    <section id="pricing" className="max-w-5xl mx-auto px-6 py-24 relative z-10">
-      <SectionEyebrow label="Pricing" />
-      <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.02] mb-12" style={{ color: 'var(--color-text-primary)' }}>
-        Start free, buy $1 credits, or subscribe.
+    <section id="pricing" className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
+      <SectionLabel>Pricing</SectionLabel>
+      <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
+        Start free. Buy credits when you need them.
       </h2>
+      <p className="text-sm mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
+        Checkout runs on Polar. Starter is a one-time $1 pack; Hobby and Pro are monthly subscriptions.
+      </p>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {plans.map((plan) => (
           <div
             key={plan.tier}
-            className="surface-elevated flex flex-col overflow-hidden"
+            className="flex flex-col overflow-hidden"
             style={{
-              borderColor: plan.highlighted ? 'var(--color-accent-base)' : undefined,
+              background: plan.highlighted ? 'var(--color-bg-elevated)' : 'var(--color-bg-surface)',
+              border: `1px solid ${plan.highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : 'var(--color-border-subtle)'}`,
+              borderRadius: 'var(--radius-lg)',
+              boxShadow: plan.highlighted ? 'var(--shadow-glow)' : undefined,
             }}
           >
             {plan.highlighted && (
-              <div className="px-4 py-2 text-xs font-semibold text-center" style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}>
+              <div
+                className="px-4 py-2 text-center text-[11px] font-semibold tracking-wide uppercase"
+                style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+              >
                 Best first purchase
               </div>
             )}
-            <div className="flex flex-1 flex-col p-6">
-              <h3 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>{plan.tier}</h3>
+            <div className="flex flex-1 flex-col p-5">
+              <h3 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{plan.tier}</h3>
               <div className="mt-3 flex items-baseline gap-1">
-                <span className="text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{plan.price}</span>
-                {plan.period && <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{plan.period}</span>}
+                <span
+                  className="font-display text-3xl font-bold tracking-tight tabular-nums"
+                  style={{ color: 'var(--color-text-primary)' }}
+                >
+                  {plan.price}
+                </span>
+                {plan.period && (
+                  <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{plan.period}</span>
+                )}
               </div>
-              <p className="mt-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>{plan.desc}</p>
-              <ul className="mt-5 flex-1 space-y-2.5">
+              <p className="mt-2 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>{plan.desc}</p>
+              <ul className="mt-5 flex-1 space-y-2">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                    <span style={{ color: 'var(--color-success)' }}>✓</span>
+                  <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                    <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'var(--color-accent-base)' }} strokeWidth={2.5} />
                     {f}
                   </li>
                 ))}
@@ -577,6 +517,9 @@ function Pricing() {
           </div>
         ))}
       </div>
+      <p className="mt-4 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
+        * Custom schemas available on Pro; contact support for schema review.
+      </p>
     </section>
   );
 }
@@ -585,39 +528,32 @@ function Pricing() {
 
 function FinalCTA() {
   return (
-    <section className="max-w-4xl mx-auto px-6 py-20 md:py-28 relative z-10">
-      <div className="surface-elevated relative overflow-hidden px-8 py-16 md:py-24 text-center">
+    <section className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-20">
+      <div
+        className="relative overflow-hidden px-6 py-14 md:px-12 md:py-16 text-center"
+        style={{
+          background: 'var(--color-bg-elevated)',
+          border: '1px solid var(--color-border-default)',
+          borderRadius: 'var(--radius-xl)',
+        }}
+      >
         <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: 'radial-gradient(600px circle at 50% 0%, var(--color-accent-subtle), transparent 70%)',
-            opacity: 0.4,
-          }}
+          className="pointer-events-none absolute inset-0 opacity-50"
+          style={{ background: 'radial-gradient(500px circle at 50% 0%, var(--color-accent-subtle), transparent 70%)' }}
+          aria-hidden
         />
-        <div className="relative z-10">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.02]" style={{ color: 'var(--color-text-primary)' }}>
-            Stop parsing HTML.
-            <br />
-            <span
-              style={{
-                background: 'linear-gradient(135deg, var(--color-accent-base) 0%, oklch(0.65 0.22 240) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >Just call the API.</span>
+        <div className="relative">
+          <h2 className="text-display max-w-lg mx-auto" style={{ color: 'var(--color-text-primary)' }}>
+            Ship structured data without a scraper farm.
           </h2>
           <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            Join developers who ship structured data products
-            instead of writing and maintaining scraping pipelines.
+            Create an account, mint a key, and call <span className="text-mono text-xs">/v1/extract</span>.
           </p>
-          <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">
-            <Link to="/dashboard">
-              <button className="btn btn-primary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
-                Get Started Free
-              </button>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link to="/dashboard" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>
+              Start free
             </Link>
-            <Link to="/docs" className="btn btn-secondary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
+            <Link to="/docs" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
               Read the docs
               <ChevronRight className="w-4 h-4" />
             </Link>
@@ -632,42 +568,53 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="relative z-10" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
-      <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2" style={{ color: 'var(--color-text-tertiary)' }}>
-          <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-          <span className="text-xs font-semibold tracking-wider uppercase">Agent API</span>
+    <footer style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
+      <div className="mx-auto max-w-6xl px-5 md:px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-2" style={{ color: 'var(--color-text-primary)' }}>
+            <LogoMark className="w-4 h-4" style={{ color: 'var(--color-accent-base)' }} />
+            <span className="text-sm font-semibold tracking-tight">Agent API</span>
+          </div>
+          <p className="mt-2 text-xs max-w-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+            Structured extraction for agents. Validated JSON from public pages.
+          </p>
         </div>
-        <div className="flex items-center gap-5 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
           <Link to="/docs" className="link">Docs</Link>
           <Link to="/dashboard" className="link">Dashboard</Link>
-          <a href="https://github.com/ZachDreamZ/agent-api-gateway" className="link" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <span className="text-[10px]" style={{ color: 'var(--color-text-disabled)' }}>© 2026 Agent API</span>
+          <a href="/buy" className="link">Pricing</a>
+          <a href="mailto:support@agentapigw.dpdns.org" className="link">Support</a>
+          <a
+            href="https://github.com/ZachDreamZ/agent-api-gateway"
+            className="link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
         </div>
+      </div>
+      <div
+        className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-[11px]"
+        style={{ color: 'var(--color-text-disabled)' }}
+      >
+        © {new Date().getFullYear()} Agent API Gateway · agentapigw.dpdns.org
       </div>
     </footer>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// Page
-// ═══════════════════════════════════════════════════════════════════════════
-
 export default function Landing() {
   return (
-    <div
-      className="relative min-h-screen overflow-x-hidden"
-      style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
-    >
-
+    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <Navbar />
-      <Hero />
-      <ApiDemo />
-      <Features />
-      <LogoCloud />
-      <Testimonials />
-      <Pricing />
-      <FinalCTA />
+      <main>
+        <Hero />
+        <HowItWorks />
+        <Features />
+        <Pricing />
+        <FinalCTA />
+      </main>
       <Footer />
     </div>
   );

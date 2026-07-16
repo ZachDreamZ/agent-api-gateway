@@ -64,6 +64,23 @@ billingPricing.get('/', (c) => {
   });
 });
 
+// Lightweight IP rate limit for public checkout (abuse / card-testing protection)
+const checkoutHits = new Map<string, number[]>();
+setInterval(() => checkoutHits.clear(), 60_000).unref?.();
+
+function checkoutRateLimited(ip: string, max = 8): boolean {
+  const now = Date.now();
+  const cutoff = now - 60_000;
+  let hits = (checkoutHits.get(ip) ?? []).filter((t) => t > cutoff);
+  if (hits.length >= max) {
+    checkoutHits.set(ip, hits);
+    return true;
+  }
+  hits.push(now);
+  checkoutHits.set(ip, hits);
+  return false;
+}
+
 // ─── Public checkout (no auth) — $1 Starter or named tier ───
 billingPricing.post('/checkout', async (c) => {
   const accessToken = process.env.POLAR_ACCESS_TOKEN;
@@ -71,11 +88,23 @@ billingPricing.post('/checkout', async (c) => {
     return c.json({ error: 'Billing not configured. Payment processing is currently unavailable.' }, 503);
   }
 
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim()
+    || c.req.header('cf-connecting-ip')
+    || 'unknown';
+  if (checkoutRateLimited(ip, 8)) {
+    return c.json({ error: 'Too many checkout attempts. Try again in a minute.' }, 429);
+  }
+
   let body: { sku?: string; tier?: string; email?: string } = {};
   try {
     body = await c.req.json();
   } catch {
     body = {};
+  }
+
+  // Basic email shape check when provided (Polar may reject otherwise)
+  if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+    return c.json({ error: 'Invalid email address' }, 400);
   }
 
   const sku = (body.sku || 'starter').toLowerCase();
@@ -127,6 +156,12 @@ billingPricing.get('/buy', async (c) => {
   const accessToken = process.env.POLAR_ACCESS_TOKEN;
   if (!accessToken) {
     return c.json({ error: 'Billing not configured' }, 503);
+  }
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim()
+    || c.req.header('cf-connecting-ip')
+    || 'unknown';
+  if (checkoutRateLimited(ip, 12)) {
+    return c.json({ error: 'Too many checkout attempts. Try again in a minute.' }, 429);
   }
   const sku = (c.req.query('sku') || 'starter').toLowerCase();
   try {

@@ -11,16 +11,23 @@ import type { Cache } from '../lib/cache.js';
 import { getCache } from '../lib/cache.js';
 import { getMonthlyCreditsUsed, logUsage } from '../lib/usage-db.js';
 import { runExtractionPipeline } from '../../scraper/index.js';
+import { assertSafePublicUrl } from '../lib/ssrf.js';
 
 // ─── Zod Schemas ───
 
 const extractBodySchema = z.object({
-  url: z.string().url({ message: 'Invalid URL' }),
+  url: z
+    .string()
+    .url({ message: 'Invalid URL' })
+    .max(2048, { message: 'URL too long' })
+    .refine((u) => assertSafePublicUrl(u).ok, {
+      message: 'URL targets a blocked or private host',
+    }),
   schema: z.enum(['product', 'article', 'company']),
   options: z
     .object({
-      wait_for: z.string().optional(),
-      country: z.string().optional(),
+      wait_for: z.string().max(200).optional(),
+      country: z.string().max(8).optional(),
       extract_raw: z.boolean().optional(),
     })
     .optional(),
@@ -41,6 +48,12 @@ router.post('/', zValidator('json', extractBodySchema), async (c) => {
   const endpoint = 'POST /v1/extract';
 
   try {
+    // ── SSRF guard (defense in depth beyond Zod refine) ──
+    const safe = assertSafePublicUrl(body.url);
+    if (!safe.ok) {
+      return c.json({ success: false, error: safe.error }, 400);
+    }
+
     // ── Quota check ──
     const usedThisMonth = await getMonthlyCreditsUsed(user.id);
     const monthlyLimit = TIER_LIMITS[tier].queries_per_month;

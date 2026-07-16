@@ -90,6 +90,7 @@ export default function Auth() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
+              autoComplete="email"
               className="input"
             />
           </div>
@@ -104,9 +105,15 @@ export default function Auth() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              minLength={8}
+              minLength={10}
+              autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
               className="input"
             />
+            {mode === 'signup' && (
+              <p className="mt-1.5 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
+                At least 10 characters
+              </p>
+            )}
           </div>
 
           <button
