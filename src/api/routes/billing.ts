@@ -75,7 +75,8 @@ billingApp.post('/checkout', zValidator('json', checkoutSchema), async (c) => {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Checkout failed';
     console.error('[Billing] Checkout error:', message);
-    return c.json({ error: message }, 500);
+    const isProd = process.env.NODE_ENV === 'production';
+    return c.json({ error: isProd ? 'Checkout failed. Please try again later.' : message }, 500);
   }
 });
 
@@ -108,7 +109,8 @@ billingApp.post('/portal', zValidator('json', portalSchema), async (c) => {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Portal creation failed';
     console.error('[Billing] Portal error:', message);
-    return c.json({ error: message }, 500);
+    const isProd = process.env.NODE_ENV === 'production';
+    return c.json({ error: isProd ? 'Could not open billing portal. Please try again later.' : message }, 500);
   }
 });
 

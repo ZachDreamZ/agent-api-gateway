@@ -49,7 +49,8 @@ webhookApp.post('/', async (c) => {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Signature verification failed';
     console.error('[Polar] Webhook verification failed:', message);
-    return c.json({ error: message }, 400);
+    const isProd = process.env.NODE_ENV === 'production';
+    return c.json({ error: isProd ? 'Webhook signature verification failed' : message }, 400);
   }
 
   try {

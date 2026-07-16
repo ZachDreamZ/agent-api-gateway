@@ -44,13 +44,38 @@ function serveStatic(c: any, filePath: string) {
 
 const app = new Hono();
 
+// ─── Global IP-based rate limiter (brute-force / abuse protection) ───
+const globalReqTimestamps = new Map<string, number[]>();
+setInterval(() => globalReqTimestamps.clear(), 60_000).unref();
+
+app.use('/*', async (c, next) => {
+  // Skip rate limiting for static assets and health check
+  const path = c.req.path;
+  if (path === '/health' || path.startsWith('/assets/') || path === '/favicon.ico' || path === '/favicon.svg') {
+    await next();
+    return;
+  }
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const now = Date.now();
+  const cutoff = now - 60_000;
+  let hits = globalReqTimestamps.get(ip) ?? [];
+  hits = hits.filter(t => t > cutoff);
+  // 120 requests per minute per IP — generous but prevents runaway abuse
+  if (hits.length >= 120) {
+    return c.json({ error: 'Rate limit exceeded. Slow down.' }, 429);
+  }
+  hits.push(now);
+  globalReqTimestamps.set(ip, hits);
+  await next();
+});
+
 // CORS scoped to the API surface. The dashboard is served same-origin, so we
 // never use a wildcard. Better Auth sets its own CORS on /api/auth/* — applying
 // a global cors() there would emit duplicate ACAO headers and break the browser.
 const corsOrigins = parseCorsOrigins(getConfig().corsOrigin);
 app.use('/v1/*', cors({ origin: corsOrigins, credentials: corsOrigins !== '*' }));
 
-// ─── Security headers ───
+// ─── Security headers (CSP, HSTS, anti-sniff, etc.) ───
 app.use('/*', async (c, next) => {
   await next();
   c.header('X-Content-Type-Options', 'nosniff');
@@ -58,6 +83,28 @@ app.use('/*', async (c, next) => {
   c.header('Referrer-Policy', 'no-referrer');
   c.header('X-XSS-Protection', '0');
   c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+
+  // HSTS (enforce HTTPS in production)
+  if (process.env['NODE_ENV'] === 'production') {
+    c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+
+  // Content-Security-Policy
+  // The SPA is same-origin. Fonts load from Google Fonts CDN.
+  // Tailwind/motion use inline styles, so 'unsafe-inline' for style-src is required.
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self' https://fonts.gstatic.com",
+    "img-src 'self' data: https:",
+    "connect-src 'self'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "object-src 'none'",
+  ].join('; ');
+  c.header('Content-Security-Policy', csp);
 });
 
 // ─── Health ───
@@ -89,7 +136,9 @@ app.get('/api/dbcheck', async (c) => {
     return c.json({ connOk: ok, dbUrlSet: !!connStr, tables: found });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    return c.json({ connOk: false, dbUrlSet: !!connStr, error: msg }, 500);
+    // dbcheck is an internal debug endpoint — only expose details in dev
+    const isProd = process.env['NODE_ENV'] === 'production';
+    return c.json({ connOk: false, dbUrlSet: !!connStr, error: isProd ? 'Database check failed' : msg }, 500);
   }
 });
 
@@ -123,7 +172,22 @@ app.route('/v1/extract', extractRoutes);
 app.route('/v1/usage', usageRoutes);
 app.route('/v1/billing', billingApp);
 
-// ─── Polar webhook (no auth) ───
+// ─── Polar webhook (no auth, but rate-limited) ───
+// Simple IP-based rate limiter for webhook (60 req/min per IP — Polar sends at most a few per event)
+const webhookTimestamps = new Map<string, number[]>();
+app.use('/webhooks/*', async (c, next) => {
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const now = Date.now();
+  const cutoff = now - 60_000;
+  let hits = webhookTimestamps.get(ip) ?? [];
+  hits = hits.filter(t => t > cutoff);
+  if (hits.length >= 60) {
+    return c.json({ error: 'Rate limit exceeded' }, 429);
+  }
+  hits.push(now);
+  webhookTimestamps.set(ip, hits);
+  await next();
+});
 app.route('/webhooks/polar', webhookApp);
 
 // ─── SPA fallback: serve index.html for any unmatched browser route ───

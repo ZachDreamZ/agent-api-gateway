@@ -18,6 +18,8 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 8,
+    maxPasswordLength: 128,
     sendResetPassword: async ({ user, url }) => {
       console.log(`[auth] Password reset link for ${user.email}: ${url}`);
     },
@@ -109,6 +111,9 @@ export const auth = betterAuth({
   // ─── Advanced security ───
   advanced: {
     useSecureCookies: true,
+    defaultCookieAttributes: {
+      sameSite: 'strict',
+    },
     ipAddress: {
       ipAddressHeaders: ['x-forwarded-for'],
       disableIpTracking: false,
@@ -118,6 +123,19 @@ export const auth = betterAuth({
   plugins: [
     apiKey({
       defaultPrefix: 'sk-',
+      // Default expiry: 365 days
+      keyExpiration: {
+        defaultExpiresIn: 365 * 24 * 60 * 60 * 1000,
+        disableCustomExpiresTime: false,
+        minExpiresIn: 1,
+        maxExpiresIn: 365,
+      },
+      // Per-key rate limiting (separate from endpoint rate limits)
+      rateLimit: {
+        enabled: true,
+        timeWindow: 60_000, // 1 minute window
+        maxRequests: 60, // 60 requests per minute per key
+      },
     }),
     bearer(),
   ],
