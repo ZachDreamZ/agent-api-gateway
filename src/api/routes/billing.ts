@@ -59,7 +59,8 @@ billingPricing.get('/', (c) => {
     starter,
     product: 'Agent API Gateway',
     buy_url: '/buy',
-    public_url: process.env.APP_DOMAIN || 'https://agent-api-gateway.onrender.com',
+    checkout_enabled: Boolean(process.env.POLAR_ACCESS_TOKEN && process.env.POLAR_PRODUCT_STARTER),
+    public_url: process.env.APP_DOMAIN || 'https://agentapigw.dpdns.org',
   });
 });
 

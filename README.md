@@ -18,11 +18,13 @@ curl -X POST https://agentapigw.dpdns.org/v1/extract \
 | Plan | Price | What you get | Buy |
 |------|-------|--------------|-----|
 | Free | $0 | 100 queries/mo, API keys, product/article schemas | [Dashboard](https://agentapigw.dpdns.org/dashboard) |
-| **Starter Pack** | **$1 once** | Onboarding guide + live API access path | [Buy on Gumroad](https://shadowcraft41.gumroad.com/l/spwxix) · [Site /buy](https://agentapigw.dpdns.org/buy) |
+| **Starter Pack** | **$1 once** | Onboarding guide + live API access path | [Buy $1](https://agentapigw.dpdns.org/buy) |
 | Hobby | $29/mo | 5,000 queries/mo | [Checkout](https://agentapigw.dpdns.org/buy?sku=hobby) |
 | Pro | $99/mo | 25,000 queries/mo | [Checkout](https://agentapigw.dpdns.org/buy?sku=pro) |
 
-Payments via **Polar** hosted checkout (card) and **Gumroad**. After payment, use the dashboard to create API keys.
+Payments via **Polar** hosted checkout (card). After payment, use the dashboard to create API keys.
+
+Public checkout API: `POST /v1/billing/pricing/checkout` with `{"sku":"starter"}` → `{ url, session_id, amount_cents }`.
 
 Public pricing API: `GET https://agentapigw.dpdns.org/v1/billing/pricing`
 
