@@ -84,8 +84,9 @@ app.use('/*', async (c, next) => {
   c.header('X-XSS-Protection', '0');
   c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
-  // HSTS (enforce HTTPS in production)
-  if (process.env['NODE_ENV'] === 'production') {
+  // HSTS — enable when served over HTTPS (Render always terminates TLS)
+  const proto = c.req.header('x-forwarded-proto') || '';
+  if (proto === 'https') {
     c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   }
 
