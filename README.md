@@ -1,11 +1,13 @@
 # Agent API Gateway
 
-**Structured web data for AI agents. One API call. $0 to run.**
+**Structured web data for AI agents. One API call.**
+
+Live product: **https://agent-api-gateway.onrender.com**
 
 Agents send a URL + schema type, get clean JSON. No markdown, no raw HTML — just fields.
 
 ```bash
-curl -X POST http://localhost:3000/v1/extract \
+curl -X POST https://agent-api-gateway.onrender.com/v1/extract \
   -H "Authorization: Bearer sk-..." \
   -H "Content-Type: application/json" \
   -d '{"url": "https://store.com/product/123", "schema": "product"}'
@@ -15,48 +17,20 @@ curl -X POST http://localhost:3000/v1/extract \
 { "name": "Wireless Headphones Pro", "price": 149.99, "currency": "USD", "in_stock": true }
 ```
 
-## Cost: $0/mo
+## Pricing & how to buy
 
-| Service | Cost | Why |
-|---------|------|-----|
-| Gemini Flash 2.0 | **Free** | 1500 req/day for LLM extraction |
-| Supabase Free | **Free** | 500MB DB, 50K users |
-| In-memory cache | **Free** | No Redis needed |
-| Hosting on Oracle VPS | **Free** | 4 ARM cores, 24GB RAM |
+| Plan | Price | What you get | Buy |
+|------|-------|--------------|-----|
+| Free | $0 | 100 queries/mo, API keys, product/article schemas | [Dashboard](https://agent-api-gateway.onrender.com/dashboard) |
+| **Starter Pack** | **$1 once** | 1,000 extraction credits, all schemas | [Buy $1](https://agent-api-gateway.onrender.com/buy) |
+| Hobby | $29/mo | 5,000 queries/mo | [Checkout](https://agent-api-gateway.onrender.com/buy?sku=hobby) |
+| Pro | $99/mo | 25,000 queries/mo | [Checkout](https://agent-api-gateway.onrender.com/buy?sku=pro) |
 
-[Full self-hosting guide](docs/self-hosting.md)
+Payments via **Polar** hosted checkout (card). After payment, use the dashboard to create API keys.
 
-## Quick Start (local dev)
+Public pricing API: `GET https://agent-api-gateway.onrender.com/v1/billing/pricing`
 
-```bash
-# 1. Get a free Gemini API key
-#    https://aistudio.google.com/apikey
-
-# 2. Clone and install
-git clone <repo> && cd agent-api-gateway
-cp .env.example .env
-# Edit .env — set GEMINI_API_KEY
-
-# 3. Install + run
-npm install
-npx playwright install chromium
-npm run dev:api
-
-# 4. Test it
-curl http://localhost:3000/health
-```
-
-## Architecture
-
-```
-Agent → POST /v1/extract { url, schema }
-       → Playwright scrapes page HTML
-       → Gemini Flash extracts structured JSON
-       → Cache result for 1 hour
-       → { name, price, in_stock, ... }
-```
-
-## Available Schemas
+## Available schemas
 
 | Schema | Returns |
 |--------|---------|
@@ -64,36 +38,32 @@ Agent → POST /v1/extract { url, schema }
 | `article` | title, author, date, reading_time, excerpt, content_summary, topics |
 | `company` | name, description, founded, size, funding_total, industry, location, competitors |
 
-## LLM Options
-
-| Engine | Cost | Set env var |
-|--------|------|-------------|
-| **Gemini Flash 2.0** | **$0** (free tier) | `GEMINI_API_KEY=xxx` (default) |
-| Claude Sonnet 4 | Paid (~$0.003/query) | `ANTHROPIC_API_KEY=xxx` + `EXTRACTION_LLM=claude` |
-
-## Self-Host
+## Local development
 
 ```bash
-# Deploy anywhere with Docker:
-docker compose up -d --build
+cp .env.example .env
+# Set DATABASE_URL, BETTER_AUTH_SECRET, GEMINI_API_KEY or OPENROUTER_API_KEY
+# Optional for billing: POLAR_* product IDs + access token
+
+npm install
+npm run test:product
+npm run dev:api
+curl http://localhost:3000/health
 ```
 
-Full guide: [docs/self-hosting.md](docs/self-hosting.md)
+## Architecture
 
-## Modules
+```
+Agent  POST /v1/extract { url, schema }
+        Scraper fetches page HTML
+        LLM extracts structured JSON
+        Validator sanitizes business fields
+        Cache result
+        → { name, price, in_stock, ... }
+```
 
-| Module | Location | What |
-|--------|----------|------|
-| API | `src/api/` | Hono HTTP server, auth, rate-limit, routes |
-| Extraction | `src/extraction/` | Gemini Flash (default) or Claude extraction |
-| Scraper | `src/scraper/` | Playwright browser pool, page scraping |
-| Billing | `src/billing/` | Stripe integration, pricing config |
-| Dashboard | `src/dashboard/` | React 19 SPA (usage stats, API key mgmt, billing) |
-| MCP Server | `src/mcp/` | Claude/Cursor auto-discovery |
-| SDK (Node) | `sdk/node/` | `AgentApi` typed client |
-| SDK (Python) | `sdk/python/` | Python client with Pydantic models |
-| Docs | `docs/` | API reference, extraction schemas, agent onboarding |
+## Docs
 
-## License
-
-MIT
+- [API reference](docs/api-reference.md)
+- [Agent onboarding](docs/agent-onboarding.md)
+- [Self-hosting](docs/self-hosting.md)

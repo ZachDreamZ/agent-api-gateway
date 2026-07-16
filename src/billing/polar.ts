@@ -35,6 +35,35 @@ export function getPolarProductId(tier: Tier): string | null {
   }
 }
 
+/** One-time Starter Pack product ($1) for first-purchase conversion. */
+export function getStarterProductId(): string | null {
+  return process.env.POLAR_PRODUCT_STARTER || null;
+}
+
+/**
+ * Create a public checkout session (no login required).
+ * Used for the $1 Starter Pack and marketing CTAs.
+ */
+export async function createPublicCheckout(
+  productId: string,
+  metadata: Record<string, string> = {},
+  customerEmail?: string,
+): Promise<CheckoutResult> {
+  if (!polar) throw new Error('Polar not initialized');
+
+  const params: Parameters<typeof polar.checkouts.create>[0] = {
+    products: [productId],
+    successUrl: `${APP_DOMAIN}/?checkout=success&checkout_id={CHECKOUT_ID}`,
+    metadata: { product: 'agent-api-gateway', ...metadata },
+  };
+  if (customerEmail) {
+    params.customerEmail = customerEmail;
+  }
+
+  const checkout = await polar.checkouts.create(params);
+  return { url: checkout.url, sessionId: checkout.id };
+}
+
 export async function createCheckoutSession(
   customerId: string | null,
   tier: Tier,

@@ -148,6 +148,7 @@ app.get('/api/dbcheck', async (c) => {
 // Better Auth handles its own routing internally.
 // Mount both standard prefixes so API-key management routes work.
 app.all('/api/auth/*', (c) => auth.handler(c.req.raw));
+// API-key routes are handled by Better Auth's internal router through auth.handler().
 app.all('/api-key/*', (c) => auth.handler(c.req.raw));
 
 // ─── Serve frontend for non-API routes ───
@@ -164,9 +165,18 @@ app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not f
 
 app.route('/v1/schemas', schemasRoutes);
 
-// ─── Public billing pricing data ───
-
+// ─── Public billing pricing + public checkout (no auth) ───
+// Mounted only under /v1/billing/pricing so authenticated /v1/billing/* still works.
 app.route('/v1/billing/pricing', billingPricing);
+
+// Short /buy path → Polar hosted checkout ($1 Starter by default)
+app.get('/buy', async (c) => {
+  const url = new URL(c.req.url);
+  const sku = url.searchParams.get('sku') || 'starter';
+  url.pathname = '/v1/billing/pricing/buy';
+  url.search = `sku=${encodeURIComponent(sku)}`;
+  return app.fetch(new Request(url.toString(), { method: 'GET', headers: c.req.raw.headers }));
+});
 
 // ─── Authenticated routes ───
 

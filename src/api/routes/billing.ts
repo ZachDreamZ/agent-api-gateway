@@ -1,7 +1,14 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
-import { createCheckoutSession, createCustomerPortalSession, createCustomer } from '../../billing/polar';
+import {
+  createCheckoutSession,
+  createCustomerPortalSession,
+  createCustomer,
+  createPublicCheckout,
+  getStarterProductId,
+  getPolarProductId,
+} from '../../billing/polar';
 import { TIER_ORDER, getPricingByTier, formatPrice } from '../../billing/pricing';
 import { getSupabase } from '../lib/supabase.js';
 import type { Tier } from '@shared/types';
@@ -28,7 +35,121 @@ billingPricing.get('/', (c) => {
     };
   });
 
-  return c.json({ tiers });
+  // One-time starter pack for low-friction first purchase
+  const starter = {
+    id: 'starter',
+    name: 'Starter Pack',
+    description: 'One-time 1,000 extraction credits — no subscription',
+    price: '$1',
+    price_monthly: 100,
+    queries_per_month: 1000,
+    rate_limit_rpm: 30,
+    concurrent_requests: 2,
+    features: [
+      { text: '1,000 extraction credits', included: true },
+      { text: 'All schemas (product, article, company)', included: true },
+      { text: 'One-time payment — no subscription', included: true },
+    ],
+    highlighted: true,
+    one_time: true,
+  };
+
+  return c.json({
+    tiers,
+    starter,
+    product: 'Agent API Gateway',
+    buy_url: '/buy',
+    public_url: process.env.APP_DOMAIN || 'https://agent-api-gateway.onrender.com',
+  });
+});
+
+// ─── Public checkout (no auth) — $1 Starter or named tier ───
+billingPricing.post('/checkout', async (c) => {
+  const accessToken = process.env.POLAR_ACCESS_TOKEN;
+  if (!accessToken) {
+    return c.json({ error: 'Billing not configured. Payment processing is currently unavailable.' }, 503);
+  }
+
+  let body: { sku?: string; tier?: string; email?: string } = {};
+  try {
+    body = await c.req.json();
+  } catch {
+    body = {};
+  }
+
+  const sku = (body.sku || 'starter').toLowerCase();
+  try {
+    if (sku === 'starter') {
+      const productId = getStarterProductId();
+      if (!productId) {
+        return c.json({ error: 'Starter product not configured (set POLAR_PRODUCT_STARTER)' }, 503);
+      }
+      const result = await createPublicCheckout(
+        productId,
+        { sku: 'starter_pack', tier: 'hobby' },
+        body.email,
+      );
+      return c.json({ url: result.url, session_id: result.sessionId, amount_cents: 100, currency: 'usd', sku: 'starter' });
+    }
+
+    const tier = (body.tier || sku) as Tier;
+    if (!['hobby', 'pro', 'scale'].includes(tier)) {
+      return c.json({ error: 'Unknown sku/tier. Use starter, hobby, pro, or scale.' }, 400);
+    }
+    const productId = getPolarProductId(tier);
+    if (!productId) {
+      return c.json({ error: `Product for ${tier} not configured` }, 503);
+    }
+    const result = await createPublicCheckout(
+      productId,
+      { sku: tier, tier },
+      body.email,
+    );
+    const pricing = getPricingByTier(tier);
+    return c.json({
+      url: result.url,
+      session_id: result.sessionId,
+      amount_cents: pricing.price_monthly,
+      currency: 'usd',
+      sku: tier,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Checkout failed';
+    console.error('[Billing] Public checkout error:', message);
+    const isProd = process.env.NODE_ENV === 'production';
+    return c.json({ error: isProd ? 'Checkout failed. Please try again later.' : message }, 500);
+  }
+});
+
+// GET /buy → redirect into a fresh Polar checkout (Starter $1 by default)
+billingPricing.get('/buy', async (c) => {
+  const accessToken = process.env.POLAR_ACCESS_TOKEN;
+  if (!accessToken) {
+    return c.json({ error: 'Billing not configured' }, 503);
+  }
+  const sku = (c.req.query('sku') || 'starter').toLowerCase();
+  try {
+    let productId: string | null = null;
+    let meta: Record<string, string> = { sku: 'starter_pack', tier: 'hobby' };
+    if (sku === 'starter') {
+      productId = getStarterProductId();
+    } else if (['hobby', 'pro', 'scale'].includes(sku)) {
+      productId = getPolarProductId(sku as Tier);
+      meta = { sku, tier: sku };
+    }
+    if (!productId) {
+      return c.json({ error: 'Product not configured' }, 503);
+    }
+    const result = await createPublicCheckout(productId, meta);
+    if (!result.url) {
+      return c.json({ error: 'Checkout URL missing' }, 500);
+    }
+    return c.redirect(result.url, 302);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Checkout failed';
+    console.error('[Billing] /buy error:', message);
+    return c.json({ error: 'Could not start checkout' }, 500);
+  }
 });
 
 // ─── GET /current — Get current subscription for authenticated user ───

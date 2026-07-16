@@ -208,12 +208,19 @@ function Hero() {
           variants={childVariants}
           className="mt-8 flex flex-col items-center gap-3"
         >
-          <Link to="/dashboard">
-            <button className="btn btn-primary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
-              Get Started Free
-            </button>
-          </Link>
-          <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>1,500 free queries/month &middot; No credit card</span>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <Link to="/dashboard">
+              <button className="btn btn-primary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
+                Get Started Free
+              </button>
+            </Link>
+            <a href="/buy" className="btn btn-secondary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
+              Buy Starter Pack — $1
+            </a>
+          </div>
+          <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+            Free tier available &middot; Starter Pack: 1,000 credits for $1 (one-time)
+          </span>
         </motion.div>
       </motion.div>
     </section>
@@ -452,17 +459,37 @@ function Testimonials() {
 
 const plans = [
   {
+    tier: 'Starter Pack',
+    price: '$1',
+    period: ' once',
+    desc: 'One-time credits pack — no subscription.',
+    features: [
+      '1,000 extraction credits',
+      'All schemas (product, article, company)',
+      'Instant Polar checkout',
+      'Perfect for agents & prototypes',
+      'No monthly commitment',
+    ],
+    highlighted: true,
+    cta: 'Buy for $1',
+    href: '/buy',
+    external: true,
+  },
+  {
     tier: 'Free',
     price: '$0',
     desc: 'For developers testing structured extraction.',
     features: [
-      'Up to 1,500 queries / month',
+      '100 queries / month',
       'Product & article schemas',
       'Basic cache (1h TTL)',
       '1 API key',
       'REST API + MCP access',
     ],
     highlighted: false,
+    cta: 'Get Started Free',
+    href: '/dashboard',
+    external: false,
   },
   {
     tier: 'Hobby',
@@ -477,6 +504,9 @@ const plans = [
       'Email support',
     ],
     highlighted: false,
+    cta: 'Upgrade',
+    href: '/buy?sku=hobby',
+    external: true,
   },
   {
     tier: 'Pro',
@@ -490,7 +520,10 @@ const plans = [
       'Team API keys + RBAC',
       'Priority support + SLA',
     ],
-    highlighted: true,
+    highlighted: false,
+    cta: 'Go Pro',
+    href: '/buy?sku=pro',
+    external: true,
   },
 ];
 
@@ -499,10 +532,10 @@ function Pricing() {
     <section id="pricing" className="max-w-5xl mx-auto px-6 py-24 relative z-10">
       <SectionEyebrow label="Pricing" />
       <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.02] mb-12" style={{ color: 'var(--color-text-primary)' }}>
-        Start free, scale as you grow.
+        Start free, buy $1 credits, or subscribe.
       </h2>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {plans.map((plan) => (
           <div
             key={plan.tier}
@@ -513,7 +546,7 @@ function Pricing() {
           >
             {plan.highlighted && (
               <div className="px-4 py-2 text-xs font-semibold text-center" style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}>
-                Most Popular
+                Best first purchase
               </div>
             )}
             <div className="flex flex-1 flex-col p-6">
@@ -531,9 +564,15 @@ function Pricing() {
                   </li>
                 ))}
               </ul>
-              <Link to="/dashboard" className={`btn mt-6 w-full ${plan.highlighted ? 'btn-primary' : 'btn-secondary'}`}>
-                {plan.tier === 'Free' ? 'Get Started Free' : 'Upgrade'}
-              </Link>
+              {plan.external ? (
+                <a href={plan.href} className={`btn mt-6 w-full ${plan.highlighted ? 'btn-primary' : 'btn-secondary'}`}>
+                  {plan.cta}
+                </a>
+              ) : (
+                <Link to={plan.href} className={`btn mt-6 w-full ${plan.highlighted ? 'btn-primary' : 'btn-secondary'}`}>
+                  {plan.cta}
+                </Link>
+              )}
             </div>
           </div>
         ))}

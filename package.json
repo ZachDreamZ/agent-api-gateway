@@ -7,6 +7,8 @@
     "dev:dashboard": "vite dev src/dashboard --port 5173",
     "dev:mcp": "tsx watch src/mcp/index.ts",
     "typecheck": "tsc --noEmit --checkers 4",
+    "test": "tsx --test tests/**/*.test.ts",
+    "test:product": "tsx --test tests/product-core.test.ts",
     "build:dashboard": "vite build src/dashboard",
     "build": "tsc && vite build src/dashboard",
     "start": "node dist/api/index.js"
