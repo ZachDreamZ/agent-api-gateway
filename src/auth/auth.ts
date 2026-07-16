@@ -40,7 +40,6 @@ export const auth = betterAuth({
   ],
   plugins: [
     apiKey({
-      enableSessionForAPIKeys: true,
       defaultPrefix: 'sk-',
     }),
     bearer(),

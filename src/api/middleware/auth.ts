@@ -3,77 +3,83 @@ import { auth, type AuthUser } from '../../auth/auth.js';
 import { Pool } from 'pg';
 import type { Tier } from '@shared/types';
 
-// Validates either a Better Auth session (dashboard cookies / Bearer session
-// tokens) or a Bearer API key (programmatic clients). API keys are resolved
-// via Better Auth's verifyApiKey endpoint + a direct user lookup.
+async function findUserById(userId: string): Promise<(AuthUser & { tier?: string }) | null> {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 1,
+    connectionTimeoutMillis: 5000,
+  });
+  try {
+    const { rows } = await pool.query(
+      `SELECT id, name, email, email_verified as "emailVerified",
+              image, created_at as "createdAt", updated_at as "updatedAt",
+              tier, stripe_customer_id
+       FROM "user" WHERE id = $1`,
+      [userId],
+    );
+    return rows.length > 0 ? (rows[0] as AuthUser & { tier?: string }) : null;
+  } finally {
+    await pool.end().catch(() => {});
+  }
+}
+
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
   const raw = c.req.raw;
   const rawHeaders: Record<string, string> = {};
   raw.headers.forEach((v, k) => { rawHeaders[k] = v; });
 
-  // ── 1. Try Better Auth session (cookies / Bearer session tokens) ──
-  let session: Awaited<ReturnType<typeof auth.api.getSession>> | null = null;
-  try {
-    session = await auth.api.getSession({
-      request: raw,
-      query: { disableCookieCache: true },
-    });
-  } catch (err) {
-    console.error('[auth] getSession error:', err);
-  }
+  // ── 1. Try session via auth.handler (proper HTTP context with getSignedCookie) ──
+  const authHeader = rawHeaders['authorization'] || rawHeaders['Authorization'];
+  const cookie = rawHeaders['cookie'];
 
-  // ── 2. If that failed, try Authorization: Bearer as an API key ──
-  if (!session) {
-    const authHeader = rawHeaders['authorization'] || rawHeaders['Authorization'];
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const keyValue = authHeader.slice(7).trim();
-      if (keyValue) {
-        try {
-          const result: any = await (auth.api as any).verifyApiKey({
-            body: { key: keyValue },
-          });
-          if (result?.valid && result?.key?.referenceId) {
-            const pool = new Pool({
-              connectionString: process.env.DATABASE_URL,
-              max: 1,
-              connectionTimeoutMillis: 5000,
-            });
-            try {
-              const { rows } = await pool.query(
-                `SELECT id, name, email, email_verified as "emailVerified",
-                        image, created_at as "createdAt", updated_at as "updatedAt",
-                        tier, stripe_customer_id
-                 FROM "user" WHERE id = $1`,
-                [result.key.referenceId],
-              );
-              if (rows.length > 0) {
-                const user = rows[0] as AuthUser & { tier?: string };
-                c.set('userId', user.id);
-                c.set('user', user);
-                c.set('tier', (user.tier ?? 'free') as Tier);
-                await next();
-                return;
-              }
-            } finally {
-              await pool.end().catch(() => {});
-            }
-          }
-        } catch (e) {
-          console.error('[auth] verifyApiKey error:', e);
+  if (cookie || (authHeader && authHeader.startsWith('Bearer '))) {
+    try {
+      // Clone the request, rewrite to get-session, dispatch through Better Auth's
+      // full HTTP pipeline so cookie parsing + bearer plugin work correctly.
+      const url = new URL(raw.url);
+      url.pathname = '/api/auth/get-session';
+      const sessionReq = new Request(url, {
+        method: 'GET',
+        headers: raw.headers,
+      });
+      const sessionRes = await auth.handler(sessionReq);
+      if (sessionRes && sessionRes.ok) {
+        const body = await sessionRes.json();
+        if (body && body.user) {
+          const user = body.user as AuthUser & { tier?: string };
+          c.set('userId', user.id);
+          c.set('user', user);
+          c.set('tier', (user.tier ?? 'free') as Tier);
+          await next();
+          return;
         }
       }
+    } catch (e) {
+      console.error('[auth] handler session error:', e);
     }
   }
 
-  // ── 3. Session found from step 1 ──
-  if (session) {
-    const user = session.user as AuthUser & { tier?: string };
-    if (user) {
-      c.set('userId', user.id);
-      c.set('user', user);
-      c.set('tier', (user.tier ?? 'free') as Tier);
-      await next();
-      return;
+  // ── 2. Fallback: try Bearer as API key ──
+  if (!cookie && authHeader && authHeader.startsWith('Bearer ')) {
+    const keyValue = authHeader.slice(7).trim();
+    if (keyValue) {
+      try {
+        const result: any = await (auth.api as any).verifyApiKey({
+          body: { key: keyValue },
+        });
+        if (result?.valid && result?.key?.referenceId) {
+          const user = await findUserById(result.key.referenceId);
+          if (user) {
+            c.set('userId', user.id);
+            c.set('user', user);
+            c.set('tier', (user.tier ?? 'free') as Tier);
+            await next();
+            return;
+          }
+        }
+      } catch (e) {
+        console.error('[auth] verifyApiKey error:', e);
+      }
     }
   }
 
