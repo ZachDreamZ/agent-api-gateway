@@ -126,8 +126,14 @@ app.route('/v1/billing', billingApp);
 // ─── Polar webhook (no auth) ───
 app.route('/webhooks/polar', webhookApp);
 
-// ─── 404 ───
+// ─── SPA fallback: serve index.html for any unmatched browser route ───
+// Must come after all API routes but before JSON 404, so deep-links like
+// /docs/overview return the SPA shell. API routes still get proper 404 JSON.
+app.get('/*', (c) =>
+  serveStatic(c, 'index.html') || c.json({ error: `Not found: GET ${c.req.path}` }, 404),
+);
 
+// ─── 404 (non-GET methods) ───
 app.notFound((c) =>
   c.json({ error: `Not found: ${c.req.method} ${c.req.path}` }, 404),
 );
