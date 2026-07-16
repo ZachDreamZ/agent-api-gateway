@@ -84,11 +84,11 @@ app.use('/*', async (c, next) => {
   c.header('X-XSS-Protection', '0');
   c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
-  // HSTS — enable when served over HTTPS (Render always terminates TLS)
-  const proto = c.req.header('x-forwarded-proto') || '';
-  if (proto === 'https') {
-    c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  }
+  // HSTS — enabled globally. Safe because:
+  // - Local dev (localhost) is HTTP-only; HSTS only matters over HTTPS.
+  // - Render/Cloudflare serve all traffic over HTTPS.
+  // - Browsers only respect HSTS when received over a trusted HTTPS connection.
+  c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
 
   // Content-Security-Policy
   // The SPA is same-origin. Fonts load from Google Fonts CDN.
