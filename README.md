@@ -67,3 +67,7 @@ Agent  POST /v1/extract { url, schema }
 - [API reference](docs/api-reference.md)
 - [Agent onboarding](docs/agent-onboarding.md)
 - [Self-hosting](docs/self-hosting.md)
+
+## Support
+
+**xxtheshadowcraft+agentapi-support@gmail.com** — Polar public support email for NexusCore / Agent API Gateway.
