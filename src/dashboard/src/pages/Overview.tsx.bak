@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, useInView } from 'motion/react';
+import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown } from 'lucide-react';
 
 // ─── Types ───
@@ -29,42 +29,6 @@ interface DailyUsage {
   count: number;
 }
 
-// ─── Animated Counter ───
-
-function AnimatedNumber({ value: raw }: { value: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
-  const [display, setDisplay] = useState(raw);
-  const num = parseInt(raw.replace(/[^0-9]/g, ''), 10);
-
-  useEffect(() => {
-    if (!inView || isNaN(num)) {
-      setDisplay(raw);
-      return;
-    }
-    const from = 0;
-    const duration = 800;
-    const start = performance.now();
-    let frame: number;
-
-    function tick(now: number) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = progress * (2 - progress);
-      const current = Math.round(from + (num - from) * eased);
-      setDisplay(current.toLocaleString());
-      if (progress < 1) {
-        frame = requestAnimationFrame(tick);
-      }
-    }
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [inView, num, raw]);
-
-  return <span className="stat-card-value">{display}</span>;
-}
-
 // ─── Stat Card ───
 
 function StatCard({
@@ -86,30 +50,19 @@ function StatCard({
 }) {
   if (loading) {
     return (
-      <motion.div
-        className="stat-card"
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      >
+      <div className="stat-card">
         <div className="skeleton mb-3" style={{ width: '6rem', height: '0.75rem' }} />
         <div className="skeleton mb-2" style={{ width: '8rem', height: '2rem' }} />
         <div className="skeleton" style={{ width: '5rem', height: '0.75rem' }} />
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      className="stat-card surface-hover"
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3, boxShadow: '0 12px 32px oklch(0 0 0 / 0.2)' }}
-    >
+    <div className="stat-card surface-hover">
       <div className="stat-card-label">{label}</div>
       <div className="flex items-end gap-2">
-        <AnimatedNumber value={value} />
+        <span className="stat-card-value">{value}</span>
         {trend && trendValue && (
           <span
             className="mb-1 flex items-center gap-0.5 text-xs font-medium"
@@ -123,7 +76,7 @@ function StatCard({
         )}
       </div>
       {sub && <div className="stat-card-sub">{sub}</div>}
-    </motion.div>
+    </div>
   );
 }
 

@@ -45,6 +45,8 @@ function PlanCard({
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -3, boxShadow: '0 12px 32px oklch(0 0 0 / 0.2)' }}
+      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
       className="surface-elevated flex flex-col overflow-hidden"
       style={{
         borderColor: tier.highlighted ? 'var(--color-accent-base)' : undefined,
