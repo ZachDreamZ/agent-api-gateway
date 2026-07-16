@@ -33,11 +33,19 @@ const MIME: Record<string, string> = {
 };
 
 function serveStatic(c: any, filePath: string) {
+  // Normalize: strip leading slashes so resolve() cannot escape DIST
+  // (path.resolve(dist, '/assets/x') would otherwise jump to filesystem root).
+  const safeRel = String(filePath || '')
+    .replace(/^[/\\]+/, '')
+    .replace(/\\/g, '/');
+  if (!safeRel || safeRel.includes('..')) return null;
+
   const distRoot = resolve(DIST);
-  const full = resolve(distRoot, filePath);
+  const full = resolve(distRoot, safeRel);
   // Path traversal guard — resolved path must stay inside DIST
-  const rel = full.slice(distRoot.length);
-  if (full !== distRoot && !rel.startsWith('\\') && !rel.startsWith('/')) return null;
+  if (full !== distRoot && !full.startsWith(distRoot + '\\') && !full.startsWith(distRoot + '/')) {
+    return null;
+  }
   if (!existsSync(full)) return null;
   const ext = extname(full);
   const content = readFileSync(full);
@@ -45,9 +53,9 @@ function serveStatic(c: any, filePath: string) {
     'Content-Type': MIME[ext] || 'application/octet-stream',
   };
   // HTML shell must not be cached long — deploys would otherwise leave users on stale SPA
-  if (ext === '.html' || filePath === 'index.html') {
+  if (ext === '.html' || safeRel === 'index.html') {
     headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-  } else if (filePath.startsWith('assets/')) {
+  } else if (safeRel.startsWith('assets/')) {
     headers['Cache-Control'] = 'public, max-age=31536000, immutable';
   }
   return c.body(content, 200, headers);
