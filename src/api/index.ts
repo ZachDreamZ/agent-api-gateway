@@ -62,17 +62,6 @@ app.use('/*', async (c, next) => {
 
 // ─── Health ───
 
-app.get('/debug', async (c) => {
-  const { existsSync, readdirSync } = await import('node:fs');
-  return c.json({
-    cwd: process.cwd(),
-    dist: DIST,
-    distExists: existsSync(DIST),
-    distContents: existsSync(DIST) ? readdirSync(DIST) : null,
-    dirname: __dirname,
-  });
-});
-
 app.get('/health', (c) =>
   c.json({ status: 'ok', service: 'agent-api-gateway', version: '0.1.0' }),
 );
