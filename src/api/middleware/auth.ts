@@ -6,13 +6,11 @@ import type { Tier } from '@shared/types';
 // cookie (dashboard) or a Bearer API key (programmatic clients) and exposes
 // the resolved user + tier to downstream routes.
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
-  // Validate session by dispatching through Better Auth's own handler.
-  // We copy the request URL to point at /api/auth/get-session so auth.handler
-  // processes it through the full plugin pipeline (including API key hooks).
+  // Direct GET to Better Auth's get-session endpoint
   const req = c.req.raw;
-  const url = new URL(req.url);
-  url.pathname = '/api/auth/get-session';
-  const sessionReq = new Request(url, {
+  const baseUrl = new URL(req.url);
+  baseUrl.pathname = '/api/auth/get-session';
+  const sessionReq = new Request(baseUrl, {
     method: 'GET',
     headers: req.headers,
   });
@@ -25,14 +23,18 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
     return c.json({ error: 'Unauthorized' }, 401);
   }
 
+  const body = await sessionRes.clone().text();
+  console.log('[auth] get-session status:', sessionRes.status, 'body:', body.substring(0, 200));
+
   if (!sessionRes.ok) {
     return c.json({ error: 'Unauthorized. Send a valid API key.' }, 401);
   }
 
   let session: { user: AuthUser; session: any } | null = null;
   try {
-    session = await sessionRes.json();
+    session = JSON.parse(body);
   } catch {
+    console.error('[auth] JSON parse failed');
     return c.json({ error: 'Unauthorized' }, 401);
   }
 
