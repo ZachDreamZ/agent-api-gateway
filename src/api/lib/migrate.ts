@@ -56,6 +56,7 @@ export async function runMigration(): Promise<void> {
     const MIGRATIONS = [
       { name: '001_better_auth', file: 'better-auth.sql' },
       { name: '002_usage_logs', file: '002_usage_logs.sql' },
+      { name: '003_rate_limit', file: '003_rate_limit.sql' },
     ];
 
     for (const m of MIGRATIONS) {
