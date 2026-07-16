@@ -145,7 +145,10 @@ app.get('/api/dbcheck', async (c) => {
 
 // ─── Better Auth (user sessions + API keys) ───
 
+// Better Auth handles its own routing internally.
+// Mount both standard prefixes so API-key management routes work.
 app.all('/api/auth/*', (c) => auth.handler(c.req.raw));
+app.all('/api-key/*', (c) => auth.handler(c.req.raw));
 
 // ─── Serve frontend for non-API routes ───
 
