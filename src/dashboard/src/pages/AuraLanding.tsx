@@ -214,7 +214,7 @@ function Hero() {
                 Get Started Free
               </button>
             </Link>
-            <a href="/buy" className="btn btn-secondary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
+            <a href="https://shadowcraft41.gumroad.com/l/spwxix" className="btn btn-secondary" style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}>
               Buy Starter Pack — $1
             </a>
           </div>
@@ -472,7 +472,7 @@ const plans = [
     ],
     highlighted: true,
     cta: 'Buy for $1',
-    href: '/buy',
+    href: 'https://shadowcraft41.gumroad.com/l/spwxix',
     external: true,
   },
   {

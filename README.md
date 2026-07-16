@@ -22,7 +22,7 @@ curl -X POST https://agent-api-gateway.onrender.com/v1/extract \
 | Plan | Price | What you get | Buy |
 |------|-------|--------------|-----|
 | Free | $0 | 100 queries/mo, API keys, product/article schemas | [Dashboard](https://agent-api-gateway.onrender.com/dashboard) |
-| **Starter Pack** | **$1 once** | 1,000 extraction credits, all schemas | [Buy $1](https://agent-api-gateway.onrender.com/buy) |
+| **Starter Pack** | **$1 once** | Onboarding guide + live API access path | [Buy on Gumroad](https://shadowcraft41.gumroad.com/l/spwxix) · [Site /buy](https://agent-api-gateway.onrender.com/buy) |
 | Hobby | $29/mo | 5,000 queries/mo | [Checkout](https://agent-api-gateway.onrender.com/buy?sku=hobby) |
 | Pro | $99/mo | 25,000 queries/mo | [Checkout](https://agent-api-gateway.onrender.com/buy?sku=pro) |
 
