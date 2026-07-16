@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Check, X, Star, ExternalLink } from 'lucide-react';
+import { PageHeader, Stagger, StaggerItem } from '../components/Brand';
+import { easeOut } from '../lib/motion';
 
 // ─── Types ───
 
@@ -43,13 +45,13 @@ function PlanCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -3, boxShadow: '0 12px 32px oklch(0 0 0 / 0.2)' }}
-      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="surface-elevated flex flex-col overflow-hidden"
+      transition={{ duration: 0.35, ease: easeOut }}
+      className="surface-elevated surface-hover surface-glow flex flex-col overflow-hidden h-full"
       style={{
-        borderColor: tier.highlighted ? 'var(--color-accent-base)' : undefined,
+        borderColor: tier.highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : undefined,
+        boxShadow: tier.highlighted ? 'var(--shadow-glow)' : undefined,
       }}
     >
       {/* Highlighted badge */}
@@ -72,7 +74,7 @@ function PlanCard({
         {/* Price */}
         <div className="mb-6">
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{tier.price}</span>
+            <span className="font-display text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{tier.price}</span>
             {tier.price_monthly > 0 && (
               <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>/month</span>
             )}
@@ -274,28 +276,37 @@ export default function Billing() {
 
   return (
     <div className="space-y-8">
-      {/* Current plan bar */}
+      <PageHeader
+        eyebrow="Billing"
+        title="Plans & usage"
+        description="Upgrade via Polar checkout. Starter credits also available from the homepage."
+      />
+
       {current && (
-        <div className="surface p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Current plan:</span>
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="surface surface-glow p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Current plan</span>
             <span className="badge badge-active uppercase">{current.tier}</span>
             <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{current.price}</span>
           </div>
           {current.stripe_customer_id && (
             <button
+              type="button"
               onClick={handlePortal}
               className="btn btn-secondary w-full sm:w-auto"
               style={{ fontSize: '0.8125rem' }}
             >
-              Manage Subscription
+              Manage subscription
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
           )}
-        </div>
+        </motion.div>
       )}
 
-      {/* Usage */}
       <UsageBar
         used={0}
         limit={current?.queries_per_month ?? 0}
@@ -303,23 +314,23 @@ export default function Billing() {
       />
 
       {error && (
-        <div className="rounded-xl px-4 py-3 text-sm" style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}>
+        <div className="rounded-md px-4 py-3 text-sm" style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}>
           {error}
         </div>
       )}
 
-      {/* Plans grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <Stagger className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {tiers.map((tier) => (
-          <PlanCard
-            key={tier.id}
-            tier={tier}
-            currentTier={current?.tier ?? 'free'}
-            onSelect={handleSelect}
-            loading={checkoutLoading === tier.id}
-          />
+          <StaggerItem key={tier.id}>
+            <PlanCard
+              tier={tier}
+              currentTier={current?.tier ?? 'free'}
+              onSelect={handleSelect}
+              loading={checkoutLoading === tier.id}
+            />
+          </StaggerItem>
         ))}
-      </div>
+      </Stagger>
     </div>
   );
 }

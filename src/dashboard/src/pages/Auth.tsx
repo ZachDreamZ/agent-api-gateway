@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { signIn, signUp } from '../lib/auth';
+import { AmbientBg, LogoMark, Spinner } from '../components/Brand';
+import { easeOut, scaleIn } from '../lib/motion';
 
 type Mode = 'signin' | 'signup';
 
@@ -35,50 +37,71 @@ export default function Auth() {
   }
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center px-4"
-      style={{ background: 'var(--color-bg-app)' }}
-    >
+    <div className="relative flex min-h-screen items-center justify-center px-4 py-12" style={{ background: 'var(--color-bg-app)' }}>
+      <AmbientBg intensity="strong" />
+
       <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-sm surface-elevated p-8"
+        key={mode}
+        initial={scaleIn.initial}
+        animate={scaleIn.animate}
+        transition={{ duration: 0.4, ease: easeOut }}
+        className="relative z-10 w-full max-w-sm surface-elevated surface-glow p-8"
       >
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+          <Link to="/" className="mb-5 inline-flex items-center gap-2">
+            <LogoMark className="w-6 h-6" style={{ color: 'var(--color-accent-base)' }} />
+            <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+              Agent API
+            </span>
+          </Link>
+          <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
             {mode === 'signin' ? 'Welcome back' : 'Create your account'}
           </h1>
-          <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
-            {mode === 'signin' ? 'Sign in to manage your API keys' : 'Start building with the Agent API'}
+          <p className="mt-1.5 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+            {mode === 'signin' ? 'Sign in to manage keys and usage' : 'Free tier — no card required'}
           </p>
         </div>
 
-        {error && (
-          <div
-            className="mb-4 rounded-lg px-3 py-2 text-sm"
-            style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}
-          >
-            {error}
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {error && (
+            <motion.div
+              key={error}
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mb-4 rounded-md px-3 py-2 text-sm"
+              style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === 'signup' && (
-            <div>
-              <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                Name
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Jane Doe"
-                required
-                className="input"
-              />
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            {mode === 'signup' && (
+              <motion.div
+                key="name"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Jane Doe"
+                  required
+                  autoComplete="name"
+                  className="input"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <div>
             <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
@@ -116,27 +139,15 @@ export default function Auth() {
             )}
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary w-full"
-          >
-            {loading ? (
-              <span
-                className="mx-auto block h-4 w-4 animate-spin rounded-full border-2"
-                style={{ borderColor: 'var(--color-text-tertiary)', borderTopColor: 'white' }}
-              />
-            ) : mode === 'signin' ? (
-              'Sign in'
-            ) : (
-              'Create account'
-            )}
+          <button type="submit" disabled={loading} className="btn btn-primary w-full">
+            {loading ? <Spinner /> : mode === 'signin' ? 'Sign in' : 'Create account'}
           </button>
         </form>
 
         <p className="mt-6 text-center text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
           {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
           <button
+            type="button"
             onClick={() => {
               setMode(mode === 'signin' ? 'signup' : 'signin');
               setError(null);

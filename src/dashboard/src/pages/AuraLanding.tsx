@@ -12,28 +12,13 @@ import {
   Zap,
   Shield,
 } from 'lucide-react';
+import { LogoMark, AmbientBg, SectionLabel, Reveal } from '../components/Brand';
+import { easeOut } from '../lib/motion';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Agent API Gateway — Landing
 // Signature: interactive schema playground (request → typed JSON)
-// Honest product page — no fake logos, no invented testimonials
 // ═══════════════════════════════════════════════════════════════════════════
-
-function LogoMark({ className = 'w-6 h-6', style }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg viewBox="0 0 256 256" fill="currentColor" className={className} style={style} aria-hidden>
-      <path d="M 0 128 C 70.692 128 128 185.308 128 256 L 64 256 C 64 220.654 35.346 192 0 192 Z M 256 192 C 220.654 192 192 220.654 192 256 L 128 256 C 128 185.308 185.308 128 256 128 Z M 128 0 C 128 70.692 70.692 128 0 128 L 0 64 C 35.346 64 64 35.346 64 0 Z M 192 0 C 192 35.346 220.654 64 256 64 L 256 128 C 185.308 128 128 70.692 128 0 Z" />
-    </svg>
-  );
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-eyebrow mb-4" style={{ color: 'var(--color-accent-base)' }}>
-      {children}
-    </p>
-  );
-}
 
 // ─── Navbar ───
 
@@ -46,14 +31,7 @@ function Navbar() {
   }, [mobileOpen]);
 
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50"
-      style={{
-        background: 'oklch(0.145 0.018 255 / 0.85)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--color-border-subtle)',
-      }}
-    >
+    <header className="glass-nav fixed top-0 left-0 right-0 z-50">
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-6" aria-label="Primary">
         <Link to="/" className="flex items-center gap-2.5" style={{ color: 'var(--color-text-primary)' }}>
           <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
@@ -222,7 +200,7 @@ function SchemaPlayground() {
               role="tab"
               aria-selected={schema === key}
               onClick={() => setSchema(key)}
-              className="rounded px-2.5 py-1 text-xs font-medium transition-colors"
+              className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors"
               style={{
                 background: schema === key ? 'var(--color-accent-subtle)' : 'transparent',
                 color: schema === key ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
@@ -233,22 +211,34 @@ function SchemaPlayground() {
             </button>
           ))}
         </div>
-        <span className="ml-auto badge badge-active">200</span>
+        <span className="ml-auto flex items-center gap-2">
+          <span className="signal-dot" />
+          <span className="badge badge-active">200</span>
+        </span>
       </div>
-      <div className="grid md:grid-cols-2">
-        <div className="p-4 md:border-r" style={{ borderColor: 'var(--color-border-subtle)' }}>
-          <p className="text-eyebrow mb-3">Request</p>
-          <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            <code>{sample.request}</code>
-          </pre>
-        </div>
-        <div className="p-4">
-          <p className="text-eyebrow mb-3">Response</p>
-          <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            <code>{sample.response}</code>
-          </pre>
-        </div>
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={schema}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.22, ease: easeOut }}
+          className="grid md:grid-cols-2"
+        >
+          <div className="p-4 md:border-r" style={{ borderColor: 'var(--color-border-subtle)' }}>
+            <p className="text-eyebrow mb-3">Request</p>
+            <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              <code>{sample.request}</code>
+            </pre>
+          </div>
+          <div className="p-4">
+            <p className="text-eyebrow mb-3">Response</p>
+            <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              <code>{sample.response}</code>
+            </pre>
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
@@ -258,21 +248,23 @@ function SchemaPlayground() {
 function Hero() {
   return (
     <section id="start" className="relative pt-28 pb-16 md:pt-36 md:pb-24 px-5 md:px-6 overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 bg-grid" aria-hidden />
-      <div
-        className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-40"
-        style={{ background: 'radial-gradient(closest-side, var(--color-accent-subtle), transparent)' }}
-        aria-hidden
-      />
-
       <div className="relative mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.55, ease: easeOut }}
           >
-            <p className="text-eyebrow mb-5">URL + schema → validated JSON</p>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
+              style={{
+                background: 'var(--color-accent-subtle)',
+                color: 'var(--color-accent-base)',
+                border: '1px solid oklch(0.74 0.12 195 / 0.25)',
+              }}
+            >
+              <span className="signal-dot" />
+              URL + schema → validated JSON
+            </div>
             <h1 className="text-display-lg" style={{ color: 'var(--color-text-primary)' }}>
               Structured web data for AI agents.
             </h1>
@@ -294,9 +286,10 @@ function Hero() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.12, ease: easeOut }}
+            className="surface-glow"
           >
             <SchemaPlayground />
           </motion.div>
@@ -317,23 +310,27 @@ const steps = [
 function HowItWorks() {
   return (
     <section id="how" className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
-      <SectionLabel>How it works</SectionLabel>
-      <h2 className="text-display max-w-xl mb-12" style={{ color: 'var(--color-text-primary)' }}>
-        Three steps from URL to usable fields.
-      </h2>
+      <Reveal>
+        <SectionLabel>How it works</SectionLabel>
+        <h2 className="text-display max-w-xl mb-12" style={{ color: 'var(--color-text-primary)' }}>
+          Three steps from URL to usable fields.
+        </h2>
+      </Reveal>
       <ol className="grid md:grid-cols-3 gap-6">
-        {steps.map((s) => (
-          <li key={s.n} className="surface p-6">
-            <span className="text-mono text-xs font-medium tabular-nums" style={{ color: 'var(--color-accent-base)' }}>
-              {s.n}
-            </span>
-            <h3 className="mt-3 text-base font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
-              {s.title}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-              {s.body}
-            </p>
-          </li>
+        {steps.map((s, i) => (
+          <Reveal key={s.n} delay={i * 0.08}>
+            <li className="surface surface-hover surface-glow p-6 h-full list-none">
+              <span className="text-mono text-xs font-medium tabular-nums" style={{ color: 'var(--color-accent-base)' }}>
+                {s.n}
+              </span>
+              <h3 className="mt-3 text-base font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+                {s.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+                {s.body}
+              </p>
+            </li>
+          </Reveal>
         ))}
       </ol>
     </section>
@@ -368,33 +365,37 @@ const features = [
 function Features() {
   return (
     <section id="features" className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
-      <SectionLabel>Capabilities</SectionLabel>
-      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end mb-12">
-        <h2 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
-          Built for agents that need fields, not HTML.
-        </h2>
-        <p className="text-sm leading-relaxed max-w-md lg:justify-self-end" style={{ color: 'var(--color-text-secondary)' }}>
-          One extraction endpoint. You choose the schema; we return validated JSON and usage metadata.
-        </p>
-      </div>
+      <Reveal>
+        <SectionLabel>Capabilities</SectionLabel>
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end mb-12">
+          <h2 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
+            Built for agents that need fields, not HTML.
+          </h2>
+          <p className="text-sm leading-relaxed max-w-md lg:justify-self-end" style={{ color: 'var(--color-text-secondary)' }}>
+            One extraction endpoint. You choose the schema; we return validated JSON and usage metadata.
+          </p>
+        </div>
+      </Reveal>
       <div className="grid sm:grid-cols-2 gap-4">
-        {features.map((f) => {
+        {features.map((f, i) => {
           const Icon = f.icon;
           return (
-            <div key={f.title} className="surface surface-hover p-6">
-              <div
-                className="mb-4 flex h-9 w-9 items-center justify-center rounded-md"
-                style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
-              >
-                <Icon className="w-4 h-4" strokeWidth={1.75} />
+            <Reveal key={f.title} delay={i * 0.06}>
+              <div className="surface surface-hover surface-glow p-6 h-full">
+                <div
+                  className="mb-4 flex h-9 w-9 items-center justify-center rounded-md"
+                  style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+                >
+                  <Icon className="w-4 h-4" strokeWidth={1.75} />
+                </div>
+                <h3 className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+                  {f.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+                  {f.body}
+                </p>
               </div>
-              <h3 className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
-                {f.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                {f.body}
-              </p>
-            </div>
+            </Reveal>
           );
         })}
       </div>
@@ -454,19 +455,21 @@ const plans = [
 function Pricing() {
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
-      <SectionLabel>Pricing</SectionLabel>
-      <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
-        Start free. Buy credits when you need them.
-      </h2>
-      <p className="text-sm mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
-        Checkout runs on Polar. Starter is a one-time $1 pack; Hobby and Pro are monthly subscriptions.
-      </p>
+      <Reveal>
+        <SectionLabel>Pricing</SectionLabel>
+        <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
+          Start free. Buy credits when you need them.
+        </h2>
+        <p className="text-sm mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
+          Checkout runs on Polar. Starter is a one-time $1 pack; Hobby and Pro are monthly subscriptions.
+        </p>
+      </Reveal>
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {plans.map((plan) => (
+        {plans.map((plan, i) => (
+          <Reveal key={plan.tier} delay={i * 0.05}>
           <div
-            key={plan.tier}
-            className="flex flex-col overflow-hidden"
+            className="flex flex-col overflow-hidden h-full surface-hover"
             style={{
               background: plan.highlighted ? 'var(--color-bg-elevated)' : 'var(--color-bg-surface)',
               border: `1px solid ${plan.highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : 'var(--color-border-subtle)'}`,
@@ -515,6 +518,7 @@ function Pricing() {
               )}
             </div>
           </div>
+          </Reveal>
         ))}
       </div>
       <p className="mt-4 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
@@ -529,8 +533,9 @@ function Pricing() {
 function FinalCTA() {
   return (
     <section className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-20">
+      <Reveal>
       <div
-        className="relative overflow-hidden px-6 py-14 md:px-12 md:py-16 text-center"
+        className="relative overflow-hidden px-6 py-14 md:px-12 md:py-16 text-center surface-glow"
         style={{
           background: 'var(--color-bg-elevated)',
           border: '1px solid var(--color-border-default)',
@@ -560,6 +565,7 @@ function FinalCTA() {
           </div>
         </div>
       </div>
+      </Reveal>
     </section>
   );
 }
@@ -568,7 +574,7 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
+    <footer className="relative z-10" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
       <div className="mx-auto max-w-6xl px-5 md:px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
           <div className="flex items-center gap-2" style={{ color: 'var(--color-text-primary)' }}>
@@ -607,15 +613,18 @@ function Footer() {
 export default function Landing() {
   return (
     <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
-      <Navbar />
-      <main>
-        <Hero />
-        <HowItWorks />
-        <Features />
-        <Pricing />
-        <FinalCTA />
-      </main>
-      <Footer />
+      <AmbientBg intensity="default" />
+      <div className="relative z-10">
+        <Navbar />
+        <main>
+          <Hero />
+          <HowItWorks />
+          <Features />
+          <Pricing />
+          <FinalCTA />
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 }

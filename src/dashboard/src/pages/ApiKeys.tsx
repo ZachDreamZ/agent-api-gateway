@@ -10,6 +10,8 @@ import {
   Trash2,
 } from 'lucide-react';
 import { apiKey } from '../lib/auth';
+import { PageHeader, Spinner, Stagger, StaggerItem } from '../components/Brand';
+import { easeOut, scaleIn } from '../lib/motion';
 
 // ─── Types (Better Auth apiKey shape) ───
 
@@ -72,9 +74,10 @@ function KeyRow({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 4 }}
+      initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="surface surface-hover p-4"
+      transition={{ duration: 0.3, ease: easeOut }}
+      className="surface surface-hover surface-glow p-4"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 flex-1">
@@ -160,10 +163,10 @@ function NewKeyModal({
         onClick={onClose}
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 8 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 8 }}
-          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          initial={scaleIn.initial}
+          animate={scaleIn.animate}
+          exit={scaleIn.exit}
+          transition={{ duration: 0.22, ease: easeOut }}
           className="dialog-panel"
           onClick={(e) => e.stopPropagation()}
         >
@@ -363,19 +366,30 @@ export default function ApiKeys() {
 
   return (
     <div>
+      <PageHeader
+        eyebrow="Credentials"
+        title="API keys"
+        description="Create bearer keys for agents and services. Full secret is shown only once."
+      />
+
       {error && (
-        <div
-          className="mb-4 rounded-xl px-4 py-3 text-sm"
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 rounded-md px-4 py-3 text-sm"
           style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}
         >
           {error}
-          <button onClick={() => setError(null)} className="ml-2 underline hover:opacity-80">Dismiss</button>
-        </div>
+          <button type="button" onClick={() => setError(null)} className="ml-2 underline hover:opacity-80">
+            Dismiss
+          </button>
+        </motion.div>
       )}
 
-      {/* Create new key */}
-      <div className="surface p-4 mb-6">
-        <p className="mb-3 text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Create new key</p>
+      <div className="surface surface-glow p-4 mb-6">
+        <p className="mb-3 text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+          Create new key
+        </p>
         <div className="flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
@@ -386,42 +400,41 @@ export default function ApiKeys() {
             className="input"
           />
           <button
+            type="button"
             onClick={handleCreate}
             disabled={creating || !name.trim()}
             className="btn btn-primary shrink-0"
           >
-            {creating ? (
-              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2" style={{ borderColor: 'var(--color-text-tertiary)', borderTopColor: 'white' }} />
-            ) : (
-              <Plus className="w-4 h-4" />
-            )}
+            {creating ? <Spinner /> : <Plus className="w-4 h-4" />}
             Create
           </button>
         </div>
       </div>
 
-      {/* Keys list */}
       {keys.length === 0 ? (
         <div
-          className="rounded-xl p-12 text-center"
+          className="rounded-lg p-12 text-center"
           style={{ border: '1px dashed var(--color-border-default)' }}
         >
           <KeyRound className="mx-auto mb-4 w-10 h-10" style={{ color: 'var(--color-text-disabled)' }} />
           <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>No API keys yet</p>
-          <p className="mt-1 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>Create your first key above to start making requests</p>
+          <p className="mt-1 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+            Create your first key above to start making requests
+          </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <Stagger className="space-y-2">
           {keys.map((item) => (
-            <KeyRow
-              key={item.id}
-              item={item}
-              onToggle={handleToggle}
-              onRevoke={(id) => setRevokeTarget(keys.find((k) => k.id === id) ?? null)}
-              toggling={toggling === item.id}
-            />
+            <StaggerItem key={item.id}>
+              <KeyRow
+                item={item}
+                onToggle={handleToggle}
+                onRevoke={(id) => setRevokeTarget(keys.find((k) => k.id === id) ?? null)}
+                toggling={toggling === item.id}
+              />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       )}
 
       {/* New key modal */}

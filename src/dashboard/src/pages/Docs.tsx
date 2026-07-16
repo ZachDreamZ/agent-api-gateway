@@ -1,17 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Copy, Check, BookOpen } from 'lucide-react';
-
-// ─── SVG Logo Mark ───
-
-function LogoMark({ className = 'w-5 h-5' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 256 256" fill="currentColor" className={className}>
-      <path d="M 0 128 C 70.692 128 128 185.308 128 256 L 64 256 C 64 220.654 35.346 192 0 192 Z M 256 192 C 220.654 192 192 220.654 192 256 L 128 256 C 128 185.308 185.308 128 256 128 Z M 128 0 C 128 70.692 70.692 128 0 128 L 0 64 C 35.346 64 64 35.346 64 0 Z M 192 0 C 192 35.346 220.654 64 256 64 L 256 128 C 185.308 128 128 70.692 128 0 Z" />
-    </svg>
-  );
-}
+import { Menu, Copy, Check, BookOpen } from 'lucide-react';
+import { LogoMark, AmbientBg, SectionLabel } from '../components/Brand';
+import { easeOut } from '../lib/motion';
 
 // ─── Copy Button ───
 
@@ -58,10 +50,19 @@ function Code({ children, lang }: { children: string; lang?: string }) {
 
 function Section({ id, title, children }: { id?: string; title: string; children: React.ReactNode }) {
   return (
-    <div id={id} className="mb-12 scroll-mt-20">
-      <h2 className="mb-4 text-xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>{title}</h2>
+    <motion.div
+      id={id}
+      className="mb-12 scroll-mt-20"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.4, ease: easeOut }}
+    >
+      <h2 className="font-display mb-4 text-xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+        {title}
+      </h2>
       {children}
-    </div>
+    </motion.div>
   );
 }
 
@@ -94,12 +95,15 @@ const SECTIONS = [
 
 function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onNavigate?: () => void }) {
   return (
-    <aside className="flex h-full w-60 flex-col" style={{ borderRight: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
-      <Link to="/" className="flex items-center gap-2 px-5 pt-5 pb-4 link" onClick={onNavigate}>
+    <aside className="sidebar-panel flex h-full w-60 flex-col">
+      <Link to="/" className="flex items-center gap-2 px-5 pt-5 pb-4" onClick={onNavigate}>
         <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-        <span className="text-xs font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>AgentAPI Docs</span>
+        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+          Agent API
+        </span>
       </Link>
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3">
+      <p className="px-5 pb-2 text-eyebrow">Docs</p>
+      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3" aria-label="Documentation">
         {SECTIONS.map((s) => {
           const isActive = activeSection === s.id;
           return (
@@ -107,13 +111,8 @@ function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onN
               key={s.id}
               href={`#${s.id}`}
               onClick={onNavigate}
-              className="relative block rounded-lg px-3 py-2 text-sm transition-colors"
-              style={{
-                color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-secondary)',
-                background: isActive ? 'var(--color-accent-subtle)' : 'transparent',
-              }}
-              onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.background = 'var(--color-bg-hover)'; } }}
-              onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.background = 'transparent'; } }}
+              className={`nav-item ${isActive ? 'nav-item-active' : ''}`}
+              style={{ fontSize: '0.8125rem', padding: '0.5rem 0.75rem' }}
             >
               {s.label}
             </a>
@@ -133,10 +132,7 @@ function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onN
 
 function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
   return (
-    <div
-      className="fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between border-b px-4 lg:hidden"
-      style={{ borderColor: 'var(--color-border-subtle)', background: 'var(--color-bg-app)' }}
-    >
+    <div className="glass-nav fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between px-4 lg:hidden">
       <Link to="/" className="flex items-center gap-2">
         <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
         <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>Docs</span>
@@ -383,7 +379,6 @@ data = resp.json()
 // ─── Docs Page ───
 
 export default function Docs() {
-  const location = useLocation();
   const [activeSection, setActiveSection] = useState('overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -418,33 +413,37 @@ export default function Docs() {
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
-      {/* Mobile header */}
+    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+      <AmbientBg intensity="subtle" />
       <MobileHeader onMenuOpen={() => setMobileMenuOpen(true)} />
-
-      {/* Mobile sidebar */}
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} activeSection={activeSection} />
 
-      {/* Desktop: fixed sidebar on left edge + centered content */}
-      <div className="hidden lg:block">
-        <div className="fixed left-0 top-0 z-40 h-screen w-60 border-r" style={{ borderColor: 'var(--color-border-subtle)', background: 'var(--color-bg-app)' }}>
+      <div className="hidden lg:block relative z-10">
+        <div className="fixed left-0 top-0 z-40 h-screen w-60">
           <DocsSidebar activeSection={activeSection} />
         </div>
       </div>
 
-      {/* Centered content — sidebar is fixed, so content doesn't offset */}
-      <main className="mx-auto min-h-screen px-6 pt-20 pb-16 lg:pl-64 lg:pr-8 lg:pt-12 docs-body" style={{ maxWidth: '72rem' }}>
+      <main className="relative z-10 mx-auto min-h-screen px-6 pt-20 pb-16 lg:pl-64 lg:pr-8 lg:pt-12 docs-body" style={{ maxWidth: '72rem' }}>
         <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm link lg:hidden" style={{ color: 'var(--color-text-tertiary)' }}>
           ← Home
         </Link>
 
-        <div className="flex items-start justify-between mb-8">
+        <motion.div
+          className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-10"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: easeOut }}
+        >
           <div>
-            <h1 className="mb-2 text-3xl font-bold tracking-tight">API Reference</h1>
-            <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Extract structured web data with one API call.</p>
+            <SectionLabel>Reference</SectionLabel>
+            <h1 className="font-display mb-2 text-3xl font-bold tracking-tight">API Reference</h1>
+            <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+              Extract structured web data with one API call.
+            </p>
           </div>
           <DocsCopyMdButton />
-        </div>
+        </motion.div>
 
         {/* Overview */}
         <Section id="overview" title="Overview">
@@ -493,8 +492,8 @@ export default function Docs() {
           </SubSection>
 
           <div
-            className="rounded-xl px-4 py-3"
-            style={{ background: 'oklch(0.62 0.18 260 / 0.08)', border: '1px solid oklch(0.62 0.18 260 / 0.2)' }}
+            className="rounded-md px-4 py-3"
+            style={{ background: 'var(--color-accent-subtle)', border: '1px solid oklch(0.74 0.12 195 / 0.25)' }}
           >
             <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
               <strong style={{ color: 'var(--color-accent-base)' }}>Tip:</strong> Include your API key in every request.
@@ -805,14 +804,14 @@ print(data['data']['title'])`}
             </p>
           </div>
 
-          <div className="mt-12 text-center surface p-8">
+          <div className="mt-12 text-center surface surface-glow p-8">
             <p className="mb-4 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Ready to start extracting?</p>
             <Link
               to="/dashboard"
               className="btn btn-primary"
-              style={{ fontSize: '0.9375rem', padding: '0.75rem 2rem' }}
+              style={{ fontSize: '0.9375rem', padding: '0.75rem 1.5rem' }}
             >
-              Get Started Free
+              Start free
             </Link>
           </div>
         </Section>

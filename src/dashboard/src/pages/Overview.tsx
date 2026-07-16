@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'motion/react';
 import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown } from 'lucide-react';
+import { PageHeader, Stagger, StaggerItem } from '../components/Brand';
+import { easeOut } from '../lib/motion';
 
 // ─── Types ───
 
@@ -101,11 +103,10 @@ function StatCard({
 
   return (
     <motion.div
-      className="stat-card surface-hover"
+      className="stat-card surface-hover surface-glow"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -3, boxShadow: '0 12px 32px oklch(0 0 0 / 0.2)' }}
+      transition={{ duration: 0.35, ease: easeOut }}
     >
       <div className="stat-card-label">{label}</div>
       <div className="flex items-end gap-2">
@@ -316,52 +317,61 @@ export default function Overview() {
 
   return (
     <div className="space-y-6">
-      {/* Primary stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label="Total Queries"
-          value={(stats?.total_queries ?? 0).toLocaleString()}
-          sub="All time"
-          icon={Zap}
-          loading={loading}
-        />
-        <StatCard
-          label="This Month"
-          value={(stats?.queries_this_month ?? 0).toLocaleString()}
-          sub={`${(stats?.credits_remaining ?? 0).toLocaleString()} credits remaining`}
-          trend="up"
-          trendValue="+12%"
-          icon={Activity}
-          loading={loading}
-        />
-        <StatCard
-          label="Avg Latency"
-          value={stats ? `${stats.avg_latency_ms}ms` : '—'}
-          sub={stats ? `${stats.cache_hit_rate}% cache hit` : undefined}
-          icon={Clock}
-          loading={loading}
-        />
-        <StatCard
-          label="Active Keys"
-          value={String(stats?.active_keys ?? 0)}
-          sub={`${stats?.recent_errors ?? 0} errors (24h)`}
-          icon={KeyRound}
-          loading={loading}
-        />
-      </div>
+      <PageHeader
+        eyebrow="Dashboard"
+        title="Overview"
+        description="Usage, latency, and recent extraction activity."
+      />
 
-      {/* Usage progress */}
+      <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StaggerItem>
+          <StatCard
+            label="Total Queries"
+            value={(stats?.total_queries ?? 0).toLocaleString()}
+            sub="All time"
+            icon={Zap}
+            loading={loading}
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="This Month"
+            value={(stats?.queries_this_month ?? 0).toLocaleString()}
+            sub={`${(stats?.credits_remaining ?? 0).toLocaleString()} credits remaining`}
+            icon={Activity}
+            loading={loading}
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Avg Latency"
+            value={stats ? `${stats.avg_latency_ms}ms` : '—'}
+            sub={stats ? `${stats.cache_hit_rate}% cache hit` : undefined}
+            icon={Clock}
+            loading={loading}
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Active Keys"
+            value={String(stats?.active_keys ?? 0)}
+            sub={`${stats?.recent_errors ?? 0} errors (24h)`}
+            icon={KeyRound}
+            loading={loading}
+          />
+        </StaggerItem>
+      </Stagger>
+
       <UsageBar
         used={stats?.credits_used ?? 0}
         total={(stats?.credits_used ?? 0) + (stats?.credits_remaining ?? 0)}
       />
 
-      {/* Chart + Activity */}
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <UsageChart data={chart} />
         </div>
-        <div className="lg:col-span-2 xl:col-span-2 2xl:col-span-2">
+        <div className="lg:col-span-2">
           <ActivityFeed />
         </div>
       </div>

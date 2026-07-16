@@ -6,11 +6,9 @@ import {
   KeyRound,
   CreditCard,
   Menu,
-  X,
   ChevronRight,
   BookOpen,
   LogOut,
-  FileText,
 } from 'lucide-react';
 import Overview from './pages/Overview';
 import ApiKeys from './pages/ApiKeys';
@@ -19,28 +17,14 @@ import Landing from './pages/AuraLanding';
 import Docs from './pages/Docs';
 import Auth from './pages/Auth';
 import { useSession, signOut } from './lib/auth';
-
-// ─── Logo Mark ───
-
-function LogoMark({ className = 'w-5 h-5', style }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg viewBox="0 0 256 256" fill="currentColor" className={className} style={style} aria-hidden>
-      <path d="M 0 128 C 70.692 128 128 185.308 128 256 L 64 256 C 64 220.654 35.346 192 0 192 Z M 256 192 C 220.654 192 192 220.654 192 256 L 128 256 C 128 185.308 185.308 128 256 128 Z M 128 0 C 128 70.692 70.692 128 0 128 L 0 64 C 35.346 64 64 35.346 64 0 Z M 192 0 C 192 35.346 220.654 64 256 64 L 256 128 C 185.308 128 128 70.692 128 0 Z" />
-    </svg>
-  );
-}
+import { LogoMark, AmbientBg, LoadingScreen } from './components/Brand';
+import { easeOut, pageTransition, fadeUp } from './lib/motion';
 
 // ─── Route protection ───
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
-  if (isPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg-app)] text-[var(--color-text-tertiary)]">
-        Loading…
-      </div>
-    );
-  }
+  if (isPending) return <LoadingScreen label="Checking session…" />;
   if (!session) return <Navigate to="/login" replace />;
   return <>{children}</>;
 }
@@ -64,27 +48,25 @@ function useUser() {
   return user;
 }
 
-// ─── Nav Items ───
-
 const NAV_ITEMS = [
   { path: '/dashboard', label: 'Overview', icon: Grid3x3 },
   { path: '/dashboard/api-keys', label: 'API Keys', icon: KeyRound },
   { path: '/dashboard/billing', label: 'Billing', icon: CreditCard },
 ];
 
-// ─── Sidebar ───
-
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation();
 
   return (
-    <aside className="flex h-full w-60 flex-col border-r" style={{ borderColor: 'var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
-      <Link to="/" className="flex items-center gap-2.5 px-5 pt-5 pb-4 link" onClick={onNavigate}>
+    <aside className="sidebar-panel flex h-full w-60 flex-col">
+      <Link to="/" className="flex items-center gap-2.5 px-5 pt-5 pb-4" onClick={onNavigate}>
         <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>AgentAPI</span>
+        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+          Agent API
+        </span>
       </Link>
 
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="flex-1 space-y-1 px-3" aria-label="Dashboard">
         {NAV_ITEMS.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -93,31 +75,18 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               key={item.path}
               to={item.path}
               onClick={onNavigate}
-              className="relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2"
-              style={{
-                transitionDuration: 'var(--dur-fast)',
-                transitionTimingFunction: 'var(--ease-out)',
-                color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-secondary)',
-                background: isActive ? 'var(--color-accent-subtle)' : 'transparent',
-              }}
-              onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.background = 'var(--color-bg-hover)'; e.currentTarget.style.color = 'var(--color-text-primary)'; } }}
-              onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--color-text-secondary)'; } }}
+              className={`nav-item ${isActive ? 'nav-item-active' : ''}`}
             >
-              {isActive && (
-                <span
-                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 rounded-r-full"
-                  style={{ background: 'var(--color-accent-base)' }}
-                />
-              )}
-              <Icon className="w-4 h-4" style={{ color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)' }} />
+              <Icon className="w-4 h-4 shrink-0" strokeWidth={1.75} />
               {item.label}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t px-5 py-4" style={{ borderColor: 'var(--color-border-subtle)' }}>
+      <div className="border-t px-5 py-4 space-y-2" style={{ borderColor: 'var(--color-border-subtle)' }}>
         <button
+          type="button"
           onClick={async () => {
             await signOut();
             window.location.href = '/';
@@ -128,34 +97,36 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           <LogOut className="w-3.5 h-3.5" />
           Sign out
         </button>
-        <Link to="/docs" className="mt-2 flex items-center gap-2 text-xs link" style={{ color: 'var(--color-text-tertiary)' }} onClick={onNavigate}>
+        <Link
+          to="/docs"
+          className="flex items-center gap-2 text-xs link"
+          style={{ color: 'var(--color-text-tertiary)' }}
+          onClick={onNavigate}
+        >
           <BookOpen className="w-3.5 h-3.5" />
           API Docs
         </Link>
-        <p className="mt-1.5 text-[10px] font-medium tracking-wider uppercase" style={{ color: 'var(--color-text-disabled)' }}>v0.1</p>
+        <p className="text-[10px] font-medium tracking-wider uppercase" style={{ color: 'var(--color-text-disabled)' }}>
+          v0.1
+        </p>
       </div>
     </aside>
   );
 }
 
-// ─── Mobile Header ───
-
 function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
   return (
-    <div
-      className="fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between border-b px-4 lg:hidden"
-      style={{
-        borderColor: 'var(--color-border-subtle)',
-        background: 'var(--color-bg-app)',
-      }}
-    >
+    <div className="glass-nav fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between px-4 lg:hidden">
       <Link to="/" className="flex items-center gap-2">
         <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>AgentAPI</span>
+        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+          Agent API
+        </span>
       </Link>
       <button
+        type="button"
         onClick={onMenuOpen}
-        className="flex h-9 w-9 items-center justify-center rounded-lg interactive"
+        className="flex h-9 w-9 items-center justify-center rounded-md interactive"
         style={{ color: 'var(--color-text-secondary)' }}
         aria-label="Open menu"
       >
@@ -164,8 +135,6 @@ function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
     </div>
   );
 }
-
-// ─── Mobile Sidebar Overlay ───
 
 function MobileSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
@@ -176,17 +145,17 @@ function MobileSidebar({ open, onClose }: { open: boolean; onClose: () => void }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.2, ease: easeOut }}
             className="fixed inset-0 z-50 lg:hidden"
-            style={{ background: 'oklch(0 0 0 / 0.6)' }}
+            style={{ background: 'oklch(0 0 0 / 0.55)' }}
             onClick={onClose}
           />
           <motion.div
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-y-0 left-0 z-50 lg:hidden"
+            transition={{ duration: 0.28, ease: easeOut }}
+            className="fixed inset-y-0 left-0 z-50 lg:hidden shadow-[var(--shadow-lg)]"
           >
             <Sidebar onNavigate={onClose} />
           </motion.div>
@@ -196,86 +165,73 @@ function MobileSidebar({ open, onClose }: { open: boolean; onClose: () => void }
   );
 }
 
-// ─── User Bar ───
-
 function UserBar({ user }: { user: UserInfo | null }) {
   if (!user) return null;
   return (
-    <div
-      className="mb-6 flex items-center gap-3 rounded-xl px-4 py-3 surface"
-      style={{ background: 'var(--color-bg-elevated)' }}
+    <motion.div
+      className="mb-6 flex items-center gap-3 surface surface-glow px-4 py-3"
+      initial={fadeUp.initial}
+      animate={fadeUp.animate}
+      transition={{ duration: 0.35, ease: easeOut }}
     >
       <div
-        className="flex h-8 w-8 items-center justify-center rounded-full"
+        className="relative flex h-9 w-9 items-center justify-center rounded-full"
         style={{ background: 'var(--color-accent-subtle)' }}
       >
-        <span className="text-xs font-bold" style={{ color: 'var(--color-accent-base)' }}>{user.tier.charAt(0).toUpperCase()}</span>
+        <span className="text-xs font-bold" style={{ color: 'var(--color-accent-base)' }}>
+          {user.tier.charAt(0).toUpperCase()}
+        </span>
+        <span className="signal-dot absolute -right-0.5 -top-0.5" />
       </div>
       <div>
-        <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>{user.tier.charAt(0).toUpperCase() + user.tier.slice(1)} Plan</p>
-        <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>{user.queries_per_month.toLocaleString()} queries this month</p>
+        <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
+          {user.tier.charAt(0).toUpperCase() + user.tier.slice(1)} plan
+        </p>
+        <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+          {user.queries_per_month.toLocaleString()} queries this month
+        </p>
       </div>
-      <Link
-        to="/dashboard/billing"
-        className="ml-auto flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium btn-ghost"
-      >
+      <Link to="/dashboard/billing" className="ml-auto btn btn-ghost text-xs" style={{ padding: '0.375rem 0.75rem' }}>
         Manage
         <ChevronRight className="w-3 h-3" />
       </Link>
-    </div>
+    </motion.div>
   );
 }
-
-// ─── Dashboard Layout ───
-
-// ─── Page transition variants ───
-
-const pageVariants = {
-  initial: { opacity: 0, y: 12 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
-};
 
 function DashboardLayout() {
   const user = useUser();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    return () => {
       document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
+    };
   }, [mobileMenuOpen]);
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
-      {/* Desktop sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
+    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+      <AmbientBg intensity="subtle" />
+
+      <div className="relative z-10 hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
         <Sidebar />
       </div>
 
-      {/* Mobile header */}
       <MobileHeader onMenuOpen={() => setMobileMenuOpen(true)} />
-
-      {/* Mobile sidebar */}
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
-      {/* Main content */}
-      <main className="min-h-screen lg:ml-60">
-        <div className="mx-auto max-w-5xl px-4 pt-20 pb-12 lg:px-8 lg:pt-8 xl:max-w-6xl 2xl:max-w-7xl 3xl:max-w-[calc(100vw-18rem)]">
+      <main className="relative z-10 min-h-screen lg:ml-60">
+        <div className="mx-auto max-w-5xl px-4 pt-20 pb-12 lg:px-8 lg:pt-8 xl:max-w-6xl 2xl:max-w-7xl">
           <UserBar user={user} />
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              initial={fadeUp.initial}
+              animate={fadeUp.animate}
+              exit={fadeUp.exit}
+              transition={pageTransition}
             >
               <Routes location={location}>
                 <Route index element={<Overview />} />
@@ -289,8 +245,6 @@ function DashboardLayout() {
     </div>
   );
 }
-
-// ─── App ───
 
 export default function App() {
   return (

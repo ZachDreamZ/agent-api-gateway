@@ -722,10 +722,16 @@ a.sr-only:focus {
   transition: opacity var(--dur-fast) var(--ease-out);
   min-height: 0.25rem;
   transform-origin: bottom;
+  animation: bar-rise 0.55s var(--ease-out) both;
 }
 
 .chart-bar:hover {
   opacity: 0.85;
+}
+
+@keyframes bar-rise {
+  from { transform: scaleY(0); opacity: 0.4; }
+  to { transform: scaleY(1); opacity: 1; }
 }
 
 /* ─── Page Header ────────────────────────────────────────────────────────── */
@@ -782,6 +788,129 @@ a.sr-only:focus {
   opacity: 0.35;
 }
 
+/* ─── Ambient orbs (signal plate atmosphere) ─────────────────────────────── */
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform, opacity;
+}
+
+.ambient-orb-a {
+  width: min(52vw, 520px);
+  height: min(52vw, 520px);
+  top: -12%;
+  left: 15%;
+  background: oklch(0.74 0.12 195 / 0.18);
+  animation: orb-drift-a 18s ease-in-out infinite alternate;
+}
+
+.ambient-orb-b {
+  width: min(40vw, 420px);
+  height: min(40vw, 420px);
+  bottom: 5%;
+  right: 8%;
+  background: oklch(0.55 0.1 255 / 0.22);
+  animation: orb-drift-b 22s ease-in-out infinite alternate;
+}
+
+@keyframes orb-drift-a {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(8%, 12%) scale(1.08); }
+}
+
+@keyframes orb-drift-b {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-10%, -8%) scale(1.12); }
+}
+
+/* ─── Signal pulse (live badge / status) ─────────────────────────────────── */
+
+.signal-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background: var(--color-accent-base);
+  box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0.45);
+  animation: signal-pulse 2.2s ease-out infinite;
+}
+
+@keyframes signal-pulse {
+  0% { box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0.45); }
+  70% { box-shadow: 0 0 0 8px oklch(0.74 0.12 195 / 0); }
+  100% { box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0); }
+}
+
+/* ─── Glass / frosted chrome ─────────────────────────────────────────────── */
+
+.glass-nav {
+  background: oklch(0.145 0.018 255 / 0.82);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.sidebar-panel {
+  background: var(--color-bg-surface);
+  border-right: 1px solid var(--color-border-subtle);
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: background var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out);
+}
+
+.nav-item:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.nav-item-active {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent-base);
+}
+
+.nav-item-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 1rem;
+  border-radius: 0 2px 2px 0;
+  background: var(--color-accent-base);
+}
+
+/* ─── Card glow on focus-within / interactive highlight ──────────────────── */
+
+.surface-glow:hover,
+.surface-glow:focus-within {
+  border-color: oklch(0.74 0.12 195 / 0.35);
+  box-shadow: var(--shadow-glow);
+}
+
+/* ─── Spinner uses accent ────────────────────────────────────────────────── */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 0.7s linear infinite;
+}
+
 /* ─── Focus visible (global) ─────────────────────────────────────────────── */
 
 *:focus-visible {
@@ -810,5 +939,12 @@ a.sr-only:focus {
   .btn:active,
   .interactive:active {
     transform: none !important;
+  }
+
+  .ambient-orb-a,
+  .ambient-orb-b,
+  .signal-dot,
+  .chart-bar {
+    animation: none !important;
   }
 }
