@@ -35,24 +35,30 @@ export default function Auth() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0c0c0c] px-4 text-white">
+    <div
+      className="flex min-h-screen items-center justify-center px-4"
+      style={{ background: 'var(--color-bg-app)' }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-sm rounded-2xl glass-card p-8 shadow-2xl"
+        className="w-full max-w-sm surface-elevated p-8"
       >
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold tracking-tight">
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
             {mode === 'signin' ? 'Welcome back' : 'Create your account'}
           </h1>
-          <p className="mt-1 text-sm text-white/50">
+          <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
             {mode === 'signin' ? 'Sign in to manage your API keys' : 'Start building with the Agent API'}
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+          <div
+            className="mb-4 rounded-lg px-3 py-2 text-sm"
+            style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}
+          >
             {error}
           </div>
         )}
@@ -60,32 +66,38 @@ export default function Auth() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'signup' && (
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-white/60">Name</label>
+              <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                Name
+              </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Jane Doe"
                 required
-                className="w-full rounded-lg bg-white/5 px-3 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/50"
+                className="input"
               />
             </div>
           )}
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-white/60">Email</label>
+            <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              className="w-full rounded-lg bg-white/5 px-3 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/50"
+              className="input"
             />
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-white/60">Password</label>
+            <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -93,17 +105,20 @@ export default function Auth() {
               placeholder="••••••••"
               required
               minLength={8}
-              className="w-full rounded-lg bg-white/5 px-3 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-white/30 focus:border-brand-400/50 focus:ring-1 focus:ring-brand-400/50"
+              className="input"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-brand-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 disabled:opacity-50"
+            className="btn btn-primary w-full"
           >
             {loading ? (
-              <span className="mx-auto block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              <span
+                className="mx-auto block h-4 w-4 animate-spin rounded-full border-2"
+                style={{ borderColor: 'var(--color-text-tertiary)', borderTopColor: 'white' }}
+              />
             ) : mode === 'signin' ? (
               'Sign in'
             ) : (
@@ -112,21 +127,21 @@ export default function Auth() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-white/40">
+        <p className="mt-6 text-center text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
           {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
           <button
             onClick={() => {
               setMode(mode === 'signin' ? 'signup' : 'signin');
               setError(null);
             }}
-            className="font-medium text-brand-400 hover:text-brand-300"
+            className="font-medium link-accent"
           >
             {mode === 'signin' ? 'Sign up' : 'Sign in'}
           </button>
         </p>
 
         <div className="mt-4 text-center">
-          <Link to="/" className="text-xs text-white/30 hover:text-white/50">
+          <Link to="/" className="text-xs link" style={{ color: 'var(--color-text-disabled)' }}>
             ← Back to home
           </Link>
         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
+import { Check, X, Star, ExternalLink } from 'lucide-react';
 
 // ─── Types ───
 
@@ -24,43 +25,6 @@ interface CurrentPlan {
   features: { text: string; included: boolean }[];
 }
 
-// ─── Icons ───
-
-function IconCheck({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  );
-}
-
-function IconX({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
-
-function IconStar({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>
-  );
-}
-
-function IconExternalLink({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-      <polyline points="15 3 21 3 21 9" />
-      <line x1="10" y1="14" x2="21" y2="3" />
-    </svg>
-  );
-}
-
 // ─── Plan Card ───
 
 function PlanCard({
@@ -79,39 +43,40 @@ function PlanCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`relative flex flex-col overflow-hidden rounded-2xl glass-card transition-all ${
-        tier.highlighted
-          ? 'border-brand-500/40 shadow-lg shadow-brand-900/20'
-          : 'glass-card-hover'
-      }`}
+      className="surface-elevated flex flex-col overflow-hidden"
+      style={{
+        borderColor: tier.highlighted ? 'var(--color-accent-base)' : undefined,
+      }}
     >
       {/* Highlighted badge */}
       {tier.highlighted && (
-        <div className="flex items-center justify-center gap-1.5 bg-brand-600/20 px-4 py-2 text-xs font-semibold text-brand-400">
-          <IconStar className="w-3 h-3" />
+        <div
+          className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold"
+          style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+        >
+          <Star className="w-3 h-3" />
           Most Popular
         </div>
       )}
 
       <div className="flex flex-1 flex-col p-6">
-        {/* Header */}
         <div className="mb-4">
-          <h3 className="text-lg font-bold text-white">{tier.name}</h3>
-          <p className="mt-1 text-sm text-white/50">{tier.description}</p>
+          <h3 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>{tier.name}</h3>
+          <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{tier.description}</p>
         </div>
 
         {/* Price */}
         <div className="mb-6">
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold tracking-tight text-white">{tier.price}</span>
+            <span className="text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{tier.price}</span>
             {tier.price_monthly > 0 && (
-              <span className="text-sm text-white/40">/month</span>
+              <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>/month</span>
             )}
           </div>
           {tier.price_monthly > 0 && (
-            <p className="mt-1 text-xs text-white/30">
+            <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>
               ${(tier.price_monthly * 12).toLocaleString()}/year billed annually
             </p>
           )}
@@ -122,11 +87,11 @@ function PlanCard({
           {tier.features.map((f, i) => (
             <li key={i} className="flex items-start gap-2.5 text-sm">
               {f.included ? (
-                <IconCheck className="mt-0.5 w-4 h-4 flex-shrink-0 text-emerald-400" />
+                <Check className="mt-0.5 w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-success)' }} />
               ) : (
-                <IconX className="mt-0.5 w-4 h-4 flex-shrink-0 text-white/20" />
+                <X className="mt-0.5 w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-text-disabled)' }} />
               )}
-              <span className={f.included ? 'text-white/70' : 'text-white/25'}>
+              <span style={{ color: f.included ? 'var(--color-text-secondary)' : 'var(--color-text-disabled)' }}>
                 {f.text}
               </span>
             </li>
@@ -137,13 +102,7 @@ function PlanCard({
         <button
           onClick={() => onSelect(tier.id)}
           disabled={isCurrent || isFree || loading}
-          className={`w-full rounded-xl py-3 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 disabled:opacity-50 ${
-            isCurrent
-              ? 'glass-card text-white/50 cursor-default'
-              : tier.highlighted
-                ? 'bg-brand-600 text-white hover:bg-brand-500 hover:shadow-lg hover:shadow-brand-600/25'
-                : 'glass-card text-white/70 hover:bg-white/5 hover:text-white'
-          }`}
+          className={`btn w-full ${isCurrent ? 'btn-secondary cursor-default' : tier.highlighted ? 'btn-primary' : 'btn-secondary'}`}
         >
           {isCurrent ? 'Current Plan' : isFree ? 'Free Forever' : 'Upgrade'}
         </button>
@@ -158,19 +117,19 @@ function UsageBar({ used, limit, label }: { used: number; limit: number; label: 
   const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 0;
 
   return (
-    <div className="rounded-xl glass-card p-5">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm font-medium text-white/70">{label}</span>
-        <span className="text-xs text-white/40">
+    <div className="stat-card">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>{label}</span>
+        <span className="text-xs tabular-nums" style={{ color: 'var(--color-text-tertiary)' }}>
           {used.toLocaleString()} / {limit.toLocaleString()}
         </span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+      <div className="progress-bar">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
-          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="h-full rounded-full bg-brand-500"
+          transition={{ delay: 0.2, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="progress-fill"
         />
       </div>
     </div>
@@ -279,13 +238,7 @@ export default function Billing() {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.1 }}
-            className="h-96 animate-pulse rounded-2xl bg-white/5"
-          />
+          <div key={i} className="surface skeleton" style={{ height: '24rem' }} />
         ))}
       </div>
     );
@@ -294,23 +247,24 @@ export default function Billing() {
   if (tiers.length === 0) {
     return (
       <div className="space-y-6">
-        <div className="rounded-xl glass-card p-6">
-          <h2 className="mb-2 text-lg font-bold text-white">Current Plan</h2>
+        <div className="surface p-6">
+          <h2 className="mb-2 text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>Current Plan</h2>
           {current ? (
             <div className="flex items-center gap-3">
-              <span className="rounded-full bg-brand-600/20 px-3 py-1 text-sm font-medium text-brand-400 uppercase">
-                {current.tier}
-              </span>
-              <span className="text-sm text-white/40">{current.price}</span>
+              <span className="badge badge-active uppercase">{current.tier}</span>
+              <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{current.price}</span>
             </div>
           ) : (
-            <p className="text-sm text-white/40">Loading plan info...</p>
+            <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Loading plan info...</p>
           )}
         </div>
 
-        <div className="rounded-xl border border-dashed border-white/10 p-12 text-center">
-          <p className="text-sm text-white/40">Pricing data unavailable</p>
-          <p className="mt-1 text-xs text-white/30">Start the API server and ensure Stripe is configured</p>
+        <div
+          className="rounded-xl p-12 text-center"
+          style={{ border: '1px dashed var(--color-border-default)' }}
+        >
+          <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Pricing data unavailable</p>
+          <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>Start the API server and ensure Stripe is configured</p>
         </div>
       </div>
     );
@@ -320,28 +274,23 @@ export default function Billing() {
     <div className="space-y-8">
       {/* Current plan bar */}
       {current && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-4 rounded-xl glass-card px-6 py-4 sm:flex-row sm:items-center sm:justify-between"
-        >
+        <div className="surface p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-sm text-white/40">Current plan:</span>
-            <span className="rounded-full bg-brand-600/20 px-3 py-1 text-sm font-medium text-brand-400 uppercase">
-              {current.tier}
-            </span>
-            <span className="text-sm text-white/40">{current.price}</span>
+            <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Current plan:</span>
+            <span className="badge badge-active uppercase">{current.tier}</span>
+            <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{current.price}</span>
           </div>
           {current.stripe_customer_id && (
             <button
               onClick={handlePortal}
-              className="inline-flex items-center gap-2 rounded-lg glass-card px-4 py-2 text-sm font-medium text-white/60 transition-all hover:bg-white/5 hover:text-white/80"
+              className="btn btn-secondary"
+              style={{ fontSize: '0.8125rem' }}
             >
               Manage Subscription
-              <IconExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3.5 h-3.5" />
             </button>
           )}
-        </motion.div>
+        </div>
       )}
 
       {/* Usage */}
@@ -352,18 +301,14 @@ export default function Billing() {
       />
 
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl glass-card border-red-500/20 px-4 py-3 text-sm text-red-400"
-        >
+        <div className="rounded-xl px-4 py-3 text-sm" style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}>
           {error}
-        </motion.div>
+        </div>
       )}
 
       {/* Plans grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {tiers.map((tier, i) => (
+        {tiers.map((tier) => (
           <PlanCard
             key={tier.id}
             tier={tier}

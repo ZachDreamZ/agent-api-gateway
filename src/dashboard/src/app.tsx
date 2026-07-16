@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import {
+  Grid3x3,
+  KeyRound,
+  CreditCard,
+  Menu,
+  X,
+  ChevronRight,
+  BookOpen,
+  LogOut,
+  FileText,
+} from 'lucide-react';
 import Overview from './pages/Overview';
 import ApiKeys from './pages/ApiKeys';
 import Billing from './pages/Billing';
@@ -9,76 +20,7 @@ import Docs from './pages/Docs';
 import Auth from './pages/Auth';
 import { useSession, signOut } from './lib/auth';
 
-// ─── SVG Icons ───
-
-function IconOverview({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="3" y="3" width="7" height="7" rx="1.5" />
-      <rect x="14" y="3" width="7" height="7" rx="1.5" />
-      <rect x="3" y="14" width="7" height="7" rx="1.5" />
-      <rect x="14" y="14" width="7" height="7" rx="1.5" />
-    </svg>
-  );
-}
-
-function IconKeys({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
-    </svg>
-  );
-}
-
-function IconBilling({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="2" y="5" width="20" height="14" rx="2" />
-      <path d="M2 10h20" />
-    </svg>
-  );
-}
-
-function IconDocs({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
-      <polyline points="10 9 9 9 8 9" />
-    </svg>
-  );
-}
-
-function IconMenu({ className = 'w-5 h-5' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  );
-}
-
-function IconClose({ className = 'w-5 h-5' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <line x1="18" y1="6" x2="6" y2="18" />
-      <line x1="6" y1="6" x2="18" y2="18" />
-    </svg>
-  );
-}
-
-function IconChevronRight({ className = 'w-4 h-4' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <polyline points="9 18 15 12 9 6" />
-    </svg>
-  );
-}
-
-// ─── SVG Logo Mark ───
+// ─── Logo Mark ───
 
 function LogoMark({ className = 'w-5 h-5' }: { className?: string }) {
   return (
@@ -88,15 +30,13 @@ function LogoMark({ className = 'w-5 h-5' }: { className?: string }) {
   );
 }
 
-// ─── User Info ───
-
 // ─── Route protection ───
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
   if (isPending) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0c0c0c] text-white/40">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg-app)] text-[var(--color-text-tertiary)]">
         Loading…
       </div>
     );
@@ -127,9 +67,9 @@ function useUser() {
 // ─── Nav Items ───
 
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Overview', icon: IconOverview },
-  { path: '/dashboard/api-keys', label: 'API Keys', icon: IconKeys },
-  { path: '/dashboard/billing', label: 'Billing', icon: IconBilling },
+  { path: '/dashboard', label: 'Overview', icon: Grid3x3 },
+  { path: '/dashboard/api-keys', label: 'API Keys', icon: KeyRound },
+  { path: '/dashboard/billing', label: 'Billing', icon: CreditCard },
 ];
 
 // ─── Sidebar ───
@@ -138,10 +78,10 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation();
 
   return (
-    <aside className="flex h-full w-60 flex-col border-r border-white/10 bg-[#0c0c0c]">
-      <Link to="/" className="flex items-center gap-2.5 px-5 pt-5 pb-4 text-white/50 hover:text-white transition-colors" onClick={onNavigate}>
-        <LogoMark className="w-5 h-5 text-brand-400" />
-        <span className="text-sm font-semibold tracking-tight">AgentAPI</span>
+    <aside className="flex h-full w-60 flex-col border-r" style={{ borderColor: 'var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
+      <Link to="/" className="flex items-center gap-2.5 px-5 pt-5 pb-4 link" onClick={onNavigate}>
+        <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
+        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>AgentAPI</span>
       </Link>
 
       <nav className="flex-1 space-y-1 px-3">
@@ -153,42 +93,40 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               key={item.path}
               to={item.path}
               onClick={onNavigate}
-              className={`group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 ${
-                isActive
-                  ? 'bg-brand-600/15 text-brand-400'
-                  : 'text-white/50 hover:bg-white/5 hover:text-white/70'
-              }`}
+              className="relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2"
+              style={{
+                transitionDuration: 'var(--dur-fast)',
+                transitionTimingFunction: 'var(--ease-out)',
+                color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-secondary)',
+                background: isActive ? 'var(--color-accent-subtle)' : 'transparent',
+              }}
+              onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.background = 'var(--color-bg-hover)'; e.currentTarget.style.color = 'var(--color-text-primary)'; } }}
+              onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--color-text-secondary)'; } }}
             >
-              <Icon className={`w-4 h-4 transition-colors ${isActive ? 'text-brand-400' : 'text-white/30 group-hover:text-white/50'}`} />
+              <Icon className="w-4 h-4" style={{ color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)' }} />
               {item.label}
-              {isActive && (
-                <motion.div
-                  layoutId="sidebar-active"
-                  className="absolute left-0 w-0.5 h-5 rounded-r bg-brand-400"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              )}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-white/10 px-5 py-4">
+      <div className="border-t px-5 py-4" style={{ borderColor: 'var(--color-border-subtle)' }}>
         <button
           onClick={async () => {
             await signOut();
             window.location.href = '/';
           }}
-          className="flex w-full items-center gap-2 text-xs text-white/40 transition-colors hover:text-white/70"
+          className="flex w-full items-center gap-2 text-xs link"
+          style={{ color: 'var(--color-text-tertiary)' }}
         >
-          <IconDocs className="w-3.5 h-3.5" />
+          <LogOut className="w-3.5 h-3.5" />
           Sign out
         </button>
-        <Link to="/docs" className="mt-2 flex items-center gap-2 text-xs text-white/40 hover:text-white/70 transition-colors" onClick={onNavigate}>
-          <IconDocs className="w-3.5 h-3.5" />
+        <Link to="/docs" className="mt-2 flex items-center gap-2 text-xs link" style={{ color: 'var(--color-text-tertiary)' }} onClick={onNavigate}>
+          <BookOpen className="w-3.5 h-3.5" />
           API Docs
         </Link>
-        <p className="mt-1.5 text-[10px] text-white/20 font-medium tracking-wider uppercase">v0.1</p>
+        <p className="mt-1.5 text-[10px] font-medium tracking-wider uppercase" style={{ color: 'var(--color-text-disabled)' }}>v0.1</p>
       </div>
     </aside>
   );
@@ -198,17 +136,24 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
 function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between border-b border-white/10 bg-[#0c0c0c]/80 px-4 backdrop-blur-xl lg:hidden">
+    <div
+      className="fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between border-b px-4 lg:hidden"
+      style={{
+        borderColor: 'var(--color-border-subtle)',
+        background: 'var(--color-bg-app)',
+      }}
+    >
       <Link to="/" className="flex items-center gap-2">
-        <LogoMark className="w-5 h-5 text-brand-400" />
-        <span className="text-sm font-semibold tracking-tight text-white">AgentAPI</span>
+        <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
+        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>AgentAPI</span>
       </Link>
       <button
         onClick={onMenuOpen}
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 hover:bg-white/5 hover:text-white transition-colors"
+        className="flex h-9 w-9 items-center justify-center rounded-lg interactive"
+        style={{ color: 'var(--color-text-secondary)' }}
         aria-label="Open menu"
       >
-        <IconMenu />
+        <Menu className="w-5 h-5" />
       </button>
     </div>
   );
@@ -225,15 +170,16 @@ function MobileSidebar({ open, onClose }: { open: boolean; onClose: () => void }
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-50 lg:hidden"
+            style={{ background: 'oklch(0 0 0 / 0.6)' }}
             onClick={onClose}
           />
           <motion.div
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-y-0 left-0 z-50 lg:hidden"
           >
             <Sidebar onNavigate={onClose} />
@@ -249,27 +195,28 @@ function MobileSidebar({ open, onClose }: { open: boolean; onClose: () => void }
 function UserBar({ user }: { user: UserInfo | null }) {
   if (!user) return null;
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="mb-6 flex items-center gap-3 rounded-xl glass-card px-4 py-3"
+    <div
+      className="mb-6 flex items-center gap-3 rounded-xl px-4 py-3 surface"
+      style={{ background: 'var(--color-bg-elevated)' }}
     >
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-600/20">
-        <span className="text-xs font-bold text-brand-400">{user.tier.charAt(0).toUpperCase()}</span>
+      <div
+        className="flex h-8 w-8 items-center justify-center rounded-full"
+        style={{ background: 'var(--color-accent-subtle)' }}
+      >
+        <span className="text-xs font-bold" style={{ color: 'var(--color-accent-base)' }}>{user.tier.charAt(0).toUpperCase()}</span>
       </div>
       <div>
-        <p className="text-sm font-medium text-white">{user.tier.charAt(0).toUpperCase() + user.tier.slice(1)} Plan</p>
-        <p className="text-xs text-white/40">{user.queries_per_month.toLocaleString()} queries this month</p>
+        <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>{user.tier.charAt(0).toUpperCase() + user.tier.slice(1)} Plan</p>
+        <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>{user.queries_per_month.toLocaleString()} queries this month</p>
       </div>
       <Link
         to="/dashboard/billing"
-        className="ml-auto flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-white/50 transition-colors hover:bg-white/5 hover:text-white/70"
+        className="ml-auto flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium btn-ghost"
       >
         Manage
-        <IconChevronRight className="w-3 h-3" />
+        <ChevronRight className="w-3 h-3" />
       </Link>
-    </motion.div>
+    </div>
   );
 }
 
@@ -280,7 +227,7 @@ function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0c0c0c] text-white selection:bg-brand-aura/30">
+    <div className="min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex">
         <Sidebar />

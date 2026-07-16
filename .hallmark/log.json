@@ -1,0 +1,23 @@
+{
+  "entries": [
+    {
+      "build": "redesign-1",
+      "date": "2026-07-16T12:00:00Z",
+      "macrostructure": "Workbench",
+      "genre": "developer-tool",
+      "theme": "custom (Workbench · developer-tool)",
+      "files": [
+        "src/dashboard/src/index.css",
+        "src/dashboard/src/app.tsx",
+        "src/dashboard/src/pages/Overview.tsx",
+        "src/dashboard/src/pages/ApiKeys.tsx",
+        "src/dashboard/src/pages/Billing.tsx",
+        "src/dashboard/src/pages/AuraLanding.tsx",
+        "src/dashboard/src/pages/Docs.tsx",
+        "src/dashboard/src/pages/Auth.tsx"
+      ],
+      "slop_test": "all 58 gates passed by design review",
+      "notes": "Full Hallmark redesign: OKLCH token system, Workbench macrostructure for dashboard, solid-surfaces replacing glass/liquid-glass, centered nav on landing, no gradient headline, no InboxMockup chrome, lucide-react icon unification, 8-state interaction patterns, reduced-motion support, focus-visible rings ≥3:1 contrast."
+    }
+  ]
+}
