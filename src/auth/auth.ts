@@ -31,6 +31,11 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+      strategy: 'jwe',
+    },
   },
   trustedOrigins: [
     'http://localhost:3000',
@@ -38,6 +43,80 @@ export const auth = betterAuth({
     'https://agent-api-gateway.onrender.com',
     'https://agentapigw.dpdns.org',
   ],
+
+  // ─── Rate limiting (database-backed) ───
+  rateLimit: {
+    enabled: true,
+    storage: 'database',
+    customRules: {
+      '/api/auth/sign-in/email': { window: 60, max: 5 },
+      '/api/auth/sign-up/email': { window: 60, max: 3 },
+    },
+  },
+
+  // ─── Audit logging ───
+  databaseHooks: {
+    session: {
+      create: {
+        after: async ({ data, ctx }) => {
+          console.log(JSON.stringify({
+            event: 'session.created',
+            userId: data.userId,
+            ip: ctx?.request?.headers.get('x-forwarded-for') ?? null,
+            userAgent: ctx?.request?.headers.get('user-agent') ?? null,
+            timestamp: new Date().toISOString(),
+          }));
+        },
+      },
+      delete: {
+        before: async ({ data }) => {
+          console.log(JSON.stringify({
+            event: 'session.revoked',
+            sessionId: data.id,
+            userId: data.userId,
+            timestamp: new Date().toISOString(),
+          }));
+        },
+      },
+    },
+    user: {
+      update: {
+        after: async ({ data, oldData }) => {
+          if (oldData?.email !== data.email) {
+            console.log(JSON.stringify({
+              event: 'user.email_changed',
+              userId: data.id,
+              oldEmail: oldData?.email,
+              newEmail: data.email,
+              timestamp: new Date().toISOString(),
+            }));
+          }
+        },
+      },
+    },
+    account: {
+      create: {
+        after: async ({ data }) => {
+          console.log(JSON.stringify({
+            event: 'account.linked',
+            userId: data.userId,
+            provider: data.providerId,
+            timestamp: new Date().toISOString(),
+          }));
+        },
+      },
+    },
+  },
+
+  // ─── Advanced security ───
+  advanced: {
+    useSecureCookies: true,
+    ipAddress: {
+      ipAddressHeaders: ['x-forwarded-for'],
+      disableIpTracking: false,
+    },
+  },
+
   plugins: [
     apiKey({
       defaultPrefix: 'sk-',
