@@ -9,7 +9,7 @@ import {
 } from '../../shared/types.js';
 import type { Cache } from '../lib/cache.js';
 import { getCache } from '../lib/cache.js';
-import { getSupabase } from '../lib/supabase.js';
+import { getMonthlyCreditsUsed, logUsage } from '../lib/usage-db.js';
 import { runExtractionPipeline } from '../../scraper/index.js';
 
 // ─── Zod Schemas ───
@@ -26,49 +26,7 @@ const extractBodySchema = z.object({
     .optional(),
 });
 
-// ─── Helpers ───
 
-async function getMonthlyCreditsUsed(userId: string): Promise<number> {
-  const supabase = getSupabase();
-  const { data, error } = await supabase
-    .from('usage_logs')
-    .select('credits_used')
-    .gte('created_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString())
-    .eq('user_id', userId);
-
-  if (error) {
-    console.error('[quota] query failed:', error);
-    return 0;
-  }
-
-  return (data ?? []).reduce((sum: number, row: { credits_used?: number }) => sum + (row.credits_used ?? 0), 0);
-}
-
-async function logUsage(opts: {
-  userId: string;
-  apiKeyId: string;
-  endpoint: string;
-  schema: string;
-  url: string;
-  cached: boolean;
-  latencyMs: number;
-  creditsUsed: number;
-}): Promise<void> {
-  const supabase = getSupabase();
-  const { error } = await supabase.from('usage_logs').insert({
-    user_id: opts.userId,
-    api_key_id: opts.apiKeyId,
-    endpoint: opts.endpoint,
-    schema: opts.schema,
-    url: opts.url,
-    cached: opts.cached,
-    latency_ms: opts.latencyMs,
-    credits_used: opts.creditsUsed,
-  });
-  if (error) {
-    console.error('[usage] log insert failed:', error);
-  }
-}
 
 // ─── Routes ───
 
@@ -111,7 +69,7 @@ router.post('/', zValidator('json', extractBodySchema), async (c) => {
       // Log cache-hit usage
       await logUsage({
         userId: user.id,
-        apiKeyId: apiKey.id,
+        apiKeyId: apiKey?.id,
         endpoint,
         schema: body.schema,
         url: body.url,
@@ -146,7 +104,7 @@ router.post('/', zValidator('json', extractBodySchema), async (c) => {
     // Log usage
     await logUsage({
       userId: user.id,
-      apiKeyId: apiKey.id,
+      apiKeyId: apiKey?.id,
       endpoint,
       schema: body.schema,
       url: body.url,

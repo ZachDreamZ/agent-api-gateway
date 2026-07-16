@@ -53,34 +53,39 @@ export async function runMigration(): Promise<void> {
       )
     `);
 
-    const migrationName = '001_better_auth';
-    const { rows } = await pool.query(
-      'SELECT 1 FROM _migration_history WHERE name = $1',
-      [migrationName],
-    );
+    const MIGRATIONS = [
+      { name: '001_better_auth', file: 'better-auth.sql' },
+      { name: '002_usage_logs', file: '002_usage_logs.sql' },
+    ];
 
-    if (rows.length > 0) {
-      console.log(`[migrate] "${migrationName}" already applied, skipping`);
-      return;
+    for (const m of MIGRATIONS) {
+      const { rows } = await pool.query(
+        'SELECT 1 FROM _migration_history WHERE name = $1',
+        [m.name],
+      );
+
+      if (rows.length > 0) {
+        console.log(`[migrate] "${m.name}" already applied, skipping`);
+        continue;
+      }
+
+      const sqlPath = join(__dirname, '..', '..', '..', 'supabase', m.file);
+      if (!existsSync(sqlPath)) {
+        console.log(`[migrate] Migration file not found at ${sqlPath}, skipping`);
+        continue;
+      }
+
+      const sql = readFileSync(sqlPath, 'utf8');
+      console.log(`[migrate] Running "${m.name}"...`);
+
+      await pool.query(sql);
+      await pool.query(
+        'INSERT INTO _migration_history (name) VALUES ($1)',
+        [m.name],
+      );
+
+      console.log(`[migrate] "${m.name}" applied successfully`);
     }
-
-    // Read and execute migration SQL
-    const sqlPath = join(__dirname, '..', '..', '..', 'supabase', 'better-auth.sql');
-    if (!existsSync(sqlPath)) {
-      console.log(`[migrate] Migration file not found at ${sqlPath}, skipping`);
-      return;
-    }
-
-    const sql = readFileSync(sqlPath, 'utf8');
-    console.log('[migrate] Running migration...');
-
-    await pool.query(sql);
-    await pool.query(
-      'INSERT INTO _migration_history (name) VALUES ($1)',
-      [migrationName],
-    );
-
-    console.log('[migrate] Migration applied successfully');
   } catch (err) {
     console.error('[migrate] Migration failed:', err instanceof Error ? err.message : String(err));
     if (err instanceof Error && err.stack) {
