@@ -6,10 +6,19 @@ import type { Tier } from '@shared/types';
 // cookie (dashboard) or a Bearer API key (programmatic clients) and exposes
 // the resolved user + tier to downstream routes.
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
-  const session = await auth.api.getSession({
-    headers: c.req.raw.headers,
-    query: { disableCookieCache: true },
-  });
+  let session;
+  try {
+    session = await auth.api.getSession({
+      headers: c.req.raw.headers,
+      query: { disableCookieCache: true },
+    });
+  } catch (err) {
+    console.error('[auth] getSession error:', err instanceof Error ? err.message : String(err));
+    return c.json(
+      { error: 'Unauthorized', detail: err instanceof Error ? err.message : 'Unknown error' },
+      401,
+    );
+  }
 
   if (!session) {
     return c.json(
