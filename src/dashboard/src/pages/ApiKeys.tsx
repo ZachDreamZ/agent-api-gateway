@@ -292,7 +292,7 @@ export default function ApiKeys() {
   const loadKeys = useCallback(async () => {
     try {
       const res = await apiKey.list();
-      setKeys((res.data as ApiKeyItem[]) ?? []);
+      setKeys((res.data?.apiKeys as ApiKeyItem[]) ?? []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load keys');

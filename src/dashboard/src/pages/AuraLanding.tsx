@@ -147,28 +147,61 @@ function Hero() {
   };
 
   return (
-    <section className="pt-32 pb-20 px-6 text-center relative z-10 overflow-hidden">
+    <section className="relative pt-32 pb-20 px-6 text-center z-10 overflow-hidden">
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'radial-gradient(800px circle at 50% -10%, oklch(0.62 0.18 260 / 0.08), transparent 60%)',
+        }}
+      />
       <motion.div
+        className="relative"
         variants={heroVariants}
         initial="hidden"
         animate="visible"
       >
+        <motion.div variants={childVariants} className="mb-4">
+          <span
+            className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold uppercase tracking-widest"
+            style={{
+              background: 'var(--color-accent-subtle)',
+              color: 'var(--color-accent-base)',
+              borderRadius: '9999px',
+              border: '1px solid oklch(0.62 0.18 260 / 0.2)',
+            }}
+          >
+            <Sparkles className="w-3 h-3" />
+            Now in beta
+          </span>
+        </motion.div>
+
         <motion.h1
           variants={childVariants}
-          className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold tracking-tight leading-[0.95] max-w-4xl mx-auto"
+          className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-[0.95] max-w-4xl mx-auto"
           style={{ color: 'var(--color-text-primary)' }}
         >
-          Your API.{" "}
-          <span style={{ color: 'var(--color-accent-base)' }}>Revitalized.</span>
+          One API for{" "}
+          <span
+            style={{
+              background: 'linear-gradient(135deg, var(--color-accent-base) 0%, oklch(0.65 0.22 240) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            structured web data
+          </span>
+          .
         </motion.h1>
 
         <motion.p
           variants={childVariants}
-          className="mt-6 max-w-lg mx-auto text-sm leading-relaxed xl:max-w-xl xl:text-base 2xl:max-w-2xl 2xl:text-lg"
+          className="mt-6 max-w-xl mx-auto text-sm leading-relaxed xl:text-base"
           style={{ color: 'var(--color-text-secondary)' }}
         >
-          One endpoint for structured web data. AI agents send a URL and schema type,
-          get clean JSON back. No parsing, no markdown — just the fields you need.
+          AI agents send a URL and schema type, get clean JSON back.
+          No parsing, no markdown&mdash;just the fields you need.
         </motion.p>
 
         <motion.div
@@ -180,7 +213,7 @@ function Hero() {
               Get Started Free
             </button>
           </Link>
-          <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>1,500 free queries/month · No credit card</span>
+          <span className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>1,500 free queries/month &middot; No credit card</span>
         </motion.div>
       </motion.div>
     </section>
@@ -197,13 +230,17 @@ function ApiDemo() {
         transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="code-block overflow-hidden"
       >
-        {/* Simple header bar — no traffic lights */}
-        <div className="flex items-center gap-3 px-4 py-2.5" style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
-          <Sparkles className="w-4 h-4" style={{ color: 'var(--color-accent-base)' }} />
+        {/* Header bar — traffic-light dots */}
+        <div className="flex items-center gap-3 px-4 py-3" style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
+          <div className="flex gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--color-error)' }} />
+            <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--color-warning)' }} />
+            <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'var(--color-success)' }} />
+          </div>
           <span className="text-xs font-medium" style={{ color: 'var(--color-text-tertiary)' }}>API Playground</span>
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex items-center gap-2">
             <span className="badge badge-active">200 OK</span>
-            <span className="text-[10px]" style={{ color: 'var(--color-text-disabled)' }}>2.3s</span>
+            <span className="text-[10px] tabular-nums" style={{ color: 'var(--color-text-disabled)' }}>2.3s</span>
           </div>
         </div>
 
@@ -211,7 +248,7 @@ function ApiDemo() {
         <div className="grid md:grid-cols-2">
           {/* Request */}
           <div className="p-4" style={{ borderRight: '1px solid var(--color-border-subtle)' }}>
-            <p className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--color-text-tertiary)' }}>Request</p>
+            <p className="text-eyebrow mb-3">Request</p>
             <pre className="text-xs leading-relaxed text-mono" style={{ color: 'var(--color-text-secondary)' }}>
 {`curl -X POST /v1/extract \\
   -H "Authorization: Bearer sk-..." \\
@@ -224,7 +261,7 @@ function ApiDemo() {
 
           {/* Response */}
           <div className="p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--color-text-tertiary)' }}>Response</p>
+            <p className="text-eyebrow mb-3">Response</p>
             <pre className="text-xs leading-relaxed text-mono" style={{ color: 'var(--color-text-secondary)' }}>
 {`{
   "success": true,
@@ -302,8 +339,17 @@ function Features() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="surface surface-hover p-4"
+              className="surface surface-hover relative overflow-hidden"
+              style={{ padding: '1rem' }}
             >
+              {/* Accent bar */}
+              <div
+                className="absolute left-0 top-0 bottom-0 w-0.5 opacity-0"
+                style={{
+                  background: 'var(--color-accent-base)',
+                  transition: 'opacity var(--dur-normal) var(--ease-out)',
+                }}
+              />
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{feat.label}</span>
                 <span className="badge badge-active">{feat.tag}</span>
@@ -346,7 +392,7 @@ function LogoCloud() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: idx * 0.08, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="text-sm font-bold tracking-tight text-center cursor-default"
+            className="flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold tracking-tight cursor-default surface"
             style={{ color: 'var(--color-text-disabled)' }}
           >
             {name}
@@ -383,9 +429,13 @@ function Testimonials() {
       <SectionEyebrow label="From the field" />
       <div className="grid md:grid-cols-3 gap-4">
         {testimonials.map((t, i) => (
-          <div key={i} className="surface p-6">
-            <blockquote className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-              &ldquo;{t.quote}&rdquo;
+          <div key={i} className="surface p-6 relative">
+            {/* Decorative quote mark */}
+            <div className="absolute top-3 right-4 text-4xl leading-none select-none pointer-events-none" style={{ color: 'var(--color-accent-subtle)' }}>
+              &ldquo;
+            </div>
+            <blockquote className="text-sm leading-relaxed relative" style={{ color: 'var(--color-text-secondary)' }}>
+              {t.quote}
             </blockquote>
             <div className="mt-5 pt-4" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
               <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>{t.name}</p>
@@ -509,10 +559,17 @@ function FinalCTA() {
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight leading-[1.02]" style={{ color: 'var(--color-text-primary)' }}>
             Stop parsing HTML.
             <br />
-            <span style={{ color: 'var(--color-accent-base)' }}>Just call the API.</span>
+            <span
+              style={{
+                background: 'linear-gradient(135deg, var(--color-accent-base) 0%, oklch(0.65 0.22 240) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >Just call the API.</span>
           </h2>
           <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            Join thousands of developers who ship structured data products
+            Join developers who ship structured data products
             instead of writing and maintaining scraping pipelines.
           </p>
           <div className="mt-8 flex items-center justify-center gap-4 flex-wrap">

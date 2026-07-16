@@ -103,6 +103,12 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.background = 'var(--color-bg-hover)'; e.currentTarget.style.color = 'var(--color-text-primary)'; } }}
               onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--color-text-secondary)'; } }}
             >
+              {isActive && (
+                <span
+                  className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 rounded-r-full"
+                  style={{ background: 'var(--color-accent-base)' }}
+                />
+              )}
               <Icon className="w-4 h-4" style={{ color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)' }} />
               {item.label}
             </Link>
