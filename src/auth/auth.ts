@@ -58,22 +58,22 @@ export const auth = betterAuth({
   databaseHooks: {
     session: {
       create: {
-        after: async ({ data, ctx }) => {
+        after: async (session, context) => {
           console.log(JSON.stringify({
             event: 'session.created',
-            userId: data.userId,
-            ip: ctx?.request?.headers.get('x-forwarded-for') ?? null,
-            userAgent: ctx?.request?.headers.get('user-agent') ?? null,
+            userId: session.userId,
+            ip: context?.request?.headers?.get('x-forwarded-for') ?? null,
+            userAgent: context?.request?.headers?.get('user-agent') ?? null,
             timestamp: new Date().toISOString(),
           }));
         },
       },
       delete: {
-        before: async ({ data }) => {
+        before: async (session) => {
           console.log(JSON.stringify({
             event: 'session.revoked',
-            sessionId: data.id,
-            userId: data.userId,
+            sessionId: session.id,
+            userId: session.userId,
             timestamp: new Date().toISOString(),
           }));
         },
@@ -81,26 +81,24 @@ export const auth = betterAuth({
     },
     user: {
       update: {
-        after: async ({ data, oldData }) => {
-          if (oldData?.email !== data.email) {
-            console.log(JSON.stringify({
-              event: 'user.email_changed',
-              userId: data.id,
-              oldEmail: oldData?.email,
-              newEmail: data.email,
-              timestamp: new Date().toISOString(),
-            }));
-          }
+        after: async (user) => {
+          console.log(JSON.stringify({
+            event: 'user.updated',
+            userId: user.id,
+            email: user.email,
+            hasTier: !!user.tier,
+            timestamp: new Date().toISOString(),
+          }));
         },
       },
     },
     account: {
       create: {
-        after: async ({ data }) => {
+        after: async (account) => {
           console.log(JSON.stringify({
             event: 'account.linked',
-            userId: data.userId,
-            provider: data.providerId,
+            userId: account.userId,
+            provider: account.providerId,
             timestamp: new Date().toISOString(),
           }));
         },
