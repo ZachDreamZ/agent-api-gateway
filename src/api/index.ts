@@ -146,6 +146,7 @@ app.get('/health', (c) =>
     version: '0.1.0',
     // Public capability flags (no secrets)
     github_oauth: Boolean(process.env['GITHUB_CLIENT_ID'] && process.env['GITHUB_CLIENT_SECRET']),
+    google_oauth: Boolean(process.env['GOOGLE_CLIENT_ID'] && process.env['GOOGLE_CLIENT_SECRET']),
     email_transport: Boolean(process.env['RESEND_API_KEY']),
     email_verification: true,
   }),

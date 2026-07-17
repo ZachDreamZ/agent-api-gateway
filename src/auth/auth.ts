@@ -20,16 +20,50 @@ const githubClientId = process.env.GITHUB_CLIENT_ID?.trim();
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET?.trim();
 const githubOAuthEnabled = Boolean(githubClientId && githubClientSecret);
 
+const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+const googleOAuthEnabled = Boolean(googleClientId && googleClientSecret);
+
+const trustedOAuthProviders = [
+  ...(githubOAuthEnabled ? (['github'] as const) : []),
+  ...(googleOAuthEnabled ? (['google'] as const) : []),
+];
+
 if (githubOAuthEnabled) {
   console.log('[auth] GitHub OAuth enabled');
 } else {
   console.log('[auth] GitHub OAuth disabled (set GITHUB_CLIENT_ID + GITHUB_CLIENT_SECRET)');
 }
 
+if (googleOAuthEnabled) {
+  console.log('[auth] Google OAuth enabled');
+} else {
+  console.log('[auth] Google OAuth disabled (set GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET)');
+}
+
 if (isEmailTransportConfigured()) {
   console.log('[auth] Email transport: Resend');
 } else {
   console.log('[auth] Email transport: dev console (set RESEND_API_KEY for production mail)');
+}
+
+if (!process.env.BETTER_AUTH_SECRET?.trim()) {
+  console.warn('[auth] BETTER_AUTH_SECRET is missing — sessions will not be stable across restarts');
+}
+
+// Build socialProviders only for configured providers
+const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
+if (githubOAuthEnabled) {
+  socialProviders.github = {
+    clientId: githubClientId!,
+    clientSecret: githubClientSecret!,
+  };
+}
+if (googleOAuthEnabled) {
+  socialProviders.google = {
+    clientId: googleClientId!,
+    clientSecret: googleClientSecret!,
+  };
 }
 
 export const auth = betterAuth({
@@ -80,21 +114,24 @@ export const auth = betterAuth({
       }));
     },
   },
-  // GitHub OAuth (developers). Callback: {BETTER_AUTH_URL}/api/auth/callback/github
-  socialProviders: githubOAuthEnabled
-    ? {
-        github: {
-          clientId: githubClientId!,
-          clientSecret: githubClientSecret!,
-          // user:email is requested by Better Auth for GitHub by default
-        },
-      }
-    : {},
+  // Social OAuth. Callbacks: {BETTER_AUTH_URL}/api/auth/callback/{github|google}
+  socialProviders,
   account: {
     accountLinking: {
       enabled: true,
-      trustedProviders: githubOAuthEnabled ? ['github'] : [],
+      // Trusted providers auto-link when the OAuth email matches an existing user.
+      trustedProviders: [...trustedOAuthProviders],
+      // Default true blocks OAuth if the email/password user never verified —
+      // common when Resend was off. OAuth (GitHub/Google) proves the inbox, so
+      // allow linking; a verified OAuth email then marks the user verified.
+      requireLocalEmailVerified: false,
+      updateUserInfoOnLink: true,
     },
+  },
+  // Send users back to the dashboard auth page with a readable error, not the
+  // generic Better Auth error shell.
+  onAPIError: {
+    errorURL: `${(process.env.BETTER_AUTH_URL || 'https://agentapigw.dpdns.org').replace(/\/$/, '')}/auth`,
   },
   user: {
     additionalFields: {
@@ -129,6 +166,7 @@ export const auth = betterAuth({
       '/api/auth/sign-up/email': { window: 60, max: 3 },
       '/api/auth/sign-in/social': { window: 60, max: 10 },
       '/api/auth/callback/github': { window: 60, max: 20 },
+      '/api/auth/callback/google': { window: 60, max: 20 },
       '/api/auth/forget-password': { window: 300, max: 3 },
       '/api/auth/reset-password': { window: 300, max: 5 },
       '/api/auth/request-password-reset': { window: 300, max: 3 },

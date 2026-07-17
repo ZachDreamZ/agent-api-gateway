@@ -359,7 +359,7 @@ function Quickstart() {
       <Reveal delay={0.06}>
         <ol className="grid md:grid-cols-3 gap-4 mb-8">
           {[
-            { n: '1', t: 'Create account', d: 'GitHub OAuth or email. Free tier starts with 100 queries/month.' },
+            { n: '1', t: 'Create account', d: 'GitHub, Google, or email. Free tier starts with 100 queries/month.' },
             { n: '2', t: 'Mint an API key', d: 'Dashboard → API Keys. Secrets are shown once; store them safely.' },
             { n: '3', t: 'Call /v1/extract', d: 'Pass a public URL and schema. Credits only move on success paths you use.' },
           ].map((s) => (

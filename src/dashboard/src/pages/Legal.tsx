@@ -17,7 +17,7 @@ const COPY: Record<
       },
       {
         h: 'Data we collect',
-        p: 'Account data (email, name, optional GitHub profile identifiers), authentication sessions, API key metadata (name, prefix, last used), billing tier and Polar customer references, usage counters, and URLs you submit for extraction. We do not store payment card numbers; Polar processes payments.',
+        p: 'Account data (email, name, optional GitHub or Google profile identifiers), authentication sessions, API key metadata (name, prefix, last used), billing tier and Polar customer references, usage counters, and URLs you submit for extraction. We do not store payment card numbers; Polar processes payments.',
       },
       {
         h: 'How we use data',
@@ -71,7 +71,7 @@ const COPY: Record<
       },
       {
         h: 'Email verification',
-        p: 'Email/password accounts must verify their email before using the dashboard session. GitHub OAuth accounts rely on the provider identity. You agree to keep contact email accurate.',
+        p: 'Email/password accounts must verify their email before using the dashboard session. GitHub and Google OAuth accounts rely on the provider identity. You agree to keep contact email accurate.',
       },
       {
         h: 'Billing',
