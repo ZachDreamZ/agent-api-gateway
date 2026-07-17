@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
-import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown } from 'lucide-react';
+import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown, BookOpen, ArrowRight } from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem } from '../components/Brand';
 import { easeOut } from '../lib/motion';
 
@@ -16,6 +17,7 @@ interface UsageStats {
   avg_latency_ms: number;
   active_keys: number;
   recent_errors: number;
+  tier: string;
 }
 
 interface ApiUsageResponse {
@@ -208,36 +210,77 @@ function UsageChart({ data }: { data: DailyUsage[] }) {
   );
 }
 
-// ─── Recent Activity ───
+// ─── First-run onboarding (real path, no fake activity) ───
 
-function ActivityFeed() {
-  const activities = [
-    { action: 'Extraction completed', detail: 'POST /v1/extract → product schema', time: '2 min ago', status: 'success' },
-    { action: 'Extraction completed', detail: 'POST /v1/extract → article schema', time: '15 min ago', status: 'success' },
-    { action: 'API key created', detail: 'Production key', time: '1 hour ago', status: 'info' },
-    { action: 'Extraction failed', detail: 'POST /v1/extract → timeout', time: '3 hours ago', status: 'error' },
-  ];
+function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
+  if (hasUsage) {
+    return (
+      <div className="stat-card space-y-3">
+        <h3 className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+          Next steps
+        </h3>
+        <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+          Need more credits? Buy the $1 starter pack, or wire the MCP server for Claude/Cursor.
+        </p>
+        <div className="flex flex-col gap-2">
+          <a href="/buy" className="btn btn-primary w-full text-xs">
+            Buy starter $1
+          </a>
+          <Link to="/docs#mcp" className="btn btn-secondary w-full text-xs">
+            <BookOpen className="w-3.5 h-3.5" />
+            MCP setup
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="stat-card">
-      <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--color-text-secondary)' }}>Recent Activity</h3>
-      <div className="space-y-3">
-        {activities.map((activity, i) => (
-          <div key={i} className="flex items-start gap-3">
-            <div
-              className={`activity-dot ${
-                activity.status === 'success' ? 'activity-dot-success' :
-                activity.status === 'error' ? 'activity-dot-error' :
-                'activity-dot-info'
-              }`}
-            />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm" style={{ color: 'var(--color-text-primary)' }}>{activity.action}</p>
-              <p className="text-xs truncate" style={{ color: 'var(--color-text-tertiary)' }}>{activity.detail}</p>
-            </div>
-            <span className="text-[10px] whitespace-nowrap" style={{ color: 'var(--color-text-disabled)' }}>{activity.time}</span>
-          </div>
-        ))}
+    <div className="stat-card space-y-4" style={{ borderColor: 'oklch(0.74 0.12 195 / 0.35)' }}>
+      <div>
+        <p className="text-eyebrow mb-1" style={{ color: 'var(--color-accent-base)' }}>
+          Get started
+        </p>
+        <h3 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          Create an API key, then call /v1/extract
+        </h3>
+        <p className="mt-1.5 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+          Free tier includes 100 queries/month. Keys are shown once — copy them immediately.
+        </p>
+      </div>
+      <ol className="space-y-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+        <li className="flex gap-2">
+          <span className="font-mono tabular-nums" style={{ color: 'var(--color-accent-base)' }}>1</span>
+          Open API Keys and create a named key
+        </li>
+        <li className="flex gap-2">
+          <span className="font-mono tabular-nums" style={{ color: 'var(--color-accent-base)' }}>2</span>
+          POST to /v1/extract with Bearer auth
+        </li>
+        <li className="flex gap-2">
+          <span className="font-mono tabular-nums" style={{ color: 'var(--color-accent-base)' }}>3</span>
+          Optional: connect MCP for agent hosts
+        </li>
+      </ol>
+      <pre
+        className="rounded-md p-3 text-[10px] leading-relaxed overflow-x-auto"
+        style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-tertiary)', border: '1px solid var(--color-border-subtle)' }}
+      >
+{`curl -s https://agentapigw.dpdns.org/v1/extract \\
+  -H "Authorization: Bearer sk-YOUR_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"url":"https://example.com","schema":"article"}'`}
+      </pre>
+      <div className="flex flex-col gap-2">
+        <Link to="/dashboard/api-keys" className="btn btn-primary w-full text-xs">
+          <KeyRound className="w-3.5 h-3.5" />
+          Create API key
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+        <Link to="/docs" className="btn btn-secondary w-full text-xs">
+          <BookOpen className="w-3.5 h-3.5" />
+          Full docs
+        </Link>
       </div>
     </div>
   );
@@ -276,6 +319,7 @@ export default function Overview() {
           avg_latency_ms: 0,
           active_keys: 0,
           recent_errors: 0,
+          tier: raw.tier || 'free',
         };
 
         if (!cancelled) {
@@ -294,6 +338,7 @@ export default function Overview() {
             avg_latency_ms: 0,
             active_keys: 0,
             recent_errors: 0,
+            tier: 'free',
           });
           setError(null);
         }
@@ -320,7 +365,7 @@ export default function Overview() {
       <PageHeader
         eyebrow="Dashboard"
         title="Overview"
-        description="Usage, latency, and recent extraction activity."
+        description="Credits remaining and how to call the API."
       />
 
       <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -344,18 +389,18 @@ export default function Overview() {
         </StaggerItem>
         <StaggerItem>
           <StatCard
-            label="Avg Latency"
-            value={stats ? `${stats.avg_latency_ms}ms` : '—'}
-            sub={stats ? `${stats.cache_hit_rate}% cache hit` : undefined}
+            label="Credits left"
+            value={(stats?.credits_remaining ?? 0).toLocaleString()}
+            sub="Free tier starts at 100 / month"
             icon={Clock}
             loading={loading}
           />
         </StaggerItem>
         <StaggerItem>
           <StatCard
-            label="Active Keys"
-            value={String(stats?.active_keys ?? 0)}
-            sub={`${stats?.recent_errors ?? 0} errors (24h)`}
+            label="Tier"
+            value={stats?.tier ? stats.tier : 'free'}
+            sub="Upgrade under Billing"
             icon={KeyRound}
             loading={loading}
           />
@@ -372,7 +417,7 @@ export default function Overview() {
           <UsageChart data={chart} />
         </div>
         <div className="lg:col-span-2">
-          <ActivityFeed />
+          <OnboardingCard hasUsage={(stats?.total_queries ?? 0) > 0} />
         </div>
       </div>
     </div>

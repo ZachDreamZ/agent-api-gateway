@@ -588,7 +588,7 @@ const plans = [
     features: ['100 queries / month', 'Product & article schemas', '1-hour cache TTL', '1 API key', 'REST + MCP'],
     highlighted: false,
     cta: 'Create free account',
-    href: '/dashboard',
+    href: '/login',
     external: false,
   },
   {
@@ -638,10 +638,9 @@ function Pricing() {
           Checkout runs on Polar. Starter is a one-time $1 pack; Hobby and Pro are monthly subscriptions.
         </p>
         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)', marginTop: '-0.75rem', marginBottom: '1rem' }}>
-          Also on{' '}
-          <a href="https://shadowcraft41.gumroad.com/l/spwxix" target="_blank" rel="noopener noreferrer" className="link-accent">Gumroad ($1 Starter)</a>
-          {' · '}
-          <a href="https://shadowcraft41.gumroad.com/" target="_blank" rel="noopener noreferrer" className="link-accent">full shop</a>
+          Primary checkout is Polar (/buy). Alternate: {' '}
+          <a href="https://shadowcraft41.gumroad.com/l/spwxix" target="_blank" rel="noopener noreferrer" className="link-accent">Gumroad $1 pack</a>
+          .
         </p>
       </Reveal>
 
