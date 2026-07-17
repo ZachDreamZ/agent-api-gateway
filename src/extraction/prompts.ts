@@ -2,14 +2,16 @@ import type { ExtractionSchema } from '../shared/types.js';
 
 // ─── Shared preamble ───
 
-const PREAMBLE = `You are a precise web data extraction AI. Given the HTML content of a webpage, extract the requested fields as a valid JSON object.
+const PREAMBLE = `You are a precise web data extraction AI. Given cleaned webpage content (markdown or HTML), extract the requested fields as a valid JSON object.
 
 Rules:
 - Return ONLY a JSON object. No markdown, no code fences, no commentary.
 - If a field's value is not found in the page, use null (for string/number fields) or empty array (for array fields).
 - Do not guess or fabricate data. Only extract what is clearly present on the page.
+- Prefer main content over navigation chrome; ignore cookie banners and ads when obvious.
 - Truncate long strings (description, content_summary) to 500 characters maximum.
-- Prices should be returned as numeric values only (no currency symbol).`;
+- Prices should be returned as numeric values only (no currency symbol).
+- For image fields, prefer absolute https URLs when present in markdown like ![alt](url) or raw HTML.`;
 
 // ─── Product extraction ───
 
@@ -105,7 +107,12 @@ export function getSystemPrompt(schema: ExtractionSchema): string {
   return PROMPT_MAP[schema];
 }
 
-export function getTrimmedHtml(html: string, maxChars = 80_000): string {
+export function getTrimmedHtml(html: string, maxChars = 60_000): string {
   if (html.length <= maxChars) return html;
-  return html.slice(0, maxChars) + '\n<!-- [TRUNCATED] -->';
+  return html.slice(0, maxChars) + '\n\n<!-- [TRUNCATED] -->';
+}
+
+/** Alias used after Crawl4AI-style cleaning (markdown or HTML). */
+export function getTrimmedContent(content: string, maxChars = 60_000): string {
+  return getTrimmedHtml(content, maxChars);
 }

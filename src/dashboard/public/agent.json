@@ -41,6 +41,11 @@
     }
   },
   "schemas": ["product", "article", "company"],
+  "scrape": {
+    "http_headers": "chrome-like",
+    "content_cleaning": "html-to-markdown",
+    "browser_fallback": "playwright-chromium"
+  },
   "sister_products": [
     {
       "name": "StatusPlate",

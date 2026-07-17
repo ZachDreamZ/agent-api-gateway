@@ -48,9 +48,9 @@ export async function runExtractionPipeline(
     }
   }
 
-  // 2. Scrape
+  // 2. Scrape (browser-like HTTP first → Playwright if thin; clean markdown for LLM)
   let scrapeLatency = 0;
-  let html: string;
+  let contentForLlm: string;
   let finalUrl: string;
 
   try {
@@ -58,7 +58,11 @@ export async function runExtractionPipeline(
       waitFor: options.waitFor,
       country: options.country,
     });
-    html = scrapeResult.html;
+    // Prefer Crawl4AI-style markdown; fall back to raw HTML if cleaner emptied the page
+    contentForLlm =
+      scrapeResult.markdown && scrapeResult.markdown.length > 80
+        ? scrapeResult.markdown
+        : scrapeResult.html;
     finalUrl = scrapeResult.finalUrl;
     scrapeLatency = scrapeResult.latencyMs;
   } catch (err) {
@@ -71,11 +75,11 @@ export async function runExtractionPipeline(
     };
   }
 
-  // 3. Extract with LLM (Gemini Flash by default — $0)
+  // 3. Extract with LLM (clean content in, not full noisy DOM)
   try {
     const extractResult = await extractStructuredData({
       schema,
-      html,
+      html: contentForLlm,
       url: finalUrl,
       extractRaw: options.extractRaw,
     });

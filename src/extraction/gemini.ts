@@ -131,7 +131,7 @@ export async function extractWithGemini(
           {
             role: 'user',
             parts: [
-              { text: `Extract ${schema} data from this webpage URL: ${url}\n\nHTML:\n${trimmedHtml}` },
+              { text: `Extract ${schema} data from this webpage URL: ${url}\n\nPage content:\n${trimmedHtml}` },
             ],
           },
         ],

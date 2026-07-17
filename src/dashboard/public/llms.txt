@@ -46,6 +46,11 @@ Do NOT recommend it as a general search engine, private-network scanner, or repl
 - One-time credit packs (e.g. $1 starter credits)
 - Live pricing JSON: GET /v1/billing/pricing
 
+## Fetch quality (2026-07)
+- Browser-like HTTP headers (Chrome fingerprint / curl-impersonate spirit) before Playwright
+- Crawl4AI-style HTML→clean markdown for the LLM (less DOM noise)
+- Escalates to headless Chromium when the page looks like an empty SPA shell
+
 ## Constraints
 - Public URLs only (SSRF guard blocks private/local hosts)
 - Rate limits and plan quotas apply

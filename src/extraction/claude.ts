@@ -84,7 +84,7 @@ export async function extractStructuredData(
             content: [
               {
                 type: 'text',
-                text: `Extract ${schema} data from this webpage URL: ${url}\n\nHTML:\n${trimmedHtml}`,
+                text: `Extract ${schema} data from this webpage URL: ${url}\n\nPage content:\n${trimmedHtml}`,
               },
             ],
           },
