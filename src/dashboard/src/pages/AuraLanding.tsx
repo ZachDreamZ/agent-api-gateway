@@ -592,14 +592,14 @@ const plans = [
     external: false,
   },
   {
-    tier: 'Starter Pack',
+    tier: '1k credits',
     price: '$1',
     period: ' once',
-    desc: 'One-time credits — no subscription.',
-    features: ['1,000 extraction credits', 'All schemas', 'Instant checkout', 'No monthly commitment'],
+    desc: 'Credit top-up — stacks on free or any plan.',
+    features: ['1,000 extraction credits', 'Never expires until used', 'No subscription required', 'Buy more anytime'],
     highlighted: true,
-    cta: 'Buy for $1',
-    href: '/buy',
+    cta: 'Buy 1,000 credits',
+    href: '/buy?sku=credits_1k',
     external: true,
   },
   {
@@ -607,7 +607,7 @@ const plans = [
     price: '$29',
     period: '/mo',
     desc: 'Solo builders and side projects.',
-    features: ['5,000 queries / month', 'All schemas', '24h cache TTL', 'Usage analytics', 'Email support'],
+    features: ['5,000 queries / month', 'All schemas', '24h cache TTL', 'Usage analytics', 'Buy credit packs anytime'],
     highlighted: false,
     cta: 'Subscribe',
     href: '/buy?sku=hobby',
@@ -618,7 +618,7 @@ const plans = [
     price: '$99',
     period: '/mo',
     desc: 'Production agent workloads.',
-    features: ['25,000 queries / month', 'Custom schema path*', '72h cache TTL', 'Team keys', 'Priority support'],
+    features: ['25,000 queries / month', 'Custom schema path*', '72h cache TTL', 'Team keys', 'Credit packs for bursts'],
     highlighted: false,
     cta: 'Go Pro',
     href: '/buy?sku=pro',
@@ -632,15 +632,13 @@ function Pricing() {
       <Reveal>
         <SectionLabel>Pricing</SectionLabel>
         <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
-          Start free. Buy credits when you need them.
+          Start free. Subscribe or buy credits when you need them.
         </h2>
         <p className="text-sm mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
-          Checkout runs on Polar. Starter is a one-time $1 pack; Hobby and Pro are monthly subscriptions.
+          Monthly plans set a steady allowance. Credit packs are one-time top-ups that stack on any plan and do not expire until used.
         </p>
         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)', marginTop: '-0.75rem', marginBottom: '1rem' }}>
-          Primary checkout is Polar (/buy). Alternate: {' '}
-          <a href="https://shadowcraft41.gumroad.com/l/spwxix" target="_blank" rel="noopener noreferrer" className="link-accent">Gumroad $1 pack</a>
-          .
+          Checkout via Polar (/buy). Logged-in users can also top up under Dashboard → Billing.
         </p>
       </Reveal>
 

@@ -3,14 +3,24 @@ import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import {
   createCheckoutSession,
+  createCreditPackCheckout,
   createCustomerPortalSession,
   createCustomer,
   createPublicCheckout,
   getStarterProductId,
   getPolarProductId,
 } from '../../billing/polar';
-import { TIER_ORDER, getPricingByTier, formatPrice } from '../../billing/pricing';
+import {
+  TIER_ORDER,
+  getPricingByTier,
+  formatPrice,
+  CREDIT_PACKS,
+  getCreditPack,
+  getCreditPackProductId,
+  formatOneTimePrice,
+} from '../../billing/pricing';
 import { getSupabase } from '../lib/supabase.js';
+import { getBonusCredits } from '../lib/usage-db.js';
 import type { Tier } from '@shared/types';
 
 const billingApp = new Hono();
@@ -35,32 +45,48 @@ billingPricing.get('/', (c) => {
     };
   });
 
-  // One-time starter pack for low-friction first purchase
-  const starter = {
+  // One-time credit packs — stack on monthly plan allowance
+  const credit_packs = CREDIT_PACKS.map((pack) => {
+    const productId = getCreditPackProductId(pack);
+    return {
+      id: pack.id,
+      name: pack.name,
+      description: pack.description,
+      credits: pack.credits,
+      price: formatOneTimePrice(pack.price_cents),
+      price_cents: pack.price_cents,
+      features: pack.features,
+      highlighted: pack.highlighted,
+      one_time: true,
+      available: Boolean(productId),
+      buy_url: productId ? `/buy?sku=${pack.id}` : null,
+    };
+  });
+
+  // Back-compat alias for older clients
+  const starter = credit_packs.find((p) => p.id === 'credits_1k') ?? {
     id: 'starter',
     name: 'Starter Pack',
     description: 'One-time 1,000 extraction credits — no subscription',
+    credits: 1000,
     price: '$1',
-    price_monthly: 100,
-    queries_per_month: 1000,
-    rate_limit_rpm: 30,
-    concurrent_requests: 2,
-    features: [
-      { text: '1,000 extraction credits', included: true },
-      { text: 'All schemas (product, article, company)', included: true },
-      { text: 'One-time payment — no subscription', included: true },
-    ],
+    price_cents: 100,
+    features: [],
     highlighted: true,
     one_time: true,
+    available: Boolean(process.env.POLAR_PRODUCT_STARTER),
+    buy_url: '/buy?sku=starter',
   };
 
   return c.json({
     tiers,
+    credit_packs,
     starter,
     product: 'Agent API Gateway',
     buy_url: '/buy',
     checkout_enabled: Boolean(process.env.POLAR_ACCESS_TOKEN && process.env.POLAR_PRODUCT_STARTER),
     public_url: process.env.APP_DOMAIN || 'https://agentapigw.dpdns.org',
+    note: 'Subscriptions set monthly limits. Credit packs add bonus credits that stack on top and do not expire until used.',
   });
 });
 
@@ -109,22 +135,38 @@ billingPricing.post('/checkout', async (c) => {
 
   const sku = (body.sku || 'starter').toLowerCase();
   try {
-    if (sku === 'starter') {
-      const productId = getStarterProductId();
+    // Credit packs (including legacy sku=starter)
+    const pack = getCreditPack(sku);
+    if (pack || sku === 'starter') {
+      const creditPack = pack ?? getCreditPack('credits_1k')!;
+      const productId = getCreditPackProductId(creditPack) || getStarterProductId();
       if (!productId) {
-        return c.json({ error: 'Starter product not configured (set POLAR_PRODUCT_STARTER)' }, 503);
+        return c.json({ error: `Credit pack not configured (${creditPack.envKey})` }, 503);
       }
       const result = await createPublicCheckout(
         productId,
-        { sku: 'starter_pack', tier: 'hobby' },
+        {
+          sku: creditPack.id,
+          credits: String(creditPack.credits),
+          kind: 'credit_pack',
+        },
         body.email,
       );
-      return c.json({ url: result.url, session_id: result.sessionId, amount_cents: 100, currency: 'usd', sku: 'starter' });
+      return c.json({
+        url: result.url,
+        session_id: result.sessionId,
+        amount_cents: creditPack.price_cents,
+        currency: 'usd',
+        sku: creditPack.id,
+        credits: creditPack.credits,
+      });
     }
 
     const tier = (body.tier || sku) as Tier;
     if (!['hobby', 'pro', 'scale'].includes(tier)) {
-      return c.json({ error: 'Unknown sku/tier. Use starter, hobby, pro, or scale.' }, 400);
+      return c.json({
+        error: 'Unknown sku. Use credits_1k, credits_5k, credits_25k, starter, hobby, pro, or scale.',
+      }, 400);
     }
     const productId = getPolarProductId(tier);
     if (!productId) {
@@ -132,7 +174,7 @@ billingPricing.post('/checkout', async (c) => {
     }
     const result = await createPublicCheckout(
       productId,
-      { sku: tier, tier },
+      { sku: tier, tier, kind: 'subscription' },
       body.email,
     );
     const pricing = getPricingByTier(tier);
@@ -166,12 +208,23 @@ billingPricing.get('/buy', async (c) => {
   const sku = (c.req.query('sku') || 'starter').toLowerCase();
   try {
     let productId: string | null = null;
-    let meta: Record<string, string> = { sku: 'starter_pack', tier: 'hobby' };
-    if (sku === 'starter') {
-      productId = getStarterProductId();
+    let meta: Record<string, string> = {
+      sku: 'credits_1k',
+      credits: '1000',
+      kind: 'credit_pack',
+    };
+    const pack = getCreditPack(sku);
+    if (pack || sku === 'starter') {
+      const creditPack = pack ?? getCreditPack('credits_1k')!;
+      productId = getCreditPackProductId(creditPack) || getStarterProductId();
+      meta = {
+        sku: creditPack.id,
+        credits: String(creditPack.credits),
+        kind: 'credit_pack',
+      };
     } else if (['hobby', 'pro', 'scale'].includes(sku)) {
       productId = getPolarProductId(sku as Tier);
-      meta = { sku, tier: sku };
+      meta = { sku, tier: sku, kind: 'subscription' };
     }
     if (!productId) {
       return c.json({ error: 'Product not configured' }, 503);
@@ -194,6 +247,12 @@ billingApp.get('/current', async (c) => {
   const user = c.get('user');
   const tier = c.get('tier');
   const pricing = getPricingByTier(tier);
+  let bonus_credits = 0;
+  try {
+    bonus_credits = await getBonusCredits(user.id);
+  } catch {
+    bonus_credits = 0;
+  }
 
   return c.json({
     tier,
@@ -201,15 +260,23 @@ billingApp.get('/current', async (c) => {
     price: formatPrice(pricing.price_monthly),
     stripe_customer_id: user.stripe_customer_id,
     features: pricing.features,
+    bonus_credits,
+    credit_balance_note:
+      'Remaining credits = monthly plan limit + purchased bonus credits − usage this month. Bonus packs do not expire until used.',
   });
 });
 
-// ─── POST /checkout — Create Polar checkout session ───
+// ─── POST /checkout — Create Polar checkout (subscription tier OR credit pack) ───
 
-const checkoutSchema = z.object({
-  tier: z.enum(['hobby', 'pro', 'scale']),
-  email: z.string().email().optional(),
-});
+const checkoutSchema = z
+  .object({
+    tier: z.enum(['hobby', 'pro', 'scale']).optional(),
+    sku: z.string().optional(),
+    email: z.string().email().optional(),
+  })
+  .refine((d) => Boolean(d.tier || d.sku), {
+    message: 'Provide tier (subscription) or sku (credit pack)',
+  });
 
 billingApp.post('/checkout', zValidator('json', checkoutSchema), async (c) => {
   const accessToken = process.env.POLAR_ACCESS_TOKEN;
@@ -218,16 +285,45 @@ billingApp.post('/checkout', zValidator('json', checkoutSchema), async (c) => {
   }
 
   try {
-    const { tier, email } = c.req.valid('json');
+    const { tier, sku, email } = c.req.valid('json');
     const user = c.get('user');
     const userEmail = email || user.email;
     const userId = user.id;
+    const customerId = user.stripe_customer_id ?? null;
 
-    const result = await createCheckoutSession(user.stripe_customer_id ?? null, tier, userId, userEmail);
+    // Credit pack top-up (sku preferred over tier)
+    const packKey = (sku || '').toLowerCase();
+    const pack = packKey ? getCreditPack(packKey) : undefined;
+    if (pack) {
+      const productId = getCreditPackProductId(pack) || (pack.id === 'credits_1k' ? getStarterProductId() : null);
+      if (!productId) {
+        return c.json({ error: `Credit pack not configured (${pack.envKey})` }, 503);
+      }
+      const result = await createCreditPackCheckout(customerId, productId, userId, userEmail, {
+        sku: pack.id,
+        credits: String(pack.credits),
+      });
+      return c.json({
+        url: result.url,
+        session_id: result.sessionId,
+        sku: pack.id,
+        credits: pack.credits,
+        amount_cents: pack.price_cents,
+      });
+    }
+
+    if (!tier || !['hobby', 'pro', 'scale'].includes(tier)) {
+      return c.json({
+        error: 'Unknown product. Use sku=credits_1k|credits_5k|credits_25k or tier=hobby|pro|scale.',
+      }, 400);
+    }
+
+    const result = await createCheckoutSession(customerId, tier, userId, userEmail);
 
     return c.json({
       url: result.url,
       session_id: result.sessionId,
+      sku: tier,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Checkout failed';

@@ -9,7 +9,7 @@ import {
 } from '../../shared/types.js';
 import type { Cache } from '../lib/cache.js';
 import { getCache } from '../lib/cache.js';
-import { getMonthlyCreditsUsed, logUsage } from '../lib/usage-db.js';
+import { getCreditBalance, logUsage } from '../lib/usage-db.js';
 import { runExtractionPipeline } from '../../scraper/index.js';
 import { assertSafePublicUrl } from '../lib/ssrf.js';
 
@@ -54,17 +54,22 @@ router.post('/', zValidator('json', extractBodySchema), async (c) => {
       return c.json({ success: false, error: safe.error }, 400);
     }
 
-    // ── Quota check ──
-    const usedThisMonth = await getMonthlyCreditsUsed(user.id);
+    // ── Quota check (monthly plan + purchased credit packs) ──
     const monthlyLimit = TIER_LIMITS[tier].queries_per_month;
-    const remaining = monthlyLimit - usedThisMonth;
+    const balance = await getCreditBalance(user.id, monthlyLimit);
+    const remaining = balance.remaining;
 
     if (remaining <= 0) {
       return c.json(
         {
           success: false,
-          error: 'Monthly quota exceeded',
-          usage: { credits_used: usedThisMonth, credits_remaining: 0 },
+          error: 'Credit balance exhausted. Buy a credit pack or upgrade your plan.',
+          usage: {
+            credits_used: balance.used,
+            credits_remaining: 0,
+            bonus_credits: balance.bonus,
+            monthly_limit: monthlyLimit,
+          },
         },
         429,
       );

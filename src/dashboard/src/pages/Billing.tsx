@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Check, X, Star, ExternalLink } from 'lucide-react';
+import { Check, X, Star, ExternalLink, Zap } from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem } from '../components/Brand';
 import { easeOut } from '../lib/motion';
 
@@ -19,12 +19,27 @@ interface PricingTier {
   highlighted: boolean;
 }
 
+interface CreditPack {
+  id: string;
+  name: string;
+  description: string;
+  credits: number;
+  price: string;
+  price_cents: number;
+  features: { text: string; included: boolean }[];
+  highlighted: boolean;
+  one_time: boolean;
+  available: boolean;
+  buy_url: string | null;
+}
+
 interface CurrentPlan {
   tier: string;
   queries_per_month: number;
   price: string;
   stripe_customer_id: string | null;
   features: { text: string; included: boolean }[];
+  bonus_credits?: number;
 }
 
 // ─── Plan Card ───
@@ -42,6 +57,7 @@ function PlanCard({
 }) {
   const isCurrent = tier.id === currentTier;
   const isFree = tier.id === 'free';
+  const isCustom = tier.price_monthly < 0;
 
   return (
     <motion.div
@@ -54,7 +70,6 @@ function PlanCard({
         boxShadow: tier.highlighted ? 'var(--shadow-glow)' : undefined,
       }}
     >
-      {/* Highlighted badge */}
       {tier.highlighted && (
         <div
           className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold"
@@ -71,7 +86,6 @@ function PlanCard({
           <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{tier.description}</p>
         </div>
 
-        {/* Price */}
         <div className="mb-6">
           <div className="flex items-baseline gap-1">
             <span className="font-display text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{tier.price}</span>
@@ -81,12 +95,16 @@ function PlanCard({
           </div>
           {tier.price_monthly > 0 && (
             <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>
-              ${(tier.price_monthly * 12).toLocaleString()}/year billed annually
+              Billed monthly via Polar
+            </p>
+          )}
+          {isCustom && (
+            <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>
+              Contact support for volume pricing
             </p>
           )}
         </div>
 
-        {/* Features */}
         <ul className="mb-6 flex-1 space-y-3">
           {tier.features.map((f, i) => (
             <li key={i} className="flex items-start gap-2.5 text-sm">
@@ -102,13 +120,85 @@ function PlanCard({
           ))}
         </ul>
 
-        {/* CTA */}
         <button
+          type="button"
           onClick={() => onSelect(tier.id)}
-          disabled={isCurrent || isFree || loading}
+          disabled={isCurrent || isFree || isCustom || loading}
           className={`btn w-full ${isCurrent ? 'btn-secondary cursor-default' : tier.highlighted ? 'btn-primary' : 'btn-secondary'}`}
         >
-          {isCurrent ? 'Current Plan' : isFree ? 'Free Forever' : 'Upgrade'}
+          {isCurrent ? 'Current Plan' : isFree ? 'Free Forever' : isCustom ? 'Contact sales' : loading ? 'Redirecting…' : 'Upgrade'}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Credit Pack Card ───
+
+function CreditPackCard({
+  pack,
+  onBuy,
+  loading,
+}: {
+  pack: CreditPack;
+  onBuy: (sku: string) => void;
+  loading: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: easeOut }}
+      className="surface-elevated surface-hover flex flex-col overflow-hidden h-full"
+      style={{
+        borderColor: pack.highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : undefined,
+        boxShadow: pack.highlighted ? 'var(--shadow-glow)' : undefined,
+      }}
+    >
+      {pack.highlighted && (
+        <div
+          className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold"
+          style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+        >
+          <Zap className="w-3 h-3" />
+          Best first top-up
+        </div>
+      )}
+
+      <div className="flex flex-1 flex-col p-6">
+        <div className="mb-4">
+          <h3 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>{pack.name}</h3>
+          <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{pack.description}</p>
+        </div>
+
+        <div className="mb-6">
+          <div className="flex items-baseline gap-1">
+            <span className="font-display text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>
+              {pack.price}
+            </span>
+            <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>one-time</span>
+          </div>
+          <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>
+            {pack.credits.toLocaleString()} credits · stacks on your plan
+          </p>
+        </div>
+
+        <ul className="mb-6 flex-1 space-y-3">
+          {pack.features.map((f, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-sm">
+              <Check className="mt-0.5 w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-success)' }} />
+              <span style={{ color: 'var(--color-text-secondary)' }}>{f.text}</span>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          type="button"
+          onClick={() => onBuy(pack.id)}
+          disabled={!pack.available || loading}
+          className={`btn w-full ${pack.highlighted ? 'btn-primary' : 'btn-secondary'}`}
+        >
+          {!pack.available ? 'Coming soon' : loading ? 'Redirecting…' : `Buy ${pack.price}`}
         </button>
       </div>
     </motion.div>
@@ -144,7 +234,9 @@ function UsageBar({ used, limit, label }: { used: number; limit: number; label: 
 
 export default function Billing() {
   const [tiers, setTiers] = useState<PricingTier[]>([]);
+  const [creditPacks, setCreditPacks] = useState<CreditPack[]>([]);
   const [current, setCurrent] = useState<CurrentPlan | null>(null);
+  const [usage, setUsage] = useState<{ used: number; limit: number; bonus: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -154,24 +246,43 @@ export default function Billing() {
 
     async function load() {
       try {
-        const [tiersRes, currentRes] = await Promise.all([
+        const [tiersRes, currentRes, usageRes] = await Promise.all([
           fetch('/v1/billing/pricing'),
           fetch('/v1/billing/current'),
+          fetch('/v1/usage'),
         ]);
 
         if (!tiersRes.ok) throw new Error(`Pricing HTTP ${tiersRes.status}`);
-        if (!currentRes.ok) throw new Error(`Current HTTP ${currentRes.status}`);
 
-        const tiersData = (await tiersRes.json()) as { tiers: PricingTier[] };
-        const currentData = (await currentRes.json()) as CurrentPlan;
+        const tiersData = (await tiersRes.json()) as {
+          tiers: PricingTier[];
+          credit_packs?: CreditPack[];
+        };
+        const currentData = currentRes.ok ? ((await currentRes.json()) as CurrentPlan) : null;
+        let usageData: { used: number; limit: number; bonus: number } | null = null;
+        if (usageRes.ok) {
+          const u = (await usageRes.json()) as {
+            credits_used?: number;
+            credits_limit?: number;
+            bonus_credits?: number;
+          };
+          usageData = {
+            used: u.credits_used ?? 0,
+            limit: u.credits_limit ?? currentData?.queries_per_month ?? 0,
+            bonus: u.bonus_credits ?? currentData?.bonus_credits ?? 0,
+          };
+        }
 
         if (!cancelled) {
-          setTiers(tiersData.tiers);
+          setTiers(tiersData.tiers ?? []);
+          setCreditPacks(tiersData.credit_packs ?? []);
           setCurrent(currentData);
+          setUsage(usageData);
         }
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setTiers([]);
+          setCreditPacks([]);
           setCurrent(null);
           setError(null);
         }
@@ -181,24 +292,22 @@ export default function Billing() {
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function handleSelect(tierId: string) {
+    if (tierId === 'free' || tierId === 'scale') return;
     setCheckoutLoading(tierId);
     setError(null);
 
     try {
-      const email = prompt('Enter your email for checkout:');
-      if (!email) {
-        setCheckoutLoading(null);
-        return;
-      }
-
       const res = await fetch('/v1/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier: tierId, email }),
+        body: JSON.stringify({ tier: tierId }),
+        credentials: 'include',
       });
 
       if (!res.ok) {
@@ -217,6 +326,35 @@ export default function Billing() {
     }
   }
 
+  async function handleBuyCredits(sku: string) {
+    setCheckoutLoading(sku);
+    setError(null);
+
+    try {
+      // Authenticated checkout attaches user_id so webhook grants bonus credits
+      const res = await fetch('/v1/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sku }),
+        credentials: 'include',
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as { url: string };
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+
+      // Fallback: public /buy redirect (email match on webhook)
+      window.location.href = `/buy?sku=${encodeURIComponent(sku)}`;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Checkout failed');
+      setCheckoutLoading(null);
+    }
+  }
+
   async function handlePortal() {
     setError(null);
     try {
@@ -224,6 +362,7 @@ export default function Billing() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ return_url: window.location.href }),
+        credentials: 'include',
       });
 
       if (!res.ok) {
@@ -268,18 +407,22 @@ export default function Billing() {
           style={{ border: '1px dashed var(--color-border-default)' }}
         >
           <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Pricing data unavailable</p>
-          <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>Start the API server and ensure Stripe is configured</p>
+          <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>Start the API server and ensure billing is configured</p>
         </div>
       </div>
     );
   }
 
+  const used = usage?.used ?? 0;
+  const limit = usage?.limit ?? current?.queries_per_month ?? 0;
+  const bonus = usage?.bonus ?? current?.bonus_credits ?? 0;
+
   return (
     <div className="space-y-8">
       <PageHeader
         eyebrow="Billing"
-        title="Plans & usage"
-        description="Upgrade via Polar checkout. Starter credits also available from the homepage."
+        title="Plans & credits"
+        description="Subscribe for a monthly allowance, or buy credit packs anytime — they stack on top of your plan and don’t expire until used."
       />
 
       {current && (
@@ -292,6 +435,11 @@ export default function Billing() {
             <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Current plan</span>
             <span className="badge badge-active uppercase">{current.tier}</span>
             <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{current.price}</span>
+            {bonus > 0 && (
+              <span className="badge" style={{ color: 'var(--color-accent-base)' }}>
+                +{bonus.toLocaleString()} bonus credits
+              </span>
+            )}
           </div>
           {current.stripe_customer_id && (
             <button
@@ -308,9 +456,9 @@ export default function Billing() {
       )}
 
       <UsageBar
-        used={0}
-        limit={current?.queries_per_month ?? 0}
-        label="Queries this month"
+        used={used}
+        limit={limit}
+        label={bonus > 0 ? `Credits this month (incl. ${bonus.toLocaleString()} bonus)` : 'Credits this month'}
       />
 
       {error && (
@@ -319,18 +467,52 @@ export default function Billing() {
         </div>
       )}
 
-      <Stagger className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {tiers.map((tier) => (
-          <StaggerItem key={tier.id}>
-            <PlanCard
-              tier={tier}
-              currentTier={current?.tier ?? 'free'}
-              onSelect={handleSelect}
-              loading={checkoutLoading === tier.id}
-            />
-          </StaggerItem>
-        ))}
-      </Stagger>
+      {creditPacks.length > 0 && (
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+              Credit packs
+            </h2>
+            <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+              One-time top-ups when you hit your limit — no plan change required.
+            </p>
+          </div>
+          <Stagger className="grid gap-4 md:grid-cols-3">
+            {creditPacks.map((pack) => (
+              <StaggerItem key={pack.id}>
+                <CreditPackCard
+                  pack={pack}
+                  onBuy={handleBuyCredits}
+                  loading={checkoutLoading === pack.id}
+                />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </section>
+      )}
+
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+            Subscriptions
+          </h2>
+          <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+            Monthly plans for a steady allowance and higher rate limits.
+          </p>
+        </div>
+        <Stagger className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {tiers.map((tier) => (
+            <StaggerItem key={tier.id}>
+              <PlanCard
+                tier={tier}
+                currentTier={current?.tier ?? 'free'}
+                onSelect={handleSelect}
+                loading={checkoutLoading === tier.id}
+              />
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
     </div>
   );
 }

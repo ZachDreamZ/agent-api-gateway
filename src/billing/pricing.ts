@@ -114,3 +114,77 @@ export function formatPrice(cents: number): string {
   if (cents === 0) return 'Free';
   return `$${(cents / 100).toFixed(0)}/mo`;
 }
+
+/** One-time credit packs — stack on top of subscription monthly limits. */
+export interface CreditPack {
+  id: string;
+  name: string;
+  description: string;
+  credits: number;
+  price_cents: number;
+  /** Env var holding Polar product id */
+  envKey: string;
+  features: PricingFeature[];
+  highlighted: boolean;
+}
+
+export const CREDIT_PACKS: CreditPack[] = [
+  {
+    id: 'credits_1k',
+    name: '1,000 credits',
+    description: 'Top-up pack — works with free or any subscription',
+    credits: 1000,
+    price_cents: 100,
+    envKey: 'POLAR_PRODUCT_STARTER',
+    features: [
+      { text: '1,000 extraction credits', included: true },
+      { text: 'Never expires (until used)', included: true },
+      { text: 'Stacks on top of your plan', included: true },
+    ],
+    highlighted: true,
+  },
+  {
+    id: 'credits_5k',
+    name: '5,000 credits',
+    description: 'For bursts above your monthly allowance',
+    credits: 5000,
+    price_cents: 400,
+    envKey: 'POLAR_PRODUCT_CREDITS_5K',
+    features: [
+      { text: '5,000 extraction credits', included: true },
+      { text: 'Never expires (until used)', included: true },
+      { text: 'Stacks on top of your plan', included: true },
+    ],
+    highlighted: false,
+  },
+  {
+    id: 'credits_25k',
+    name: '25,000 credits',
+    description: 'Heavy agent workloads without upgrading plan',
+    credits: 25000,
+    price_cents: 1500,
+    envKey: 'POLAR_PRODUCT_CREDITS_25K',
+    features: [
+      { text: '25,000 extraction credits', included: true },
+      { text: 'Never expires (until used)', included: true },
+      { text: 'Stacks on top of your plan', included: true },
+    ],
+    highlighted: false,
+  },
+];
+
+export function getCreditPack(id: string): CreditPack | undefined {
+  const key = id === 'starter' ? 'credits_1k' : id;
+  return CREDIT_PACKS.find((p) => p.id === key);
+}
+
+export function getCreditPackProductId(pack: CreditPack): string | null {
+  const v = process.env[pack.envKey]?.trim();
+  return v || null;
+}
+
+export function formatOneTimePrice(cents: number): string {
+  if (cents <= 0) return 'Free';
+  const dollars = cents / 100;
+  return Number.isInteger(dollars) ? `$${dollars}` : `$${dollars.toFixed(2)}`;
+}

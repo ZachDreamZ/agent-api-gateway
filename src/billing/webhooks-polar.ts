@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { validateEvent } from '@polar-sh/sdk/webhooks';
 import { getSupabase } from '../api/lib/supabase.js';
+import { addBonusCredits, findUserIdByEmail } from '../api/lib/usage-db.js';
 import type { Tier } from '@shared/types';
 
 // Webhook verification secret from the Polar dashboard (Webhooks → endpoint secret).
@@ -31,6 +32,64 @@ async function revokeTier(userId: string): Promise<void> {
   console.log(`[Polar] Revoked tier to free for user=${userId}`);
 }
 
+async function resolveUserId(data: Record<string, any>): Promise<string | null> {
+  const fromMeta = data?.metadata?.user_id as string | undefined;
+  if (fromMeta) return fromMeta;
+  const email =
+    (data?.customerEmail as string | undefined) ||
+    (data?.customer?.email as string | undefined) ||
+    (data?.email as string | undefined);
+  if (email) return findUserIdByEmail(email);
+  return null;
+}
+
+function parseCreditAmount(data: Record<string, any>): number {
+  const raw =
+    data?.metadata?.credits ??
+    data?.metadata?.credit_amount ??
+    null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
+}
+
+function isCreditSku(data: Record<string, any>): boolean {
+  const sku = String(data?.metadata?.sku || '').toLowerCase();
+  const kind = String(data?.metadata?.kind || '').toLowerCase();
+  if (kind === 'credit_pack') return true;
+  return (
+    sku === 'credits' ||
+    sku === 'starter' ||
+    sku === 'starter_pack' ||
+    sku === 'credits_1k' ||
+    sku === 'credits_5k' ||
+    sku === 'credits_25k' ||
+    sku.startsWith('credits_')
+  );
+}
+
+async function maybeGrantCredits(data: Record<string, any>, status: string | undefined): Promise<boolean> {
+  if (!(status === 'paid' || status === 'confirmed' || status === 'succeeded')) return false;
+  if (!isCreditSku(data) && !data?.metadata?.credits) return false;
+
+  let credits = parseCreditAmount(data);
+  if (!credits) {
+    // Legacy starter_pack without explicit credits field
+    const sku = String(data?.metadata?.sku || '').toLowerCase();
+    if (sku === 'starter_pack' || sku === 'credits_1k' || sku === 'starter') credits = 1000;
+  }
+  if (!credits) return false;
+
+  const userId = await resolveUserId(data);
+  if (!userId) {
+    console.warn('[Polar] Credit pack paid but no matching user (metadata.user_id or email)');
+    return true; // handled (nothing to grant yet)
+  }
+
+  const total = await addBonusCredits(userId, credits);
+  console.log(`[Polar] Granted ${credits} bonus credits to user=${userId} (bonus_total=${total})`);
+  return true;
+}
+
 webhookApp.post('/', async (c) => {
   if (!webhookSecret) {
     return c.json({ error: 'Polar webhook secret not configured' }, 500);
@@ -56,7 +115,7 @@ webhookApp.post('/', async (c) => {
   try {
     const type = event.type;
     const data = event.data as Record<string, any>;
-    const userId = data?.metadata?.user_id as string | undefined;
+    const userId = (data?.metadata?.user_id as string | undefined) ?? null;
     const tier = data?.metadata?.tier as Tier | undefined;
     const customerId = (data?.customerId as string | undefined) ?? null;
     const status = data?.status as string | undefined;
@@ -67,9 +126,19 @@ webhookApp.post('/', async (c) => {
       } else if (userId && tier && (status === 'active' || status === 'trialing')) {
         await grantTier(userId, tier, customerId);
       }
-    } else if (type === 'checkout.updated' || type === 'checkout.created') {
-      if (userId && tier && (status === 'paid' || status === 'confirmed')) {
-        await grantTier(userId, tier, customerId);
+    } else if (
+      type === 'checkout.updated' ||
+      type === 'checkout.created' ||
+      type === 'order.created' ||
+      type === 'order.paid'
+    ) {
+      // Credit packs first (do not force tier upgrades for top-ups)
+      const credited = await maybeGrantCredits(data, status);
+      if (!credited && userId && tier && (status === 'paid' || status === 'confirmed' || status === 'succeeded')) {
+        // Subscription-style one-time that maps to a plan
+        if (['hobby', 'pro', 'scale'].includes(tier)) {
+          await grantTier(userId, tier, customerId);
+        }
       }
     } else {
       console.log(`[Polar] Unhandled event: ${type}`);

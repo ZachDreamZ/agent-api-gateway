@@ -5,7 +5,15 @@
 import { describe, it, expect } from 'node:test';
 import assert from 'node:assert/strict';
 import { validateExtraction, ValidationError } from '../src/extraction/validator.ts';
-import { TIER_PRICING, formatPrice, getPricingByTier, TIER_ORDER } from '../src/billing/pricing.ts';
+import {
+  TIER_PRICING,
+  formatPrice,
+  formatOneTimePrice,
+  getPricingByTier,
+  TIER_ORDER,
+  CREDIT_PACKS,
+  getCreditPack,
+} from '../src/billing/pricing.ts';
 import { getPolarProductId, getStarterProductId } from '../src/billing/polar.ts';
 
 // ─── Core paid capability: structured extraction validation ───
@@ -108,6 +116,23 @@ describe('pricing catalog (paid value proposition)', () => {
       assert.ok(p.name.length > 0);
       assert.ok(p.features.length >= 3, `${tier} needs features`);
       assert.ok(p.features.some((f) => f.included), `${tier} needs included features`);
+    }
+  });
+
+  it('exposes credit packs that stack on subscriptions', () => {
+    assert.ok(CREDIT_PACKS.length >= 1);
+    const pack1k = getCreditPack('credits_1k');
+    const alias = getCreditPack('starter');
+    assert.ok(pack1k);
+    assert.equal(pack1k!.credits, 1000);
+    assert.equal(pack1k!.price_cents, 100);
+    assert.equal(formatOneTimePrice(100), '$1');
+    assert.equal(alias?.id, 'credits_1k');
+    for (const pack of CREDIT_PACKS) {
+      assert.ok(pack.credits > 0, `${pack.id} needs credits`);
+      assert.ok(pack.price_cents > 0, `${pack.id} needs a price`);
+      assert.ok(pack.envKey.startsWith('POLAR_PRODUCT_'));
+      assert.ok(pack.features.some((f) => f.included));
     }
   });
 });

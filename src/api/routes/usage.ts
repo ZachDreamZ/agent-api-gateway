@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { TIER_LIMITS } from '../../shared/types.js';
-import { getMonthlyCreditsUsed, getDailyUsage } from '../lib/usage-db.js';
+import { getCreditBalance, getDailyUsage } from '../lib/usage-db.js';
 
 const router = new Hono();
 
@@ -9,8 +9,8 @@ router.get('/', async (c) => {
   const tier = c.get('tier');
 
   try {
-    const creditsUsed = await getMonthlyCreditsUsed(user.id);
     const monthlyLimit = TIER_LIMITS[tier].queries_per_month;
+    const balance = await getCreditBalance(user.id, monthlyLimit);
 
     const monthStart = new Date();
     monthStart.setDate(1);
@@ -18,9 +18,11 @@ router.get('/', async (c) => {
 
     return c.json({
       tier,
-      credits_used: creditsUsed,
-      credits_limit: monthlyLimit,
-      credits_remaining: Math.max(0, monthlyLimit - creditsUsed),
+      credits_used: balance.used,
+      credits_limit: balance.limit,
+      monthly_limit: monthlyLimit,
+      bonus_credits: balance.bonus,
+      credits_remaining: balance.remaining,
       period_start: monthStart.toISOString(),
     });
   } catch (err) {

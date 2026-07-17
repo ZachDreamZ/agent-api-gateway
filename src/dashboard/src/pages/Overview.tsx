@@ -220,12 +220,12 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
           Next steps
         </h3>
         <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
-          Need more credits? Buy the $1 starter pack, or wire the MCP server for Claude/Cursor.
+          Need more credits? Buy a one-time credit pack (stacks on your plan), or wire the MCP server for Claude/Cursor.
         </p>
         <div className="flex flex-col gap-2">
-          <a href="/buy" className="btn btn-primary w-full text-xs">
-            Buy starter $1
-          </a>
+          <Link to="/dashboard/billing" className="btn btn-primary w-full text-xs">
+            Buy credit packs
+          </Link>
           <Link to="/docs#mcp" className="btn btn-secondary w-full text-xs">
             <BookOpen className="w-3.5 h-3.5" />
             MCP setup

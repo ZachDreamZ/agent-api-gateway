@@ -24,8 +24,15 @@ describe('conversion path structure', () => {
     assert.doesNotMatch(src, /2 min ago/);
   });
 
-  it('paid path still points at /buy for starter', () => {
+  it('paid path still points at /buy for credit packs', () => {
     const src = readFileSync(resolve(root, 'src/dashboard/src/pages/AuraLanding.tsx'), 'utf8');
-    assert.match(src, /tier:\s*'Starter Pack'[\s\S]*?href:\s*'\/buy'/);
+    assert.match(src, /tier:\s*'1k credits'[\s\S]*?href:\s*'\/buy\?sku=credits_1k'/);
+  });
+
+  it('billing page surfaces credit packs alongside subscriptions', () => {
+    const src = readFileSync(resolve(root, 'src/dashboard/src/pages/Billing.tsx'), 'utf8');
+    assert.match(src, /credit_packs/);
+    assert.match(src, /Credit packs/);
+    assert.match(src, /handleBuyCredits/);
   });
 });

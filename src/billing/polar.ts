@@ -82,7 +82,40 @@ export async function createCheckoutSession(
   const params: Parameters<typeof polar.checkouts.create>[0] = {
     products: [productId],
     successUrl: `${APP_DOMAIN}/dashboard?checkout_id={CHECKOUT_ID}`,
-    metadata: { user_id: userId, tier },
+    metadata: { user_id: userId, tier, kind: 'subscription' },
+  };
+  if (customerId) {
+    params.customerId = customerId;
+  } else {
+    params.customerEmail = userEmail;
+  }
+
+  const checkout = await polar.checkouts.create(params);
+  return { url: checkout.url, sessionId: checkout.id };
+}
+
+/**
+ * Authenticated one-time credit pack checkout.
+ * Metadata includes user_id so the Polar webhook can grant bonus_credits.
+ */
+export async function createCreditPackCheckout(
+  customerId: string | null,
+  productId: string,
+  userId: string,
+  userEmail: string,
+  metadata: Record<string, string>,
+): Promise<CheckoutResult> {
+  if (!polar) throw new Error('Polar not initialized');
+
+  const params: Parameters<typeof polar.checkouts.create>[0] = {
+    products: [productId],
+    successUrl: `${APP_DOMAIN}/dashboard/billing?checkout=success&checkout_id={CHECKOUT_ID}`,
+    metadata: {
+      product: 'agent-api-gateway',
+      user_id: userId,
+      kind: 'credit_pack',
+      ...metadata,
+    },
   };
   if (customerId) {
     params.customerId = customerId;
