@@ -56,9 +56,18 @@ export default function Auth() {
   const [githubLoading, setGithubLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false);
   const [oauthFlags, setOauthFlags] = useState({ github: true, google: false });
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  function requireAgreement(): boolean {
+    if (mode === 'signup' && !agreed) {
+      setError('Please agree to the Terms of Service and Privacy Policy to continue.');
+      return false;
+    }
+    return true;
+  }
 
   // Surface OAuth callback errors (?error=account_not_linked) on this page
   useEffect(() => {
@@ -93,6 +102,7 @@ export default function Auth() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (mode === 'signup' && !requireAgreement()) return;
     setLoading(true);
     setError(null);
     setInfo(null);
@@ -142,6 +152,7 @@ export default function Auth() {
   }
 
   async function handleGitHub() {
+    if (!requireAgreement()) return;
     setGithubLoading(true);
     setError(null);
     try {
@@ -160,6 +171,7 @@ export default function Auth() {
   }
 
   async function handleGoogle() {
+    if (!requireAgreement()) return;
     setGoogleLoading(true);
     setError(null);
     try {
@@ -178,6 +190,7 @@ export default function Auth() {
   }
 
   const socialBusy = githubLoading || googleLoading || loading;
+  const signupBlocked = mode === 'signup' && !agreed;
 
   async function handleResend() {
     if (!email.trim()) {
@@ -298,6 +311,43 @@ export default function Auth() {
           </div>
         ) : (
           <>
+            {mode === 'signup' && (
+              <label
+                className="mb-4 flex items-start gap-2.5 rounded-md px-3 py-2.5 text-xs leading-relaxed cursor-pointer"
+                style={{
+                  background: 'var(--color-bg-app)',
+                  border: '1px solid var(--color-border-subtle)',
+                  color: 'var(--color-text-secondary)',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  className="mt-0.5 shrink-0"
+                  checked={agreed}
+                  onChange={(e) => {
+                    setAgreed(e.target.checked);
+                    if (e.target.checked) setError(null);
+                  }}
+                  aria-required="true"
+                />
+                <span>
+                  I agree to the{' '}
+                  <Link to="/terms" className="link-accent" target="_blank" rel="noreferrer">
+                    Terms of Service
+                  </Link>
+                  ,{' '}
+                  <Link to="/privacy" className="link-accent" target="_blank" rel="noreferrer">
+                    Privacy Policy
+                  </Link>
+                  , and{' '}
+                  <Link to="/aup" className="link-accent" target="_blank" rel="noreferrer">
+                    Acceptable Use Policy
+                  </Link>
+                  .
+                </span>
+              </label>
+            )}
+
             {mode !== 'forgot' && (oauthFlags.github || oauthFlags.google) && (
               <>
                 <div className="mb-4 space-y-2">
@@ -305,7 +355,7 @@ export default function Auth() {
                     <button
                       type="button"
                       onClick={handleGitHub}
-                      disabled={socialBusy}
+                      disabled={socialBusy || signupBlocked}
                       className="btn btn-secondary w-full"
                       style={{ fontWeight: 600 }}
                     >
@@ -317,7 +367,7 @@ export default function Auth() {
                     <button
                       type="button"
                       onClick={handleGoogle}
-                      disabled={socialBusy}
+                      disabled={socialBusy || signupBlocked}
                       className="btn btn-secondary w-full"
                       style={{ fontWeight: 600 }}
                     >
@@ -416,7 +466,11 @@ export default function Auth() {
                 </div>
               )}
 
-              <button type="submit" disabled={socialBusy} className="btn btn-primary w-full btn-shine">
+              <button
+                type="submit"
+                disabled={socialBusy || signupBlocked}
+                className="btn btn-primary w-full btn-shine"
+              >
                 {loading ? (
                   <Spinner />
                 ) : mode === 'signup' ? (
@@ -428,6 +482,23 @@ export default function Auth() {
                 )}
               </button>
             </form>
+
+            {mode === 'signin' && (
+              <p className="mt-4 text-center text-[11px] leading-relaxed" style={{ color: 'var(--color-text-disabled)' }}>
+                By signing in you confirm you accept our{' '}
+                <Link to="/terms" className="link-accent">
+                  Terms
+                </Link>
+                {' · '}
+                <Link to="/privacy" className="link-accent">
+                  Privacy
+                </Link>
+                {' · '}
+                <Link to="/aup" className="link-accent">
+                  AUP
+                </Link>
+              </p>
+            )}
 
             <p className="mt-6 text-center text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
               {mode === 'forgot' ? (
@@ -452,6 +523,7 @@ export default function Auth() {
                     type="button"
                     onClick={() => {
                       setMode('signup');
+                      setAgreed(false);
                       setError(null);
                       setInfo(null);
                     }}
@@ -483,6 +555,14 @@ export default function Auth() {
         <div className="mt-4 text-center">
           <Link to="/" className="text-xs link" style={{ color: 'var(--color-text-disabled)' }}>
             Back to home
+          </Link>
+          {' · '}
+          <Link to="/terms" className="text-xs link" style={{ color: 'var(--color-text-disabled)' }}>
+            Terms
+          </Link>
+          {' · '}
+          <Link to="/privacy" className="text-xs link" style={{ color: 'var(--color-text-disabled)' }}>
+            Privacy
           </Link>
         </div>
       </motion.div>
