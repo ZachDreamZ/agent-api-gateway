@@ -25,6 +25,8 @@ const MIME: Record<string, string> = {
   '.js': 'application/javascript',
   '.css': 'text/css',
   '.json': 'application/json',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
@@ -231,6 +233,12 @@ app.get('/logo-mark.svg', (c) => serveStatic(c, 'logo-mark.svg') || c.json({ err
 app.get('/logo-product.svg', (c) => serveStatic(c, 'logo-product.svg') || c.json({ error: 'Not found' }, 404));
 app.get('/brand/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
+
+// Agent / crawler discovery (must be real text — not SPA shell)
+app.get('/llms.txt', (c) => serveStatic(c, 'llms.txt') || c.text('Not found', 404));
+app.get('/robots.txt', (c) => serveStatic(c, 'robots.txt') || c.text('Not found', 404));
+app.get('/sitemap.xml', (c) => serveStatic(c, 'sitemap.xml') || c.text('Not found', 404));
+app.get('/.well-known/llms.txt', (c) => serveStatic(c, 'llms.txt') || c.text('Not found', 404));
 
 // ─── Public routes ───
 
