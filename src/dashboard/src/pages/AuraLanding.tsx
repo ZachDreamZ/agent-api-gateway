@@ -270,7 +270,7 @@ function SchemaPlayground() {
 function LiveStatsBar() {
   const [stats, setStats] = useState<{uptime_hours: number; requests_served: number} | null>(null);
   useEffect(() => {
-    fetch('/api/stats')
+    fetch('/health')
       .then((r) => r.json())
       .then(setStats)
       .catch(() => {});

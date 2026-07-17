@@ -146,13 +146,16 @@ app.use('/*', async (c, next) => {
   c.header('Content-Security-Policy', csp);
 });
 
-// ─── Health ───
-
+// ─── Health + public stats ───
+let healthHits = 0;
+const NO_AUTH: string[] = [];
 app.get('/health', (c) =>
   c.json({
     status: 'ok',
     service: 'agent-api-gateway',
     version: '0.1.0',
+    uptime_hours: Math.round(process.uptime() / 3600 * 10) / 10,
+    requests_served: ++healthHits,
     // Public capability flags (no secrets)
     github_oauth: Boolean(process.env['GITHUB_CLIENT_ID'] && process.env['GITHUB_CLIENT_SECRET']),
     google_oauth: Boolean(process.env['GOOGLE_CLIENT_ID'] && process.env['GOOGLE_CLIENT_SECRET']),
@@ -222,16 +225,7 @@ app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not f
 
 app.route('/v1/schemas', schemasRoutes);
 
-// ─── Public stats (no auth) ───
-let requestCounter = 0;
-app.get('/api/stats', (c) =>
-  c.json({
-    status: 'ok',
-    uptime_hours: Math.round(process.uptime() / 3600 * 10) / 10,
-    requests_served: ++requestCounter,
-    timestamp: new Date().toISOString(),
-  }),
-);
+
 
 // ─── Public billing pricing + public checkout (no auth) ───
 // Mounted only under /v1/billing/pricing so authenticated /v1/billing/* still works.
