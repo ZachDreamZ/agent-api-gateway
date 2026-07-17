@@ -267,14 +267,63 @@ function SchemaPlayground() {
 
 // ─── Live Stats Bar (social proof) ───
 
+function formatUptime(stats: {
+  uptime_seconds?: number;
+  uptime_hours?: number;
+}): string {
+  let seconds =
+    typeof stats.uptime_seconds === 'number' && Number.isFinite(stats.uptime_seconds)
+      ? Math.max(0, Math.floor(stats.uptime_seconds))
+      : null;
+  if (seconds == null && typeof stats.uptime_hours === 'number' && Number.isFinite(stats.uptime_hours)) {
+    seconds = Math.max(0, Math.floor(stats.uptime_hours * 3600));
+  }
+  if (seconds == null) return 'uptime n/a';
+
+  if (seconds < 60) return `${seconds}s uptime`;
+  if (seconds < 3600) {
+    const mins = Math.floor(seconds / 60);
+    return `${mins}m uptime`;
+  }
+  if (seconds < 86400) {
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    return mins > 0 ? `${hours}h ${mins}m uptime` : `${hours}h uptime`;
+  }
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  return hours > 0 ? `${days}d ${hours}h uptime` : `${days}d uptime`;
+}
+
 function LiveStatsBar() {
-  const [stats, setStats] = useState<{uptime_hours: number; requests_served: number} | null>(null);
+  const [stats, setStats] = useState<{
+    uptime_seconds?: number;
+    uptime_hours?: number;
+    requests_served?: number;
+    status?: string;
+  } | null>(null);
+
   useEffect(() => {
-    fetch('/health')
-      .then((r) => r.json())
-      .then(setStats)
-      .catch(() => {});
+    let cancelled = false;
+    const load = () => {
+      fetch('/health')
+        .then((r) => r.json())
+        .then((data) => {
+          if (!cancelled) setStats(data);
+        })
+        .catch(() => {
+          if (!cancelled) setStats(null);
+        });
+    };
+    load();
+    // Refresh so uptime ticks while the page is open
+    const id = window.setInterval(load, 60_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
   }, []);
+
   return (
     <section className="mx-auto max-w-6xl px-5 md:px-6 -mt-4 mb-8" style={{ position: 'relative', zIndex: 1 }}>
       <div
@@ -287,12 +336,14 @@ function LiveStatsBar() {
       >
         <span className="flex items-center gap-2">
           <span className="signal-dot signal-dot-ok" />
-          API operational
+          {stats?.status === 'ok' || stats ? 'API operational' : 'Checking status…'}
         </span>
         {stats && (
           <>
-            <span>{stats.uptime_hours.toFixed(1)}h uptime</span>
-            <span>{stats.requests_served.toLocaleString()} requests handled</span>
+            <span title="Time since last process start">{formatUptime(stats)}</span>
+            {typeof stats.requests_served === 'number' && (
+              <span>{stats.requests_served.toLocaleString()} status checks</span>
+            )}
           </>
         )}
         <a href="/health" className="link-accent" target="_blank" rel="noopener noreferrer">

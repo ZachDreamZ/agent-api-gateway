@@ -153,20 +153,25 @@ app.use('/*', async (c, next) => {
 
 // ─── Health + public stats ───
 let healthHits = 0;
-app.get('/health', (c) =>
-  c.json({
+const processStartedAt = Date.now();
+app.get('/health', (c) => {
+  const uptimeSeconds = Math.max(0, Math.floor(process.uptime()));
+  const uptimeHours = Math.round((uptimeSeconds / 3600) * 100) / 100; // 2 decimals so <1h is not 0.0
+  return c.json({
     status: 'ok',
     service: 'agent-api-gateway',
     version: '0.1.0',
-    uptime_hours: Math.round(process.uptime() / 3600 * 10) / 10,
+    uptime_seconds: uptimeSeconds,
+    uptime_hours: uptimeHours,
+    started_at: new Date(processStartedAt).toISOString(),
     requests_served: ++healthHits,
     // Public capability flags (no secrets)
     github_oauth: Boolean(process.env['GITHUB_CLIENT_ID'] && process.env['GITHUB_CLIENT_SECRET']),
     google_oauth: Boolean(process.env['GOOGLE_CLIENT_ID'] && process.env['GOOGLE_CLIENT_SECRET']),
     email_transport: Boolean(process.env['RESEND_API_KEY']),
     email_verification: true,
-  }),
-);
+  });
+});
 
 // ─── DB health (gated — never public without ADMIN_HEALTH_TOKEN) ───
 app.get('/api/dbcheck', async (c) => {
