@@ -599,6 +599,12 @@ function Pricing() {
         <p className="text-sm mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
           Checkout runs on Polar. Starter is a one-time $1 pack; Hobby and Pro are monthly subscriptions.
         </p>
+        <p className="text-xs" style={{ color: 'var(--color-text-tertiary)', marginTop: '-0.75rem', marginBottom: '1rem' }}>
+          Also on{' '}
+          <a href="https://shadowcraft41.gumroad.com/l/spwxix" target="_blank" rel="noopener noreferrer" className="link-accent">Gumroad ($1 Starter)</a>
+          {' · '}
+          <a href="https://shadowcraft41.gumroad.com/" target="_blank" rel="noopener noreferrer" className="link-accent">full shop</a>
+        </p>
       </Reveal>
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
