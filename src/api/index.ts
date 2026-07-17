@@ -218,6 +218,21 @@ app.get('/logo-mark.svg', (c) => serveStatic(c, 'logo-mark.svg') || c.json({ err
 app.get('/brand/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 
+// ─── Public stats (no auth) — lightweight uptime / health summary ───
+let requestCounter = 0;
+app.use('/v1/stats', async (c, next) => {
+  requestCounter++;
+  await next();
+});
+app.get('/v1/stats', (c) =>
+  c.json({
+    status: 'ok',
+    uptime_hours: Math.round(process.uptime() / 3600 * 10) / 10,
+    requests_served: requestCounter,
+    timestamp: new Date().toISOString(),
+  }),
+);
+
 // ─── Public routes ───
 
 app.route('/v1/schemas', schemasRoutes);

@@ -265,6 +265,44 @@ function SchemaPlayground() {
   );
 }
 
+// ─── Live Stats Bar (social proof) ───
+
+function LiveStatsBar() {
+  const [stats, setStats] = useState<{uptime_hours: number; requests_served: number} | null>(null);
+  useEffect(() => {
+    fetch('/v1/stats')
+      .then((r) => r.json())
+      .then(setStats)
+      .catch(() => {});
+  }, []);
+  return (
+    <section className="mx-auto max-w-6xl px-5 md:px-6 -mt-4 mb-8" style={{ position: 'relative', zIndex: 1 }}>
+      <div
+        className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-xl px-5 py-3 text-xs"
+        style={{
+          background: 'var(--color-bg-surface)',
+          border: '1px solid var(--color-border-subtle)',
+          color: 'var(--color-text-tertiary)',
+        }}
+      >
+        <span className="flex items-center gap-2">
+          <span className="signal-dot signal-dot-ok" />
+          API operational
+        </span>
+        {stats && (
+          <>
+            <span>{stats.uptime_hours.toFixed(1)}h uptime</span>
+            <span>{stats.requests_served.toLocaleString()} requests handled</span>
+          </>
+        )}
+        <a href="/health" className="link-accent" target="_blank" rel="noopener noreferrer">
+          Status page →
+        </a>
+      </div>
+    </section>
+  );
+}
+
 // ─── Hero ───
 
 function Hero() {
@@ -762,6 +800,7 @@ export default function Landing() {
         <Navbar />
         <main>
           <Hero />
+          <LiveStatsBar />
           <TrustStrip />
           <HowItWorks />
           <Quickstart />
