@@ -27,6 +27,8 @@ const MIME: Record<string, string> = {
   '.json': 'application/json',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
@@ -55,7 +57,7 @@ function serveStatic(c: any, filePath: string) {
   // HTML shell must not be cached long — deploys would otherwise leave users on stale SPA
   if (ext === '.html' || safeRel === 'index.html') {
     headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-  } else if (safeRel.startsWith('assets/')) {
+  } else if (safeRel.startsWith('assets/') || safeRel.startsWith('brand/')) {
     headers['Cache-Control'] = 'public, max-age=31536000, immutable';
   }
   return c.body(content, 200, headers);
@@ -72,7 +74,14 @@ setInterval(() => globalReqTimestamps.clear(), 60_000).unref();
 app.use('/*', async (c, next) => {
   // Skip rate limiting for static assets and health check
   const path = c.req.path;
-  if (path === '/health' || path.startsWith('/assets/') || path === '/favicon.ico' || path === '/favicon.svg') {
+  if (
+    path === '/health' ||
+    path.startsWith('/assets/') ||
+    path.startsWith('/brand/') ||
+    path === '/favicon.ico' ||
+    path === '/favicon.svg' ||
+    path === '/logo-mark.svg'
+  ) {
     await next();
     return;
   }
@@ -205,6 +214,8 @@ app.get('/dashboard', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Fr
 app.get('/dashboard/*', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/favicon.ico', (c) => serveStatic(c, 'favicon.svg') || serveStatic(c, 'favicon.ico') || c.newResponse(null, 204));
 app.get('/favicon.svg', (c) => serveStatic(c, 'favicon.svg') || c.newResponse(null, 204));
+app.get('/logo-mark.svg', (c) => serveStatic(c, 'logo-mark.svg') || c.json({ error: 'Not found' }, 404));
+app.get('/brand/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 
 // ─── Public routes ───
