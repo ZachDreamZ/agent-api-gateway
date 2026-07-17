@@ -13,6 +13,8 @@ interface UsageStats {
   queries_this_month: number;
   credits_used: number;
   credits_remaining: number;
+  credits_limit: number;
+  bonus_credits: number;
   cache_hit_rate: number;
   avg_latency_ms: number;
   active_keys: number;
@@ -25,6 +27,8 @@ interface ApiUsageResponse {
   credits_used: number;
   credits_limit: number;
   credits_remaining: number;
+  bonus_credits?: number;
+  monthly_limit?: number;
   period_start: string;
 }
 
@@ -212,24 +216,63 @@ function UsageChart({ data }: { data: DailyUsage[] }) {
 
 // ─── First-run onboarding (real path, no fake activity) ───
 
+function CreditPacksMini() {
+  const packs = [
+    { sku: 'credits_1k', label: '1k', price: '$1' },
+    { sku: 'credits_5k', label: '5k', price: '$4' },
+    { sku: 'credits_25k', label: '25k', price: '$15' },
+  ];
+  return (
+    <div className="stat-card space-y-3">
+      <div>
+        <h3 className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+          Credit packs
+        </h3>
+        <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+          One-time top-ups that stack on free or any subscription. Never expire until used.
+        </p>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {packs.map((p) => (
+          <a
+            key={p.sku}
+            href={`/buy?sku=${p.sku}`}
+            className="btn btn-secondary text-xs flex flex-col items-center gap-0.5 py-2 h-auto"
+          >
+            <span className="font-semibold tabular-nums">{p.price}</span>
+            <span style={{ color: 'var(--color-text-tertiary)', fontSize: '0.65rem' }}>{p.label} credits</span>
+          </a>
+        ))}
+      </div>
+      <Link to="/dashboard/billing" className="btn btn-primary w-full text-xs">
+        All plans & credits
+        <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
+    </div>
+  );
+}
+
 function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
   if (hasUsage) {
     return (
-      <div className="stat-card space-y-3">
-        <h3 className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-          Next steps
-        </h3>
-        <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
-          Need more credits? Buy a one-time credit pack (stacks on your plan), or wire the MCP server for Claude/Cursor.
-        </p>
-        <div className="flex flex-col gap-2">
-          <Link to="/dashboard/billing" className="btn btn-primary w-full text-xs">
-            Buy credit packs
-          </Link>
-          <Link to="/docs#mcp" className="btn btn-secondary w-full text-xs">
-            <BookOpen className="w-3.5 h-3.5" />
-            MCP setup
-          </Link>
+      <div className="space-y-4">
+        <CreditPacksMini />
+        <div className="stat-card space-y-3">
+          <h3 className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+            Next steps
+          </h3>
+          <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+            Wire the MCP server for Claude/Cursor, or upgrade your monthly plan under Billing.
+          </p>
+          <div className="flex flex-col gap-2">
+            <Link to="/docs#mcp" className="btn btn-secondary w-full text-xs">
+              <BookOpen className="w-3.5 h-3.5" />
+              MCP setup
+            </Link>
+            <Link to="/dashboard/billing" className="btn btn-secondary w-full text-xs">
+              Manage subscription
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -315,6 +358,8 @@ export default function Overview() {
           queries_this_month: raw.credits_used,
           credits_used: raw.credits_used,
           credits_remaining: raw.credits_remaining,
+          credits_limit: raw.credits_limit ?? (raw.credits_used + raw.credits_remaining),
+          bonus_credits: raw.bonus_credits ?? 0,
           cache_hit_rate: 0,
           avg_latency_ms: 0,
           active_keys: 0,
@@ -334,6 +379,8 @@ export default function Overview() {
             queries_this_month: 0,
             credits_used: 0,
             credits_remaining: 100,
+            credits_limit: 100,
+            bonus_credits: 0,
             cache_hit_rate: 0,
             avg_latency_ms: 0,
             active_keys: 0,
@@ -365,7 +412,7 @@ export default function Overview() {
       <PageHeader
         eyebrow="Dashboard"
         title="Overview"
-        description="Credits remaining and how to call the API."
+        description="Credits remaining (plan + bonus packs) and how to call the API."
       />
 
       <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -373,7 +420,7 @@ export default function Overview() {
           <StatCard
             label="Total Queries"
             value={(stats?.total_queries ?? 0).toLocaleString()}
-            sub="All time"
+            sub="This period usage"
             icon={Zap}
             loading={loading}
           />
@@ -391,7 +438,11 @@ export default function Overview() {
           <StatCard
             label="Credits left"
             value={(stats?.credits_remaining ?? 0).toLocaleString()}
-            sub="Free tier starts at 100 / month"
+            sub={
+              (stats?.bonus_credits ?? 0) > 0
+                ? `Incl. ${(stats?.bonus_credits ?? 0).toLocaleString()} bonus from packs`
+                : 'Plan limit + credit packs'
+            }
             icon={Clock}
             loading={loading}
           />
@@ -400,7 +451,7 @@ export default function Overview() {
           <StatCard
             label="Tier"
             value={stats?.tier ? stats.tier : 'free'}
-            sub="Upgrade under Billing"
+            sub="Plans & credit packs under Billing"
             icon={KeyRound}
             loading={loading}
           />
@@ -409,15 +460,16 @@ export default function Overview() {
 
       <UsageBar
         used={stats?.credits_used ?? 0}
-        total={(stats?.credits_used ?? 0) + (stats?.credits_remaining ?? 0)}
+        total={stats?.credits_limit ?? ((stats?.credits_used ?? 0) + (stats?.credits_remaining ?? 0))}
       />
 
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
           <UsageChart data={chart} />
         </div>
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-4">
           <OnboardingCard hasUsage={(stats?.total_queries ?? 0) > 0} />
+          {(stats?.total_queries ?? 0) === 0 && <CreditPacksMini />}
         </div>
       </div>
     </div>

@@ -75,7 +75,7 @@ const COPY: Record<
       },
       {
         h: 'Billing',
-        p: 'Paid plans and one-time packs are sold through Polar. Fees are as listed at purchase. Taxes may apply. Refunds follow Polar policy and applicable law. Unused free credits do not convert to cash.',
+        p: 'Paid subscriptions and one-time credit packs are sold through Polar. Subscriptions set monthly allowances; credit packs add bonus credits that stack on your plan and do not expire until used. Fees are as listed at purchase. Taxes may apply. Refunds follow Polar policy and applicable law. Unused free or paid credits do not convert to cash.',
       },
       {
         h: 'Acceptable use',

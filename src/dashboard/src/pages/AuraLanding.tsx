@@ -336,12 +336,12 @@ function Hero() {
               <Link to="/login" className="btn btn-primary btn-shine" style={{ padding: '0.75rem 1.5rem' }}>
                 Create free account
               </Link>
-              <a href="/buy" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
-                Buy starter $1
+              <a href="/buy?sku=credits_1k" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
+                Buy credits from $1
               </a>
             </div>
             <p className="mt-4 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-              Free 100 queries/mo · GitHub, Google, or email · 1,000 credits for $1 one-time (no subscription)
+              Free 100 queries/mo · Subs or one-time credit packs · Packs stack on any plan
             </p>
           </motion.div>
 
@@ -531,8 +531,8 @@ const features = [
   },
   {
     icon: Shield,
-    title: 'Keys & limits',
-    body: 'Per-key rate limits, monthly quotas by tier, and signed Polar billing for paid plans.',
+    title: 'Keys, plans & credits',
+    body: 'Monthly subscriptions set your allowance. One-time credit packs top up anytime and stack on free or paid plans.',
   },
 ];
 
@@ -579,37 +579,62 @@ function Features() {
 
 // ─── Pricing ───
 
-const plans = [
+const creditPacks = [
+  {
+    id: 'credits_1k',
+    name: '1,000 credits',
+    price: '$1',
+    period: ' once',
+    desc: 'Best first top-up — works on free or any plan.',
+    features: ['1,000 extraction credits', 'Never expires until used', 'Stacks on your plan', 'No subscription required'],
+    highlighted: true,
+    cta: 'Buy $1',
+    href: '/buy?sku=credits_1k',
+  },
+  {
+    id: 'credits_5k',
+    name: '5,000 credits',
+    price: '$4',
+    period: ' once',
+    desc: 'For bursts above your monthly allowance.',
+    features: ['5,000 extraction credits', 'Never expires until used', 'Stacks on your plan', 'Better value per credit'],
+    highlighted: false,
+    cta: 'Buy $4',
+    href: '/buy?sku=credits_5k',
+  },
+  {
+    id: 'credits_25k',
+    name: '25,000 credits',
+    price: '$15',
+    period: ' once',
+    desc: 'Heavy agent workloads without upgrading plan.',
+    features: ['25,000 extraction credits', 'Never expires until used', 'Stacks on your plan', 'Best bulk rate'],
+    highlighted: false,
+    cta: 'Buy $15',
+    href: '/buy?sku=credits_25k',
+  },
+];
+
+const subscriptions = [
   {
     tier: 'Free',
     price: '$0',
     period: '',
     desc: 'Try the API and ship a prototype.',
-    features: ['100 queries / month', 'Product & article schemas', '1-hour cache TTL', '1 API key', 'REST + MCP'],
+    features: ['100 queries / month', 'Product & article schemas', '1-hour cache TTL', '1 API key', 'REST + MCP', 'Buy credit packs anytime'],
     highlighted: false,
     cta: 'Create free account',
     href: '/login',
     external: false,
   },
   {
-    tier: '1k credits',
-    price: '$1',
-    period: ' once',
-    desc: 'Credit top-up — stacks on free or any plan.',
-    features: ['1,000 extraction credits', 'Never expires until used', 'No subscription required', 'Buy more anytime'],
-    highlighted: true,
-    cta: 'Buy 1,000 credits',
-    href: '/buy?sku=credits_1k',
-    external: true,
-  },
-  {
     tier: 'Hobby',
     price: '$29',
     period: '/mo',
     desc: 'Solo builders and side projects.',
-    features: ['5,000 queries / month', 'All schemas', '24h cache TTL', 'Usage analytics', 'Buy credit packs anytime'],
-    highlighted: false,
-    cta: 'Subscribe',
+    features: ['5,000 queries / month', 'All schemas', '24h cache TTL', 'Usage analytics', 'Email support', 'Credit packs for bursts'],
+    highlighted: true,
+    cta: 'Subscribe Hobby',
     href: '/buy?sku=hobby',
     external: true,
   },
@@ -618,13 +643,94 @@ const plans = [
     price: '$99',
     period: '/mo',
     desc: 'Production agent workloads.',
-    features: ['25,000 queries / month', 'Custom schema path*', '72h cache TTL', 'Team keys', 'Credit packs for bursts'],
+    features: ['25,000 queries / month', 'Custom schema path*', '72h cache TTL', 'Team keys', 'Priority support', 'Credit packs for bursts'],
     highlighted: false,
     cta: 'Go Pro',
     href: '/buy?sku=pro',
     external: true,
   },
 ];
+
+function PricingCard({
+  name,
+  price,
+  period,
+  desc,
+  features,
+  highlighted,
+  badge,
+  cta,
+  href,
+  external,
+  delay = 0,
+}: {
+  name: string;
+  price: string;
+  period: string;
+  desc: string;
+  features: string[];
+  highlighted: boolean;
+  badge?: string;
+  cta: string;
+  href: string;
+  external: boolean;
+  delay?: number;
+}) {
+  return (
+    <Reveal delay={delay}>
+      <div
+        className="flex flex-col overflow-hidden h-full surface-hover"
+        style={{
+          background: highlighted ? 'var(--color-bg-elevated)' : 'var(--color-bg-surface)',
+          border: `1px solid ${highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : 'var(--color-border-subtle)'}`,
+          borderRadius: 'var(--radius-lg)',
+          boxShadow: highlighted ? 'var(--shadow-glow)' : undefined,
+        }}
+      >
+        {badge && (
+          <div
+            className="px-4 py-2 text-center text-[11px] font-semibold tracking-wide uppercase"
+            style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+          >
+            {badge}
+          </div>
+        )}
+        <div className="flex flex-1 flex-col p-5">
+          <h3 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{name}</h3>
+          <div className="mt-3 flex items-baseline gap-1">
+            <span
+              className="font-display text-3xl font-bold tracking-tight tabular-nums"
+              style={{ color: 'var(--color-text-primary)' }}
+            >
+              {price}
+            </span>
+            {period && (
+              <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{period}</span>
+            )}
+          </div>
+          <p className="mt-2 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>{desc}</p>
+          <ul className="mt-5 flex-1 space-y-2">
+            {features.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'var(--color-accent-base)' }} strokeWidth={2.5} />
+                {f}
+              </li>
+            ))}
+          </ul>
+          {external ? (
+            <a href={href} className={`btn mt-6 w-full ${highlighted ? 'btn-primary' : 'btn-secondary'}`}>
+              {cta}
+            </a>
+          ) : (
+            <Link to={href} className={`btn mt-6 w-full ${highlighted ? 'btn-primary' : 'btn-secondary'}`}>
+              {cta}
+            </Link>
+          )}
+        </div>
+      </div>
+    </Reveal>
+  );
+}
 
 function Pricing() {
   return (
@@ -634,72 +740,83 @@ function Pricing() {
         <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
           Start free. Subscribe or buy credits when you need them.
         </h2>
-        <p className="text-sm mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
+        <p className="text-sm mb-10 max-w-xl" style={{ color: 'var(--color-text-secondary)' }}>
           Monthly plans set a steady allowance. Credit packs are one-time top-ups that stack on any plan and do not expire until used.
-        </p>
-        <p className="text-xs" style={{ color: 'var(--color-text-tertiary)', marginTop: '-0.75rem', marginBottom: '1rem' }}>
-          Checkout via Polar (/buy). Logged-in users can also top up under Dashboard → Billing.
+          Checkout via Polar. Logged-in users can also top up under Dashboard → Billing.
         </p>
       </Reveal>
 
-      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {plans.map((plan, i) => (
-          <Reveal key={plan.tier} delay={i * 0.05}>
-          <div
-            className="flex flex-col overflow-hidden h-full surface-hover"
-            style={{
-              background: plan.highlighted ? 'var(--color-bg-elevated)' : 'var(--color-bg-surface)',
-              border: `1px solid ${plan.highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : 'var(--color-border-subtle)'}`,
-              borderRadius: 'var(--radius-lg)',
-              boxShadow: plan.highlighted ? 'var(--shadow-glow)' : undefined,
-            }}
-          >
-            {plan.highlighted && (
-              <div
-                className="px-4 py-2 text-center text-[11px] font-semibold tracking-wide uppercase"
-                style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
-              >
-                Best first purchase
-              </div>
-            )}
-            <div className="flex flex-1 flex-col p-5">
-              <h3 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{plan.tier}</h3>
-              <div className="mt-3 flex items-baseline gap-1">
-                <span
-                  className="font-display text-3xl font-bold tracking-tight tabular-nums"
-                  style={{ color: 'var(--color-text-primary)' }}
-                >
-                  {plan.price}
-                </span>
-                {plan.period && (
-                  <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{plan.period}</span>
-                )}
-              </div>
-              <p className="mt-2 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>{plan.desc}</p>
-              <ul className="mt-5 flex-1 space-y-2">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                    <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'var(--color-accent-base)' }} strokeWidth={2.5} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              {plan.external ? (
-                <a href={plan.href} className={`btn mt-6 w-full ${plan.highlighted ? 'btn-primary' : 'btn-secondary'}`}>
-                  {plan.cta}
-                </a>
-              ) : (
-                <Link to={plan.href} className={`btn mt-6 w-full ${plan.highlighted ? 'btn-primary' : 'btn-secondary'}`}>
-                  {plan.cta}
-                </Link>
-              )}
+      {/* Credit packs */}
+      <div className="mb-12">
+        <Reveal>
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+            <div>
+              <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+                Credit packs
+              </h3>
+              <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+                One-time top-ups — no plan change required.
+              </p>
             </div>
+            <p className="text-xs" style={{ color: 'var(--color-text-disabled)' }}>
+              Stacks on free, Hobby, or Pro
+            </p>
           </div>
-          </Reveal>
-        ))}
+        </Reveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {creditPacks.map((pack, i) => (
+            <PricingCard
+              key={pack.id}
+              name={pack.name}
+              price={pack.price}
+              period={pack.period}
+              desc={pack.desc}
+              features={pack.features}
+              highlighted={pack.highlighted}
+              badge={pack.highlighted ? 'Best first purchase' : undefined}
+              cta={pack.cta}
+              href={pack.href}
+              external
+              delay={i * 0.05}
+            />
+          ))}
+        </div>
       </div>
-      <p className="mt-4 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
-        * Custom schemas available on Pro; contact support for schema review.
+
+      {/* Subscriptions */}
+      <div>
+        <Reveal>
+          <div className="mb-4">
+            <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+              Subscriptions
+            </h3>
+            <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+              Monthly plans for a steady allowance and higher rate limits. Buy credit packs anytime for bursts.
+            </p>
+          </div>
+        </Reveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {subscriptions.map((plan, i) => (
+            <PricingCard
+              key={plan.tier}
+              name={plan.tier}
+              price={plan.price}
+              period={plan.period}
+              desc={plan.desc}
+              features={plan.features}
+              highlighted={plan.highlighted}
+              badge={plan.highlighted ? 'Most popular plan' : undefined}
+              cta={plan.cta}
+              href={plan.href}
+              external={plan.external}
+              delay={i * 0.05}
+            />
+          ))}
+        </div>
+      </div>
+
+      <p className="mt-6 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
+        * Custom schemas available on Pro; contact support for schema review. Scale / custom volume: support@agentapigw.dpdns.org
       </p>
     </section>
   );
@@ -730,15 +847,16 @@ function FinalCTA() {
           </h2>
           <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
             Create an account, mint a key, and call <span className="text-mono text-xs">/v1/extract</span>.
+            Need more later? Subscribe or buy credit packs anytime.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link to="/dashboard" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>
+            <Link to="/login" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>
               Start free
             </Link>
-            <Link to="/docs" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
-              Read the docs
+            <a href="#pricing" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
+              View plans & credits
               <ChevronRight className="w-4 h-4" />
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -762,7 +880,7 @@ function Footer() {
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
           <Link to="/docs" className="link">Docs</Link>
           <Link to="/dashboard" className="link">Dashboard</Link>
-          <a href="/buy" className="link">Pricing</a>
+          <a href="#pricing" className="link">Pricing</a>
           <a href="/health" className="link">Status</a>
           <Link to="/privacy" className="link">Privacy</Link>
           <Link to="/terms" className="link">Terms</Link>

@@ -177,18 +177,23 @@ function UserBar({ user }: { user: UserInfo | null }) {
         </span>
         <span className="signal-dot absolute -right-0.5 -top-0.5" />
       </div>
-      <div>
+      <div className="min-w-0">
         <p className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
           {user.tier.charAt(0).toUpperCase() + user.tier.slice(1)} plan
         </p>
         <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-          {user.queries_per_month.toLocaleString()} queries this month
+          {user.queries_per_month.toLocaleString()} / mo · buy credit packs anytime
         </p>
       </div>
-      <Link to="/dashboard/billing" className="ml-auto btn btn-ghost text-xs" style={{ padding: '0.375rem 0.75rem' }}>
-        Manage
-        <ChevronRight className="w-3 h-3" />
-      </Link>
+      <div className="ml-auto flex items-center gap-1.5 shrink-0">
+        <Link to="/dashboard/billing#credit-packs" className="btn btn-secondary text-xs" style={{ padding: '0.375rem 0.65rem' }}>
+          Credits
+        </Link>
+        <Link to="/dashboard/billing" className="btn btn-ghost text-xs" style={{ padding: '0.375rem 0.65rem' }}>
+          Plans
+          <ChevronRight className="w-3 h-3" />
+        </Link>
+      </div>
     </motion.div>
   );
 }

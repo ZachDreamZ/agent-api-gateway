@@ -24,15 +24,31 @@ describe('conversion path structure', () => {
     assert.doesNotMatch(src, /2 min ago/);
   });
 
-  it('paid path still points at /buy for credit packs', () => {
+  it('landing pricing surfaces all credit packs and subscriptions', () => {
     const src = readFileSync(resolve(root, 'src/dashboard/src/pages/AuraLanding.tsx'), 'utf8');
-    assert.match(src, /tier:\s*'1k credits'[\s\S]*?href:\s*'\/buy\?sku=credits_1k'/);
+    assert.match(src, /id:\s*'credits_1k'[\s\S]*?href:\s*'\/buy\?sku=credits_1k'/);
+    assert.match(src, /id:\s*'credits_5k'/);
+    assert.match(src, /id:\s*'credits_25k'/);
+    assert.match(src, /Credit packs/);
+    assert.match(src, /Subscriptions/);
+    assert.match(src, /Buy credits from \$1/);
   });
 
   it('billing page surfaces credit packs alongside subscriptions', () => {
     const src = readFileSync(resolve(root, 'src/dashboard/src/pages/Billing.tsx'), 'utf8');
-    assert.match(src, /credit_packs/);
+    assert.match(src, /FALLBACK_CREDIT_PACKS/);
     assert.match(src, /Credit packs/);
     assert.match(src, /handleBuyCredits/);
+    assert.match(src, /Subscriptions/);
+    assert.match(src, /id="credit-packs"/);
+  });
+
+  it('overview and docs expose credit pack UX', () => {
+    const overview = readFileSync(resolve(root, 'src/dashboard/src/pages/Overview.tsx'), 'utf8');
+    const docs = readFileSync(resolve(root, 'src/dashboard/src/pages/Docs.tsx'), 'utf8');
+    assert.match(overview, /CreditPacksMini/);
+    assert.match(overview, /credits_5k/);
+    assert.match(docs, /credit_packs/);
+    assert.match(docs, /credits_25k/);
   });
 });

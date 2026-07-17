@@ -87,7 +87,7 @@ const SECTIONS = [
   { id: 'schemas', label: 'Extraction Schemas' },
   { id: 'extract', label: 'POST /v1/extract' },
   { id: 'usage', label: 'GET /v1/usage' },
-  { id: 'pricing', label: 'GET /v1/pricing' },
+  { id: 'pricing', label: 'Pricing & credit packs' },
   { id: 'mcp', label: 'MCP server' },
   { id: 'examples', label: 'Examples' },
   { id: 'errors', label: 'Error Handling' },
@@ -302,17 +302,22 @@ Check your current plan tier, credits used, and remaining quota for the current 
 
 ---
 
-## GET /v1/pricing
+## GET /v1/billing/pricing
 
-List available pricing plans and their features. No authentication required.
+List subscription tiers and one-time credit packs. Credit packs stack on monthly limits.
 
 \`\`\`json
 {
-  "tiers": [
-    { "id": "free", "name": "Free", "price": 0, "queries_per_month": 100, "rate_limit_rpm": 10 }
+  "tiers": [{ "id": "free", "name": "Free", "price": "Free", "queries_per_month": 100 }],
+  "credit_packs": [
+    { "id": "credits_1k", "credits": 1000, "price": "$1", "one_time": true },
+    { "id": "credits_5k", "credits": 5000, "price": "$4", "one_time": true },
+    { "id": "credits_25k", "credits": 25000, "price": "$15", "one_time": true }
   ]
 }
 \`\`\`
+
+Buy: GET /buy?sku=credits_1k | POST /v1/billing/checkout {"sku":"credits_1k"}
 
 ---
 
@@ -370,8 +375,18 @@ data = resp.json()
 |------|----------------|------------|------------|-------|
 | Free | 100 | 10 req/min | 1 | Free |
 | Hobby | 5,000 | 60 req/min | 5 | $29/mo |
-| Pro | 100,000 | 300 req/min | 20 | $99/mo |
+| Pro | 25,000 | 300 req/min | 20 | $99/mo |
 | Scale | Custom | Custom | Custom | Contact us |
+
+### Credit packs (one-time, stack on any plan)
+
+| Pack | Credits | Price |
+|------|---------|-------|
+| 1k | 1,000 | $1 |
+| 5k | 5,000 | $4 |
+| 25k | 25,000 | $15 |
+
+Remaining = monthly plan limit + bonus credits − usage. Packs never expire until used.
 
 **Cache policy:** Successful extractions are cached for 24 hours. Cache hits do not deduct credits. Bypass the cache by including a unique query parameter.
 `;
@@ -626,6 +641,8 @@ export default function Docs() {
   "tier": "free",
   "credits_used": 0,
   "credits_limit": 100,
+  "monthly_limit": 100,
+  "bonus_credits": 0,
   "credits_remaining": 100,
   "period_start": "2026-07-01T00:00:00.000Z"
 }`}
@@ -633,23 +650,35 @@ export default function Docs() {
           </SubSection>
         </Section>
 
-        <Section id="pricing" title="GET /v1/pricing">
-          <Para>List available pricing plans and their features. No authentication required.</Para>
+        <Section id="pricing" title="GET /v1/billing/pricing">
+          <Para>
+            List subscription tiers and one-time credit packs. No authentication required.
+            Credit packs stack on monthly plan limits and do not expire until used.
+          </Para>
 
           <SubSection title="Response — 200 OK">
             <Code lang="json">
 {`{
   "tiers": [
-    {
-      "id": "free",
-      "name": "Free",
-      "price": 0,
-      "queries_per_month": 100,
-      "rate_limit_rpm": 10
-    }
-  ]
+    { "id": "free", "name": "Free", "price": "Free", "queries_per_month": 100 },
+    { "id": "hobby", "name": "Hobby", "price": "$29/mo", "queries_per_month": 5000 }
+  ],
+  "credit_packs": [
+    { "id": "credits_1k", "credits": 1000, "price": "$1", "one_time": true, "available": true, "buy_url": "/buy?sku=credits_1k" },
+    { "id": "credits_5k", "credits": 5000, "price": "$4", "one_time": true, "available": true },
+    { "id": "credits_25k", "credits": 25000, "price": "$15", "one_time": true, "available": true }
+  ],
+  "note": "Subscriptions set monthly limits. Credit packs add bonus credits that stack."
 }`}
             </Code>
+          </SubSection>
+
+          <SubSection title="Buy credits">
+            <Para>
+              Public checkout: <code className="code-inline">GET /buy?sku=credits_1k</code> (or credits_5k / credits_25k).
+              Logged-in: <code className="code-inline">POST /v1/billing/checkout</code> with <code className="code-inline">{`{"sku":"credits_1k"}`}</code>.
+              Dashboard → Billing shows the same packs and subscriptions.
+            </Para>
           </SubSection>
         </Section>
 
@@ -833,7 +862,11 @@ print(data['data']['title'])`}
 
         {/* Rate Limits */}
         <Section id="limits" title="Rate Limits &amp; Quotas">
-          <Para>Each plan tier has a rate limit (requests per minute) and a monthly credit quota. Exceeding either returns a <code className="code-inline">429</code> response.</Para>
+          <Para>
+            Each plan tier has a rate limit (requests per minute) and a monthly credit quota.
+            Purchased credit packs add bonus credits that stack on top of the monthly limit.
+            Exceeding remaining credits or RPM returns a <code className="code-inline">429</code> response.
+          </Para>
 
           <div className="table-wrap">
             <table>
@@ -863,7 +896,7 @@ print(data['data']['title'])`}
                 </tr>
                 <tr>
                   <td><span className="badge" style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}>Pro</span></td>
-                  <td className="tabular-nums">100,000</td>
+                  <td className="tabular-nums">25,000</td>
                   <td className="tabular-nums">300 req/min</td>
                   <td className="tabular-nums">20</td>
                   <td>$99/mo</td>
@@ -879,6 +912,39 @@ print(data['data']['title'])`}
             </table>
           </div>
 
+          <div className="mt-6 table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Credit pack</th>
+                  <th>Credits</th>
+                  <th>Price</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1,000 credits</td>
+                  <td className="tabular-nums">1,000</td>
+                  <td>$1 once</td>
+                  <td>Stacks on any plan · never expires until used</td>
+                </tr>
+                <tr>
+                  <td>5,000 credits</td>
+                  <td className="tabular-nums">5,000</td>
+                  <td>$4 once</td>
+                  <td>Stacks on any plan · never expires until used</td>
+                </tr>
+                <tr>
+                  <td>25,000 credits</td>
+                  <td className="tabular-nums">25,000</td>
+                  <td>$15 once</td>
+                  <td>Stacks on any plan · never expires until used</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
           <div className="mt-8 rounded-xl px-4 py-3 surface" style={{ borderLeft: '3px solid var(--color-accent-base)' }}>
             <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
               <strong style={{ color: 'var(--color-text-primary)' }}>Cache policy:</strong> Successful extractions are cached for 24 hours.
@@ -886,15 +952,32 @@ print(data['data']['title'])`}
             </p>
           </div>
 
+          <div className="mt-8 rounded-xl px-4 py-3 surface" style={{ borderLeft: '3px solid var(--color-accent-base)' }}>
+            <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+              <strong style={{ color: 'var(--color-text-primary)' }}>Balance:</strong>{' '}
+              Remaining = monthly plan limit + purchased bonus credits − usage this month.
+              Buy packs from the landing page, <code className="code-inline">/buy?sku=…</code>, or Dashboard → Billing.
+            </p>
+          </div>
+
           <div className="mt-12 text-center surface surface-glow p-8">
             <p className="mb-4 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Ready to start extracting?</p>
-            <Link
-              to="/dashboard"
-              className="btn btn-primary"
-              style={{ fontSize: '0.9375rem', padding: '0.75rem 1.5rem' }}
-            >
-              Start free
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Link
+                to="/login"
+                className="btn btn-primary"
+                style={{ fontSize: '0.9375rem', padding: '0.75rem 1.5rem' }}
+              >
+                Start free
+              </Link>
+              <a
+                href="/buy?sku=credits_1k"
+                className="btn btn-secondary"
+                style={{ fontSize: '0.9375rem', padding: '0.75rem 1.5rem' }}
+              >
+                Buy credits from $1
+              </a>
+            </div>
           </div>
         </Section>
 
