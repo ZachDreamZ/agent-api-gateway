@@ -51,6 +51,24 @@ if (!process.env.BETTER_AUTH_SECRET?.trim()) {
   console.warn('[auth] BETTER_AUTH_SECRET is missing — sessions will not be stable across restarts');
 }
 
+/** Canonical public origin (custom domain preferred). */
+const PRIMARY_ORIGIN = (
+  process.env.BETTER_AUTH_URL
+  || process.env.APP_DOMAIN
+  || 'https://agentapigw.dpdns.org'
+).replace(/\/$/, '');
+
+// Hosts we serve auth from (custom domain + Render hostname).
+// Dynamic baseURL keeps OAuth callbacks/state consistent when either host is used.
+const AUTH_ALLOWED_HOSTS = [
+  'agentapigw.dpdns.org',
+  'agent-api-gateway.onrender.com',
+  'localhost:3000',
+  'localhost:5173',
+  '127.0.0.1:3000',
+  '127.0.0.1:5173',
+];
+
 // Build socialProviders only for configured providers
 const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
 if (githubOAuthEnabled) {
@@ -69,8 +87,16 @@ if (googleOAuthEnabled) {
 export const auth = betterAuth({
   database: pool,
   appName: 'Agent API Gateway · NexusCore',
-  baseURL: process.env.BETTER_AUTH_URL,
+  // Prefer request host when allowlisted so OAuth state is written for the
+  // same origin the browser returns to (avoids state_mismatch across hosts).
+  baseURL: {
+    allowedHosts: AUTH_ALLOWED_HOSTS,
+    fallback: PRIMARY_ORIGIN,
+    protocol: 'https',
+  },
   secret: process.env.BETTER_AUTH_SECRET,
+  // Cloudflare + Render terminate TLS and set X-Forwarded-* / CF-Connecting-IP
+  trustedProxyHeaders: true,
 
   // ─── Email verification (email/password accounts) ───
   emailVerification: {
@@ -114,9 +140,12 @@ export const auth = betterAuth({
       }));
     },
   },
-  // Social OAuth. Callbacks: {BETTER_AUTH_URL}/api/auth/callback/{github|google}
+  // Social OAuth. Callbacks: {origin}/api/auth/callback/{github|google}
   socialProviders,
   account: {
+    // Persist OAuth state in Postgres (verification table) so deploys/restarts
+    // mid-login and multi-instance don't drop the cookie-only state.
+    storeStateStrategy: 'database',
     accountLinking: {
       enabled: true,
       // Trusted providers auto-link when the OAuth email matches an existing user.
@@ -128,10 +157,9 @@ export const auth = betterAuth({
       updateUserInfoOnLink: true,
     },
   },
-  // Send users back to the dashboard auth page with a readable error, not the
-  // generic Better Auth error shell.
+  // Send users back to the login page with a readable error (route is /login, not /auth).
   onAPIError: {
-    errorURL: `${(process.env.BETTER_AUTH_URL || 'https://agentapigw.dpdns.org').replace(/\/$/, '')}/auth`,
+    errorURL: `${PRIMARY_ORIGIN}/login`,
   },
   user: {
     additionalFields: {
@@ -229,15 +257,22 @@ export const auth = betterAuth({
 
   // ─── Advanced security ───
   advanced: {
-    useSecureCookies: process.env.NODE_ENV === 'production' || process.env.BETTER_AUTH_URL?.startsWith('https://'),
+    // Secure cookies in production / HTTPS; allow non-secure on local HTTP.
+    useSecureCookies:
+      process.env.NODE_ENV === 'production'
+      || PRIMARY_ORIGIN.startsWith('https://'),
     defaultCookieAttributes: {
-      sameSite: 'lax', // lax allows Polar checkout return navigation to keep session
+      // Lax is correct for top-level OAuth GET callbacks (GitHub/Google redirect).
+      // Do not use SameSite=None unless frontend and API are on different sites.
+      sameSite: 'lax',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production' || process.env.BETTER_AUTH_URL?.startsWith('https://'),
+      secure:
+        process.env.NODE_ENV === 'production'
+        || PRIMARY_ORIGIN.startsWith('https://'),
       path: '/',
     },
     ipAddress: {
-      ipAddressHeaders: ['x-forwarded-for', 'cf-connecting-ip', 'x-real-ip'],
+      ipAddressHeaders: ['cf-connecting-ip', 'x-forwarded-for', 'x-real-ip'],
       disableIpTracking: false,
     },
   },

@@ -252,6 +252,8 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
         <Route path="/login" element={<Auth />} />
+        {/* Legacy Better Auth errorURL /auth → login */}
+        <Route path="/auth" element={<Auth />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/privacy" element={<Legal kind="privacy" />} />
         <Route path="/terms" element={<Legal kind="terms" />} />

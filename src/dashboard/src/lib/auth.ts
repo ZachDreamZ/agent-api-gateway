@@ -12,12 +12,19 @@ export const authClient = createAuthClient({
 export const { signIn, signUp, signOut, useSession, getSession } = authClient;
 export const apiKey = authClient.apiKey;
 
+function absoluteAppUrl(path: string): string {
+  if (typeof window === 'undefined') return path;
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  const origin = window.location.origin;
+  return `${origin}${path.startsWith('/') ? path : `/${path}`}`;
+}
+
 /** GitHub OAuth: redirects to GitHub then back to callbackURL */
 export async function signInWithGitHub(callbackURL = '/dashboard') {
   return signIn.social({
     provider: 'github',
-    callbackURL,
-    errorCallbackURL: '/auth',
+    callbackURL: absoluteAppUrl(callbackURL),
+    errorCallbackURL: absoluteAppUrl('/login'),
   });
 }
 
@@ -25,8 +32,8 @@ export async function signInWithGitHub(callbackURL = '/dashboard') {
 export async function signInWithGoogle(callbackURL = '/dashboard') {
   return signIn.social({
     provider: 'google',
-    callbackURL,
-    errorCallbackURL: '/auth',
+    callbackURL: absoluteAppUrl(callbackURL),
+    errorCallbackURL: absoluteAppUrl('/login'),
   });
 }
 
@@ -48,6 +55,17 @@ export function oauthErrorMessage(code: string | null | undefined): string | nul
     signup_disabled: 'New sign-ups with this provider are disabled.',
     oauth_provider_not_found: 'This sign-in method is not configured yet.',
     access_denied: 'You cancelled the sign-in request.',
+    // OAuth CSRF/state cookie or DB verification row missing (deploy mid-flow, expired, or host mismatch)
+    state_mismatch:
+      'Sign-in timed out or the browser lost the login session mid-redirect. Click GitHub or Google again to retry.',
+    state_not_found:
+      'Sign-in timed out or the browser lost the login session mid-redirect. Click GitHub or Google again to retry.',
+    please_restart_the_process:
+      'Please restart sign-in from this site (do not refresh the provider page). Click GitHub or Google again.',
+    unable_to_get_user_info:
+      'The provider signed you in but did not return a profile. Try again or use email.',
+    invalid_callback_request:
+      'OAuth callback was incomplete. Start sign-in again from the login page.',
   };
   return map[key] || `Sign-in failed (${code}). Try again or use email.`;
 }

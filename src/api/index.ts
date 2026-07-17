@@ -216,6 +216,7 @@ app.all('/api-key/*', (c) => auth.handler(c.req.raw));
 app.get('/', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/docs', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/login', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/auth', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/verify-email', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/reset-password', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/privacy', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
