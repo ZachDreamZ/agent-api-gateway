@@ -53,18 +53,17 @@ function Navbar() {
   }, [mobileOpen]);
 
   return (
-    <header className="glass-nav fixed top-0 left-0 right-0 z-50">
-      <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-6" aria-label="Primary">
+    <header className="nav-float">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between" aria-label="Primary">
         <BrandLockup variant="product" showOrgSubline to="/" />
 
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4 lg:gap-5">
           <StatusChip />
           <a href="#how" className="link text-sm">How it works</a>
-          <a href="#quickstart" className="link text-sm">Quickstart</a>
           <a href="#pricing" className="link text-sm">Pricing</a>
           <Link to="/docs" className="link text-sm">Docs</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
-          <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem' }}>
+          <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem', borderRadius: '9999px' }}>
             Open dashboard
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -325,14 +324,10 @@ function LiveStatsBar() {
   }, []);
 
   return (
-    <section className="mx-auto max-w-6xl px-5 md:px-6 -mt-4 mb-8" style={{ position: 'relative', zIndex: 1 }}>
+    <section className="mx-auto max-w-6xl px-5 md:px-6 -mt-2 mb-10" style={{ position: 'relative', zIndex: 1 }}>
       <div
-        className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-xl px-5 py-3 text-xs"
-        style={{
-          background: 'var(--color-bg-surface)',
-          border: '1px solid var(--color-border-subtle)',
-          color: 'var(--color-text-tertiary)',
-        }}
+        className="stats-glass flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-3 text-xs"
+        style={{ color: 'var(--color-text-tertiary)' }}
       >
         <span className="flex items-center gap-2">
           <span className="signal-dot signal-dot-ok" />
@@ -358,55 +353,123 @@ function LiveStatsBar() {
 
 function Hero() {
   return (
-    <section id="start" className="relative pt-28 pb-16 md:pt-36 md:pb-24 px-5 md:px-6 overflow-hidden">
+    <section id="start" className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-5 md:px-6 overflow-hidden">
       <div className="relative mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: easeOut }}
-          >
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
+          <div>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: easeOut }}
+              className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
               style={{
                 background: 'var(--color-accent-subtle)',
                 color: 'var(--color-accent-base)',
                 border: '1px solid oklch(0.74 0.12 195 / 0.25)',
+                boxShadow: '0 0 24px oklch(0.74 0.12 195 / 0.12)',
               }}
             >
               <span className="signal-dot" />
               URL + schema → validated JSON
-            </div>
-            <h1 className="text-display-lg" style={{ color: 'var(--color-text-primary)' }}>
-              Structured web data for AI agents.
-            </h1>
-            <p className="mt-5 max-w-md text-[0.95rem] leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+            </motion.div>
+
+            <motion.h1
+              className="text-display-lg"
+              style={{ color: 'var(--color-text-primary)' }}
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.05, ease: easeOut }}
+            >
+              Structured web data for{' '}
+              <span className="text-gradient-signal">AI agents</span>.
+            </motion.h1>
+
+            <motion.p
+              className="mt-5 max-w-md text-[0.95rem] leading-relaxed"
+              style={{ color: 'var(--color-text-secondary)' }}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.12, ease: easeOut }}
+            >
               Send a public page URL and a schema type. Get typed fields back:
               product, article, or company. No scraper farm to maintain.
-            </p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <Link to="/login" className="btn btn-primary btn-shine" style={{ padding: '0.75rem 1.5rem' }}>
+            </motion.p>
+
+            <motion.div
+              className="mt-8 flex flex-col sm:flex-row gap-3"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.18, ease: easeOut }}
+            >
+              <Link
+                to="/login"
+                className="btn btn-primary btn-shine"
+                style={{ padding: '0.8rem 1.6rem', borderRadius: '9999px' }}
+              >
                 Create free account
+                <ArrowRight className="w-4 h-4" />
               </Link>
-              <a href="/buy?sku=credits_1k" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
+              <a
+                href="/buy?sku=credits_1k"
+                className="btn btn-secondary"
+                style={{ padding: '0.8rem 1.6rem', borderRadius: '9999px' }}
+              >
                 Buy credits from $1
               </a>
-            </div>
-            <p className="mt-4 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-              Free 100 queries/mo · Subs or one-time credit packs · Packs stack on any plan
-            </p>
-          </motion.div>
+            </motion.div>
+
+            <motion.div
+              className="hero-chip-row"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.28, ease: easeOut }}
+            >
+              <span className="hero-chip"><span className="signal-dot signal-dot-ok" /> Free 100 queries/mo</span>
+              <span className="hero-chip">Credit packs from $1</span>
+              <span className="hero-chip">REST + MCP</span>
+              <span className="hero-chip">Polar checkout</span>
+            </motion.div>
+          </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            initial={{ opacity: 0, y: 24, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.12, ease: easeOut }}
-            className="surface-glow"
+            transition={{ duration: 0.65, delay: 0.14, ease: easeOut }}
+            className="hero-float-card"
           >
-            <SchemaPlayground />
+            <div className="relative z-[1]">
+              <SchemaPlayground />
+            </div>
           </motion.div>
         </div>
       </div>
     </section>
+  );
+}
+
+function CapabilityMarquee() {
+  const items = [
+    'POST /v1/extract',
+    'product · article · company',
+    'SSRF-safe fetches',
+    'Schema-locked JSON',
+    'Credit packs stack',
+    'MCP for Claude & Cursor',
+    'Polar billing',
+    'Cache on success',
+  ];
+  const loop = [...items, ...items];
+  return (
+    <div className="marquee-track mb-4" aria-hidden>
+      <div className="marquee-inner">
+        {loop.map((label, i) => (
+          <span key={`${label}-${i}`} className="marquee-item">
+            <span>//</span>
+            {label}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -501,20 +564,47 @@ const trustItems = [
 
 function TrustStrip() {
   return (
-    <section className="mx-auto max-w-6xl px-5 md:px-6 py-12 md:py-16">
+    <section className="section-rail mx-auto max-w-6xl px-5 md:px-6 py-14 md:py-18">
       <Reveal>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="mb-8 max-w-lg">
+          <SectionLabel>Built for production agents</SectionLabel>
+          <h2 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
+            Safety, schemas, and metering in one plate.
+          </h2>
+        </div>
+      </Reveal>
+      <Reveal delay={0.06}>
+        <div className="bento-grid">
           {trustItems.map((item, i) => {
             const Icon = item.icon;
+            const large = i === 0;
             return (
               <div
                 key={item.title}
-                className="surface p-4"
-                style={{ animationDelay: `${i * 40}ms` }}
+                className={`bento-tile ${large ? 'bento-tile-lg' : 'bento-tile-sm'}`}
               >
-                <Icon className="w-4 h-4 mb-3" style={{ color: 'var(--color-accent-base)' }} strokeWidth={1.75} />
-                <h3 className="text-xs font-semibold" style={{ color: 'var(--color-text-primary)' }}>{item.title}</h3>
-                <p className="mt-1.5 text-[11px] leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>{item.body}</p>
+                <Icon
+                  className={large ? 'w-5 h-5 mb-4' : 'w-4 h-4 mb-3'}
+                  style={{ color: 'var(--color-accent-base)' }}
+                  strokeWidth={1.75}
+                />
+                <h3
+                  className={large ? 'text-base font-semibold' : 'text-xs font-semibold'}
+                  style={{ color: 'var(--color-text-primary)' }}
+                >
+                  {item.title}
+                </h3>
+                <p
+                  className={`mt-2 leading-relaxed ${large ? 'text-sm max-w-sm' : 'text-[11px]'}`}
+                  style={{ color: 'var(--color-text-tertiary)' }}
+                >
+                  {item.body}
+                </p>
+                {large && (
+                  <p className="mt-6 text-mono text-[10px]" style={{ color: 'var(--color-accent-base)' }}>
+                    private hosts · metadata IPs · credentialed URLs blocked
+                  </p>
+                )}
               </div>
             );
           })}
@@ -544,7 +634,7 @@ function HowItWorks() {
       <ol className="grid md:grid-cols-3 gap-6">
         {steps.map((s, i) => (
           <Reveal key={s.n} delay={i * 0.08}>
-            <li className="surface surface-hover surface-glow p-6 h-full list-none">
+            <li className="surface surface-hover surface-glow lift-card p-6 h-full list-none">
               <span className="text-mono text-xs font-medium tabular-nums" style={{ color: 'var(--color-accent-base)' }}>
                 {s.n}
               </span>
@@ -606,10 +696,14 @@ function Features() {
           const Icon = f.icon;
           return (
             <Reveal key={f.title} delay={i * 0.06}>
-              <div className="surface surface-hover surface-glow p-6 h-full">
+              <div className="surface surface-hover surface-glow lift-card p-6 h-full">
                 <div
-                  className="mb-4 flex h-9 w-9 items-center justify-center rounded-md"
-                  style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+                  className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg"
+                  style={{
+                    background: 'var(--color-accent-subtle)',
+                    color: 'var(--color-accent-base)',
+                    boxShadow: '0 0 20px oklch(0.74 0.12 195 / 0.12)',
+                  }}
                 >
                   <Icon className="w-4 h-4" strokeWidth={1.75} />
                 </div>
@@ -730,11 +824,11 @@ function PricingCard({
   return (
     <Reveal delay={delay}>
       <div
-        className="flex flex-col overflow-hidden h-full surface-hover"
+        className="lift-card flex flex-col overflow-hidden h-full surface-hover"
         style={{
           background: highlighted ? 'var(--color-bg-elevated)' : 'var(--color-bg-surface)',
           border: `1px solid ${highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : 'var(--color-border-subtle)'}`,
-          borderRadius: 'var(--radius-lg)',
+          borderRadius: 'var(--radius-xl)',
           boxShadow: highlighted ? 'var(--shadow-glow)' : undefined,
         }}
       >
@@ -877,40 +971,40 @@ function Pricing() {
 
 function FinalCTA() {
   return (
-    <section className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-20">
+    <section className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-24">
       <Reveal>
-      <div
-        className="relative overflow-hidden px-6 py-14 md:px-12 md:py-16 text-center surface-glow"
-        style={{
-          background: 'var(--color-bg-elevated)',
-          border: '1px solid var(--color-border-default)',
-          borderRadius: 'var(--radius-xl)',
-        }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-50"
-          style={{ background: 'radial-gradient(500px circle at 50% 0%, var(--color-accent-subtle), transparent 70%)' }}
-          aria-hidden
-        />
-        <div className="relative">
-          <h2 className="text-display max-w-lg mx-auto" style={{ color: 'var(--color-text-primary)' }}>
-            Ship structured data without a scraper farm.
-          </h2>
-          <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            Create an account, mint a key, and call <span className="text-mono text-xs">/v1/extract</span>.
-            Need more later? Subscribe or buy credit packs anytime.
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link to="/login" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}>
-              Start free
-            </Link>
-            <a href="#pricing" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
-              View plans & credits
-              <ChevronRight className="w-4 h-4" />
-            </a>
+        <div className="cta-stage px-6 py-14 md:px-12 md:py-20 text-center">
+          <div className="relative">
+            <p className="text-eyebrow mb-4" style={{ color: 'var(--color-accent-base)' }}>
+              Ready when you are
+            </p>
+            <h2 className="text-display max-w-xl mx-auto" style={{ color: 'var(--color-text-primary)' }}>
+              Ship structured data without a scraper farm.
+            </h2>
+            <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              Create an account, mint a key, and call <span className="text-mono text-xs">/v1/extract</span>.
+              Need more later? Subscribe or buy credit packs anytime.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                to="/login"
+                className="btn btn-primary btn-shine"
+                style={{ padding: '0.85rem 1.75rem', borderRadius: '9999px' }}
+              >
+                Start free
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href="#pricing"
+                className="btn btn-secondary"
+                style={{ padding: '0.85rem 1.75rem', borderRadius: '9999px' }}
+              >
+                View plans & credits
+                <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
           </div>
         </div>
-      </div>
       </Reveal>
     </section>
   );
@@ -960,13 +1054,18 @@ function Footer() {
 
 export default function Landing() {
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
-      <AmbientBg intensity="default" />
+    <div
+      className="landing-shell relative min-h-screen"
+      style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
+    >
+      <AmbientBg intensity="strong" />
+      <div className="landing-mesh" aria-hidden />
       <div className="relative z-10">
         <Navbar />
         <main>
           <Hero />
           <LiveStatsBar />
+          <CapabilityMarquee />
           <TrustStrip />
           <HowItWorks />
           <Quickstart />
