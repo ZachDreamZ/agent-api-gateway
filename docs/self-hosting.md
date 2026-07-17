@@ -81,7 +81,8 @@ sudo ufw allow 3000/tcp
 Easier setup but the VPS sleeps after 15 min of inactivity.
 
 1. Push code to GitHub
-2. Go to [dashboard.render.com](https://dashboard.render.com) → New + Web Service
+2. Optional but recommended: put the custom domain behind **Cloudflare** (orange-cloud proxy) for TLS termination, DDoS mitigation, and bot filtering. `agentapigw.dpdns.org` is already proxied via Cloudflare Free.
+3. Go to [dashboard.render.com](https://dashboard.render.com) → New + Web Service
 3. Connect repo, use:
    - **Runtime**: Docker
    - **Plan**: Free

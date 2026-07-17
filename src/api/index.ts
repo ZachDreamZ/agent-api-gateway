@@ -112,10 +112,15 @@ app.use('/*', async (c, next) => {
   c.header('X-Frame-Options', 'DENY');
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
   c.header('X-XSS-Protection', '0');
-  c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=(), usb=()');
+  c.header(
+    'Permissions-Policy',
+    'geolocation=(), microphone=(), camera=(), payment=(), usb=(), interest-cohort=(), browsing-topics=()',
+  );
   c.header('Cross-Origin-Opener-Policy', 'same-origin');
   c.header('Cross-Origin-Resource-Policy', 'same-origin');
   c.header('X-DNS-Prefetch-Control', 'off');
+  // Cloudflare sits in front (agentapigw.dpdns.org); still set app-level hardening.
+  c.header('X-Permitted-Cross-Domain-Policies', 'none');
   // Remove fingerprinting headers if any upstream set them
   c.header('X-Powered-By', '');
 
@@ -217,6 +222,7 @@ app.get('/dashboard/*', (c) => serveStatic(c, 'index.html') || c.json({ error: '
 app.get('/favicon.ico', (c) => serveStatic(c, 'favicon.svg') || serveStatic(c, 'favicon.ico') || c.newResponse(null, 204));
 app.get('/favicon.svg', (c) => serveStatic(c, 'favicon.svg') || c.newResponse(null, 204));
 app.get('/logo-mark.svg', (c) => serveStatic(c, 'logo-mark.svg') || c.json({ error: 'Not found' }, 404));
+app.get('/logo-product.svg', (c) => serveStatic(c, 'logo-product.svg') || c.json({ error: 'Not found' }, 404));
 app.get('/brand/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 

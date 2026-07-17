@@ -14,7 +14,9 @@
     "build": "tsc && vite build src/dashboard",
     "start": "node dist/api/index.js",
     "mcp": "tsx src/mcp/index.ts",
-    "mcp:setup": "tsx src/mcp/setup.ts"
+    "mcp:setup": "tsx src/mcp/setup.ts",
+    "mcp:prod": "node dist/mcp/index.js",
+    "verify:mcp": "node --import tsx scripts/verify-mcp.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",

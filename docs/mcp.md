@@ -22,6 +22,14 @@ export API_BASE_URL=https://agentapigw.dpdns.org/v1
 npm run mcp
 ```
 
+### Verify tools
+
+```bash
+AGENT_API_KEY=sk-your-key npm run verify:mcp
+```
+
+This starts the stdio server, lists tools, and calls `list_schemas` against the live API.
+
 ## Client config (placeholder key only)
 
 ```json

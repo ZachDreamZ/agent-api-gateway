@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { easeOut, fadeUp, staggerContainer, staggerItem, viewportOnce } from '../lib/motion';
 
 /**
- * NexusCore mark — central hexagonal core with six orbital nodes.
+ * NexusCore org mark — hexagonal core + six orbital nodes.
  * Uses currentColor so accent/ink tokens control color.
  */
 export function LogoMark({
@@ -45,8 +45,56 @@ export function LogoMark({
           <circle cx="-19.05" cy="-11" r="3.2" />
         </g>
         <path fill="currentColor" d="M0-9 L7.8-4.5 L7.8 4.5 L0 9 L-7.8 4.5 L-7.8-4.5 Z" />
-        {/* hollow core reads as depth on dark UI */}
         <circle r="2.4" fill="var(--color-bg-app, #0a0e18)" />
+      </g>
+    </svg>
+  );
+}
+
+/**
+ * Agent API Gateway product mark — gateway arch + structured data nodes.
+ * Distinct from the NexusCore org hub so product vs company read clearly.
+ */
+export function ProductMark({
+  className = 'w-5 h-5',
+  style,
+  title = 'Agent API Gateway',
+}: {
+  className?: string;
+  style?: CSSProperties;
+  title?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      fill="none"
+      className={className}
+      style={style}
+      role="img"
+      aria-label={title}
+    >
+      <title>{title}</title>
+      <g transform="translate(32 32)">
+        <rect x="-22" y="-22" width="44" height="44" rx="8" stroke="currentColor" strokeWidth="2" opacity="0.35" />
+        <path
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          d="M-12 14 V-6 Q-12 -14 0 -14 Q12 -14 12 -6 V14"
+        />
+        <line x1="-14" y1="14" x2="14" y2="14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+        <g fill="currentColor">
+          <circle cx="-6" cy="2" r="2.2" />
+          <circle cx="0" cy="-2" r="2.2" />
+          <circle cx="6" cy="2" r="2.2" />
+        </g>
+        <path
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M-4 8 L0 12 L4 8"
+        />
       </g>
     </svg>
   );
@@ -56,9 +104,9 @@ export type BrandLockupVariant = 'product' | 'org' | 'stacked';
 
 /**
  * Brand lockup applied by context:
- * - product: mark + "Agent API" (+ optional NexusCore subline)
- * - org: mark + "NexusCore"
- * - stacked: mark + Agent API title + NexusCore org line
+ * - product: ProductMark + "Agent API" (+ optional NexusCore subline)
+ * - org: LogoMark + "NexusCore"
+ * - stacked: ProductMark + Agent API title + NexusCore org line
  */
 export function BrandLockup({
   variant = 'product',
@@ -76,19 +124,22 @@ export function BrandLockup({
   showOrgSubline?: boolean;
   onClick?: () => void;
 }) {
-  const primary =
-    variant === 'org' ? 'NexusCore' : 'Agent API';
+  const isOrg = variant === 'org';
+  const primary = isOrg ? 'NexusCore' : 'Agent API';
   const secondary =
     variant === 'stacked' || (variant === 'product' && showOrgSubline)
       ? 'NexusCore'
       : null;
 
+  const Mark = isOrg ? LogoMark : ProductMark;
+  const markTitle = isOrg ? 'NexusCore' : 'Agent API Gateway';
+
   const content = (
     <>
-      <LogoMark
+      <Mark
         className={markClassName}
         style={{ color: 'var(--color-accent-base)' }}
-        title="NexusCore"
+        title={markTitle}
       />
       <span className="flex flex-col leading-none min-w-0">
         <span
@@ -243,7 +294,7 @@ export function LoadingScreen({ label = 'Loading…' }: { label?: string }) {
       style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-tertiary)' }}
     >
       <AmbientBg intensity="subtle" />
-      <LogoMark className="w-8 h-8 relative z-10" style={{ color: 'var(--color-accent-base)' }} />
+      <ProductMark className="w-8 h-8 relative z-10" style={{ color: 'var(--color-accent-base)' }} />
       <Spinner className="h-5 w-5 relative z-10" />
       <p className="relative z-10 text-sm">{label}</p>
     </div>
