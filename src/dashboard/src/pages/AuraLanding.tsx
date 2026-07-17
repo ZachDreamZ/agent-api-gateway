@@ -888,6 +888,25 @@ function Pricing() {
         <p className="text-sm mb-10 max-w-xl" style={{ color: 'var(--color-text-secondary)' }}>
           Monthly plans set a steady allowance. Credit packs are one-time top-ups that stack on any plan and do not expire until used.
           Checkout via Polar. Logged-in users can also top up under Dashboard → Billing.
+          Prefer Gumroad?{' '}
+          <a
+            href="https://shadowcraft41.gumroad.com/l/spwxix"
+            className="link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            $1 Starter
+          </a>
+          {' · '}
+          <a
+            href="https://shadowcraft41.gumroad.com/l/nhvqdw"
+            className="link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            $9 debug ticket
+          </a>
+          .
         </p>
       </Reveal>
 
