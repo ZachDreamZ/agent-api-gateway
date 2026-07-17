@@ -334,14 +334,14 @@ function Hero() {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Link to="/login" className="btn btn-primary btn-shine" style={{ padding: '0.75rem 1.5rem' }}>
-                Sign in with GitHub
+                Create free account
               </Link>
               <a href="/buy" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem' }}>
                 Buy starter $1
               </a>
             </div>
             <p className="mt-4 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-              Free tier · 1,000 credits for $1 one-time · Email signup also available
+              Free 100 queries/mo · GitHub, Google, or email · 1,000 credits for $1 one-time (no subscription)
             </p>
           </motion.div>
 
