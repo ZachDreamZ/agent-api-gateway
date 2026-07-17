@@ -68,7 +68,7 @@ if (googleOAuthEnabled) {
 
 export const auth = betterAuth({
   database: pool,
-  appName: 'Agent API Gateway',
+  appName: 'Agent API Gateway · NexusCore',
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
 

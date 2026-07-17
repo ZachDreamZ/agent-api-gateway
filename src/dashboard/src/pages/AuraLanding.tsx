@@ -15,7 +15,7 @@ import {
   Terminal,
   Lock,
 } from 'lucide-react';
-import { LogoMark, AmbientBg, SectionLabel, Reveal } from '../components/Brand';
+import { BrandLockup, AmbientBg, SectionLabel, Reveal } from '../components/Brand';
 import { easeOut } from '../lib/motion';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -55,10 +55,7 @@ function Navbar() {
   return (
     <header className="glass-nav fixed top-0 left-0 right-0 z-50">
       <nav className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-6" aria-label="Primary">
-        <Link to="/" className="flex items-center gap-2.5" style={{ color: 'var(--color-text-primary)' }}>
-          <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-          <span className="text-sm font-semibold tracking-tight">Agent API</span>
-        </Link>
+        <BrandLockup variant="product" showOrgSubline to="/" />
 
         <div className="hidden md:flex items-center gap-6">
           <StatusChip />
@@ -716,12 +713,9 @@ function Footer() {
     <footer className="relative z-10" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
       <div className="mx-auto max-w-6xl px-5 md:px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2" style={{ color: 'var(--color-text-primary)' }}>
-            <LogoMark className="w-4 h-4" style={{ color: 'var(--color-accent-base)' }} />
-            <span className="text-sm font-semibold tracking-tight">Agent API</span>
-          </div>
+          <BrandLockup variant="org" markClassName="w-4 h-4" to="/" />
           <p className="mt-2 text-xs max-w-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-            Structured extraction for agents. Validated JSON from public pages.
+            Agent API Gateway — structured extraction for agents. Validated JSON from public pages.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
@@ -748,7 +742,7 @@ function Footer() {
         className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-[11px]"
         style={{ color: 'var(--color-text-disabled)' }}
       >
-        © {new Date().getFullYear()} Agent API Gateway · agentapigw.dpdns.org
+        © {new Date().getFullYear()} NexusCore · Agent API Gateway · agentapigw.dpdns.org
       </div>
     </footer>
   );

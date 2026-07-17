@@ -1,18 +1,131 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { easeOut, fadeUp, staggerContainer, staggerItem, viewportOnce } from '../lib/motion';
 
+/**
+ * NexusCore mark — central hexagonal core with six orbital nodes.
+ * Uses currentColor so accent/ink tokens control color.
+ */
 export function LogoMark({
   className = 'w-5 h-5',
   style,
+  title = 'NexusCore',
 }: {
   className?: string;
   style?: CSSProperties;
+  title?: string;
 }) {
   return (
-    <svg viewBox="0 0 256 256" fill="currentColor" className={className} style={style} aria-hidden>
-      <path d="M 0 128 C 70.692 128 128 185.308 128 256 L 64 256 C 64 220.654 35.346 192 0 192 Z M 256 192 C 220.654 192 192 220.654 192 256 L 128 256 C 128 185.308 185.308 128 256 128 Z M 128 0 C 128 70.692 70.692 128 0 128 L 0 64 C 35.346 64 64 35.346 64 0 Z M 192 0 C 192 35.346 220.654 64 256 64 L 256 128 C 185.308 128 128 70.692 128 0 Z" />
+    <svg
+      viewBox="0 0 64 64"
+      fill="none"
+      className={className}
+      style={style}
+      role="img"
+      aria-label={title}
+    >
+      <title>{title}</title>
+      <g transform="translate(32 32)">
+        <circle r="22" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
+        <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <line x1="0" y1="-8" x2="0" y2="-20" />
+          <line x1="6.93" y1="-4" x2="17.32" y2="-10" />
+          <line x1="6.93" y1="4" x2="17.32" y2="10" />
+          <line x1="0" y1="8" x2="0" y2="20" />
+          <line x1="-6.93" y1="4" x2="-17.32" y2="10" />
+          <line x1="-6.93" y1="-4" x2="-17.32" y2="-10" />
+        </g>
+        <g fill="currentColor">
+          <circle cx="0" cy="-22" r="3.2" />
+          <circle cx="19.05" cy="-11" r="3.2" />
+          <circle cx="19.05" cy="11" r="3.2" />
+          <circle cx="0" cy="22" r="3.2" />
+          <circle cx="-19.05" cy="11" r="3.2" />
+          <circle cx="-19.05" cy="-11" r="3.2" />
+        </g>
+        <path fill="currentColor" d="M0-9 L7.8-4.5 L7.8 4.5 L0 9 L-7.8 4.5 L-7.8-4.5 Z" />
+        {/* hollow core reads as depth on dark UI */}
+        <circle r="2.4" fill="var(--color-bg-app, #0a0e18)" />
+      </g>
     </svg>
+  );
+}
+
+export type BrandLockupVariant = 'product' | 'org' | 'stacked';
+
+/**
+ * Brand lockup applied by context:
+ * - product: mark + "Agent API" (+ optional NexusCore subline)
+ * - org: mark + "NexusCore"
+ * - stacked: mark + Agent API title + NexusCore org line
+ */
+export function BrandLockup({
+  variant = 'product',
+  to = '/',
+  className = '',
+  markClassName = 'w-5 h-5',
+  showOrgSubline = false,
+  onClick,
+}: {
+  variant?: BrandLockupVariant;
+  to?: string;
+  className?: string;
+  markClassName?: string;
+  /** When product variant, show a small "NexusCore" line under the product name */
+  showOrgSubline?: boolean;
+  onClick?: () => void;
+}) {
+  const primary =
+    variant === 'org' ? 'NexusCore' : 'Agent API';
+  const secondary =
+    variant === 'stacked' || (variant === 'product' && showOrgSubline)
+      ? 'NexusCore'
+      : null;
+
+  const content = (
+    <>
+      <LogoMark
+        className={markClassName}
+        style={{ color: 'var(--color-accent-base)' }}
+        title="NexusCore"
+      />
+      <span className="flex flex-col leading-none min-w-0">
+        <span
+          className="text-sm font-semibold tracking-tight"
+          style={{ color: 'var(--color-text-primary)' }}
+        >
+          {primary}
+        </span>
+        {secondary && (
+          <span
+            className="mt-0.5 text-[10px] font-medium tracking-[0.08em] uppercase"
+            style={{ color: 'var(--color-text-tertiary)' }}
+          >
+            {secondary}
+          </span>
+        )}
+      </span>
+    </>
+  );
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        onClick={onClick}
+        className={`inline-flex items-center gap-2.5 min-w-0 ${className}`}
+        aria-label={secondary ? `${primary} by ${secondary}` : primary}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <span className={`inline-flex items-center gap-2.5 min-w-0 ${className}`} aria-label={primary}>
+      {content}
+    </span>
   );
 }
 
@@ -130,7 +243,8 @@ export function LoadingScreen({ label = 'Loading…' }: { label?: string }) {
       style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-tertiary)' }}
     >
       <AmbientBg intensity="subtle" />
-      <Spinner className="h-6 w-6 relative z-10" />
+      <LogoMark className="w-8 h-8 relative z-10" style={{ color: 'var(--color-accent-base)' }} />
+      <Spinner className="h-5 w-5 relative z-10" />
       <p className="relative z-10 text-sm">{label}</p>
     </div>
   );

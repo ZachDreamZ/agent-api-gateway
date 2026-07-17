@@ -19,7 +19,7 @@ import Auth from './pages/Auth';
 import Legal from './pages/Legal';
 import ResetPassword from './pages/ResetPassword';
 import { useSession, signOut } from './lib/auth';
-import { LogoMark, AmbientBg, LoadingScreen } from './components/Brand';
+import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
 import { easeOut, pageTransition, fadeUp } from './lib/motion';
 
 // ─── Route protection ───
@@ -61,12 +61,9 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <aside className="sidebar-panel flex h-full w-60 flex-col">
-      <Link to="/" className="flex items-center gap-2.5 px-5 pt-5 pb-4" onClick={onNavigate}>
-        <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
-          Agent API
-        </span>
-      </Link>
+      <div className="px-5 pt-5 pb-4">
+        <BrandLockup variant="product" showOrgSubline to="/" onClick={onNavigate} />
+      </div>
 
       <nav className="flex-1 space-y-1 px-3" aria-label="Dashboard">
         {NAV_ITEMS.map((item) => {
@@ -109,7 +106,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
           API Docs
         </Link>
         <p className="text-[10px] font-medium tracking-wider uppercase" style={{ color: 'var(--color-text-disabled)' }}>
-          v0.1
+          NexusCore · v0.1
         </p>
       </div>
     </aside>
@@ -119,12 +116,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 function MobileHeader({ onMenuOpen }: { onMenuOpen: () => void }) {
   return (
     <div className="glass-nav fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between px-4 lg:hidden">
-      <Link to="/" className="flex items-center gap-2">
-        <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-        <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
-          Agent API
-        </span>
-      </Link>
+      <BrandLockup variant="product" to="/" />
       <button
         type="button"
         onClick={onMenuOpen}

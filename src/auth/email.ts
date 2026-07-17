@@ -90,7 +90,7 @@ function plainToHtml(text: string): string {
   return `<!DOCTYPE html>
 <html><body style="font-family:system-ui,sans-serif;background:#0a0e18;color:#e8eef8;padding:24px">
   <div style="max-width:480px;margin:0 auto;background:#121722;border:1px solid #2a3344;border-radius:8px;padding:24px">
-    <p style="margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#5eead4">Agent API</p>
+    <p style="margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#5eead4">NexusCore · Agent API</p>
     <div style="font-size:14px;line-height:1.6;color:#c5cdd9;white-space:pre-wrap">${withLinks}</div>
   </div>
 </body></html>`;

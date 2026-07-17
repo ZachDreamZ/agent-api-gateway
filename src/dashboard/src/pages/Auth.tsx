@@ -11,7 +11,7 @@ import {
   resendVerificationEmail,
   requestPasswordReset,
 } from '../lib/auth';
-import { AmbientBg, LogoMark, Spinner } from '../components/Brand';
+import { AmbientBg, BrandLockup, Spinner } from '../components/Brand';
 import { easeOut, scaleIn } from '../lib/motion';
 
 type Mode = 'signin' | 'signup' | 'check-email' | 'forgot';
@@ -227,12 +227,9 @@ export default function Auth() {
         className="relative z-10 w-full max-w-sm surface-elevated surface-glow p-8"
       >
         <div className="mb-6 text-center">
-          <Link to="/" className="mb-5 inline-flex items-center gap-2">
-            <LogoMark className="w-6 h-6" style={{ color: 'var(--color-accent-base)' }} />
-            <span className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
-              Agent API
-            </span>
-          </Link>
+          <div className="mb-5 flex justify-center">
+            <BrandLockup variant="product" showOrgSubline markClassName="w-6 h-6" to="/" />
+          </div>
           <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
             {title}
           </h1>

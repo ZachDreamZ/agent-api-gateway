@@ -1,10 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- NexusCore mark: central core + six orbital nodes -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="NexusCore">
   <g transform="translate(32 32)">
-    <!-- orbit ring -->
-    <circle r="22" stroke="#5eead4" stroke-width="1.5" opacity="0.35"/>
-    <!-- beams -->
-    <g stroke="#5eead4" stroke-width="2" stroke-linecap="round">
+    <circle r="22" stroke="currentColor" stroke-width="1.5" opacity="0.35"/>
+    <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
       <line x1="0" y1="-8" x2="0" y2="-20"/>
       <line x1="6.93" y1="-4" x2="17.32" y2="-10"/>
       <line x1="6.93" y1="4" x2="17.32" y2="10"/>
@@ -12,8 +9,7 @@
       <line x1="-6.93" y1="4" x2="-17.32" y2="10"/>
       <line x1="-6.93" y1="-4" x2="-17.32" y2="-10"/>
     </g>
-    <!-- orbital nodes -->
-    <g fill="#5eead4">
+    <g fill="currentColor">
       <circle cx="0" cy="-22" r="3.2"/>
       <circle cx="19.05" cy="-11" r="3.2"/>
       <circle cx="19.05" cy="11" r="3.2"/>
@@ -21,9 +17,7 @@
       <circle cx="-19.05" cy="11" r="3.2"/>
       <circle cx="-19.05" cy="-11" r="3.2"/>
     </g>
-    <!-- core hexagon -->
-    <path fill="#5eead4" d="M0-9 L7.8-4.5 L7.8 4.5 L0 9 L-7.8 4.5 L-7.8-4.5 Z"/>
-    <!-- core inner cut for depth -->
+    <path fill="currentColor" d="M0-9 L7.8-4.5 L7.8 4.5 L0 9 L-7.8 4.5 L-7.8-4.5 Z"/>
     <circle r="2.4" fill="#0a0e18"/>
   </g>
 </svg>

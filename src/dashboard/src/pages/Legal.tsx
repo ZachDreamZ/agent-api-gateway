@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { AmbientBg, LogoMark, SectionLabel } from '../components/Brand';
+import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 
 export type LegalKind = 'privacy' | 'terms' | 'aup';
 
@@ -13,7 +13,7 @@ const COPY: Record<
     sections: [
       {
         h: 'Who we are',
-        p: 'Agent API Gateway ("Agent API", "we") provides a hosted HTTP API and MCP tools for extracting structured fields from public web pages. Contact: support@agentapigw.dpdns.org.',
+        p: 'Agent API Gateway ("Agent API", "we") is a product of NexusCore. It provides a hosted HTTP API and MCP tools for extracting structured fields from public web pages. Contact: support@agentapigw.dpdns.org.',
       },
       {
         h: 'Data we collect',
@@ -156,8 +156,7 @@ export default function Legal({ kind }: { kind: LegalKind }) {
       <AmbientBg intensity="subtle" />
       <div className="relative z-10 mx-auto max-w-2xl px-5 py-16 md:py-24">
         <Link to="/" className="mb-8 inline-flex items-center gap-2 text-sm">
-          <LogoMark className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
-          <span className="font-semibold">Agent API</span>
+          <BrandLockup variant="product" showOrgSubline to="/" />
         </Link>
         <SectionLabel>Legal</SectionLabel>
         <h1 className="font-display text-3xl font-bold tracking-tight mb-2">{doc.title}</h1>
