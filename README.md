@@ -45,7 +45,10 @@ Polar public support email for org **NexusCore** (domain matches organization we
 
 - Email + password (Better Auth) with **required email verification**
 - Password reset via email
-- **GitHub OAuth** (optional): set `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
+- **GitHub OAuth** (optional): `GITHUB_CLIENT_ID` + `GITHUB_CLIENT_SECRET`
+- **Google OAuth** (optional): `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET`
+
+Same-email social sign-in is auto-linked to an existing account (trusted providers).
 
 ### Email verification
 
@@ -57,6 +60,8 @@ Email/password accounts must verify before a session is created.
 
 Locally without Resend, verification links are printed to the API console (not production).
 
+### GitHub OAuth
+
 Create an OAuth App at https://github.com/settings/developers
 
 | Field | Value |
@@ -65,7 +70,19 @@ Create an OAuth App at https://github.com/settings/developers
 | Authorization callback URL | `https://agentapigw.dpdns.org/api/auth/callback/github` |
 
 Existing app (prod): Client ID `Ov23liFQUYnTkcewcq2W` → https://github.com/settings/applications/3733447  
-Generate a client secret there (GitHub sudo may require password), then set both env vars on Render and restart.
+Generate a client secret there, then set both env vars on Render and restart.
+
+### Google OAuth
+
+1. Open [Google Cloud Console → Credentials](https://console.cloud.google.com/apis/credentials)
+2. Create project (or pick one) → **Create credentials → OAuth client ID**
+3. Application type: **Web application**
+4. Authorized JavaScript origins: `https://agentapigw.dpdns.org` (and `http://localhost:3000` for local)
+5. Authorized redirect URIs:
+   - `https://agentapigw.dpdns.org/api/auth/callback/google`
+   - `http://localhost:3000/api/auth/callback/google` (local)
+6. Copy Client ID + Client secret → set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` on Render
+7. Redeploy. `/health` should show `"google_oauth": true`
 
 `GET /health` includes `"github_oauth": true|false` so you can confirm config without leaking secrets.
 
