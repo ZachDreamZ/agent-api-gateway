@@ -148,7 +148,6 @@ app.use('/*', async (c, next) => {
 
 // ─── Health + public stats ───
 let healthHits = 0;
-const NO_AUTH: string[] = [];
 app.get('/health', (c) =>
   c.json({
     status: 'ok',
