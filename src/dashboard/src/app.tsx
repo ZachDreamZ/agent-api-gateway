@@ -17,6 +17,7 @@ import Landing from './pages/AuraLanding';
 import Docs from './pages/Docs';
 import Auth from './pages/Auth';
 import Legal from './pages/Legal';
+import ForAgents from './pages/ForAgents';
 import ResetPassword from './pages/ResetPassword';
 import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
@@ -251,6 +252,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
+        <Route path="/agents" element={<ForAgents />} />
+        <Route path="/for-agents" element={<ForAgents />} />
         <Route path="/login" element={<Auth />} />
         {/* Legacy Better Auth errorURL /auth → login */}
         <Route path="/auth" element={<Auth />} />

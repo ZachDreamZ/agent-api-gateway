@@ -92,6 +92,7 @@ const SECTIONS = [
   { id: 'examples', label: 'Examples' },
   { id: 'errors', label: 'Error Handling' },
   { id: 'limits', label: 'Rate Limits & Quotas' },
+  { id: 'discovery', label: 'Agent discovery' },
   { id: 'legal', label: 'Legal' },
 ];
 
@@ -979,6 +980,18 @@ print(data['data']['title'])`}
               </a>
             </div>
           </div>
+        </Section>
+
+        <Section id="discovery" title="Agent discovery">
+          <Para>
+            AI agents and crawlers can load structured product facts without rendering the SPA.
+          </Para>
+          <ul className="list-disc pl-5 space-y-2 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <li><Link to="/agents" className="link-accent">For agents (UI map)</Link></li>
+            <li><a href="/llms.txt" className="link-accent">/llms.txt</a> · <a href="/llms-full.txt" className="link-accent">/llms-full.txt</a></li>
+            <li><a href="/agent.json" className="link-accent">/agent.json</a> · <a href="/openapi.json" className="link-accent">/openapi.json</a></li>
+            <li><a href="/agent-onboarding.md" className="link-accent">/agent-onboarding.md</a></li>
+          </ul>
         </Section>
 
         <Section id="legal" title="Legal">

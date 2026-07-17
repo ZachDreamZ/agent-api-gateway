@@ -6,6 +6,11 @@ Agent API Gateway lets AI agents and backends extract structured product, articl
 ## Primary URLs
 - Home: https://agentapigw.dpdns.org/
 - Docs: https://agentapigw.dpdns.org/docs
+- For agents (UI): https://agentapigw.dpdns.org/agents
+- Machine catalog: https://agentapigw.dpdns.org/agent.json
+- Full brief: https://agentapigw.dpdns.org/llms-full.txt
+- OpenAPI: https://agentapigw.dpdns.org/openapi.json
+- Onboarding MD: https://agentapigw.dpdns.org/agent-onboarding.md
 - Pricing API: https://agentapigw.dpdns.org/v1/billing/pricing
 - Health: https://agentapigw.dpdns.org/health
 - Buy Starter ($1): https://agentapigw.dpdns.org/buy?sku=starter

@@ -6,6 +6,19 @@ Live product: **https://agentapigw.dpdns.org** (also https://agent-api-gateway.o
 
 Agents send a URL + schema type, get clean JSON. No markdown, no raw HTML — just fields.
 
+## For AI agents / crawlers
+
+| Resource | URL |
+|----------|-----|
+| llms.txt | https://agentapigw.dpdns.org/llms.txt |
+| agent.json | https://agentapigw.dpdns.org/agent.json |
+| openapi.json | https://agentapigw.dpdns.org/openapi.json |
+| For agents UI | https://agentapigw.dpdns.org/agents |
+| Docs | https://agentapigw.dpdns.org/docs |
+| Pricing JSON | https://agentapigw.dpdns.org/v1/billing/pricing |
+
+Sister product **StatusPlate** (status pages): https://statusplate.agentapigw.dpdns.org/
+
 ```bash
 curl -X POST https://agentapigw.dpdns.org/v1/extract \
   -H "Authorization: Bearer sk-..." \

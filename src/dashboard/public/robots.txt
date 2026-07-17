@@ -7,8 +7,14 @@ Allow: /privacy
 Allow: /terms
 Allow: /aup
 Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /agent.json
+Allow: /openapi.json
+Allow: /agent-onboarding.md
+Allow: /agents
 Allow: /sitemap.xml
 Allow: /v1/billing/pricing
+Allow: /v1/schemas
 Allow: /health
 Disallow: /dashboard
 Disallow: /api/auth

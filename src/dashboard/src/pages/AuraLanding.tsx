@@ -62,6 +62,7 @@ function Navbar() {
           <a href="#how" className="link text-sm">How it works</a>
           <a href="#pricing" className="link text-sm">Pricing</a>
           <Link to="/docs" className="link text-sm">Docs</Link>
+          <Link to="/agents" className="link text-sm">For agents</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
           <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem', borderRadius: '9999px' }}>
             Open dashboard
@@ -125,6 +126,9 @@ function Navbar() {
                 ))}
                 <Link to="/docs" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Docs
+                </Link>
+                <Link to="/agents" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+                  For agents
                 </Link>
                 <Link to="/login" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Sign in
@@ -1043,6 +1047,9 @@ function Footer() {
         </div>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
           <Link to="/docs" className="link">Docs</Link>
+          <Link to="/agents" className="link">For agents</Link>
+          <a href="/llms.txt" className="link">llms.txt</a>
+          <a href="/agent.json" className="link">agent.json</a>
           <Link to="/dashboard" className="link">Dashboard</Link>
           <a href="#pricing" className="link">Pricing</a>
           <a href="/health" className="link">Status</a>
@@ -1050,6 +1057,7 @@ function Footer() {
           <Link to="/terms" className="link">Terms</Link>
           <Link to="/aup" className="link">AUP</Link>
           <Link to="/docs#mcp" className="link">MCP</Link>
+          <a href="https://statusplate.agentapigw.dpdns.org/" className="link">StatusPlate</a>
           <a href="mailto:support@agentapigw.dpdns.org" className="link">Support</a>
           <a
             href="https://github.com/ZachDreamZ/agent-api-gateway"

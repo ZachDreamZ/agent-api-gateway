@@ -26,6 +26,7 @@ const MIME: Record<string, string> = {
   '.css': 'text/css',
   '.json': 'application/json',
   '.txt': 'text/plain; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -162,6 +163,8 @@ app.get('/health', (c) => {
   return c.json({
     status: 'ok',
     service: 'agent-api-gateway',
+    product: 'Agent API Gateway',
+    vendor: 'NexusCore',
     version: '0.1.0',
     uptime_seconds: uptimeSeconds,
     uptime_hours: uptimeHours,
@@ -172,6 +175,15 @@ app.get('/health', (c) => {
     google_oauth: Boolean(process.env['GOOGLE_CLIENT_ID'] && process.env['GOOGLE_CLIENT_SECRET']),
     email_transport: Boolean(process.env['RESEND_API_KEY']),
     email_verification: true,
+    discovery: {
+      llms_txt: '/llms.txt',
+      llms_full: '/llms-full.txt',
+      agent_json: '/agent.json',
+      openapi: '/openapi.json',
+      agents_page: '/agents',
+      docs: '/docs',
+      pricing: '/v1/billing/pricing',
+    },
   });
 });
 
@@ -217,6 +229,8 @@ app.all('/api-key/*', (c) => auth.handler(c.req.raw));
 
 app.get('/', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/docs', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/agents', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/for-agents', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/login', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/auth', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
 app.get('/verify-email', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
@@ -234,11 +248,16 @@ app.get('/logo-product.svg', (c) => serveStatic(c, 'logo-product.svg') || c.json
 app.get('/brand/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 
-// Agent / crawler discovery (must be real text — not SPA shell)
+// Agent / crawler discovery (must be real text/json — not SPA shell)
 app.get('/llms.txt', (c) => serveStatic(c, 'llms.txt') || c.text('Not found', 404));
+app.get('/llms-full.txt', (c) => serveStatic(c, 'llms-full.txt') || c.text('Not found', 404));
+app.get('/agent.json', (c) => serveStatic(c, 'agent.json') || c.json({ error: 'Not found' }, 404));
+app.get('/openapi.json', (c) => serveStatic(c, 'openapi.json') || c.json({ error: 'Not found' }, 404));
+app.get('/agent-onboarding.md', (c) => serveStatic(c, 'agent-onboarding.md') || c.text('Not found', 404));
 app.get('/robots.txt', (c) => serveStatic(c, 'robots.txt') || c.text('Not found', 404));
 app.get('/sitemap.xml', (c) => serveStatic(c, 'sitemap.xml') || c.text('Not found', 404));
 app.get('/.well-known/llms.txt', (c) => serveStatic(c, 'llms.txt') || c.text('Not found', 404));
+app.get('/.well-known/agent.json', (c) => serveStatic(c, 'agent.json') || c.json({ error: 'Not found' }, 404));
 
 // ─── Public routes ───
 

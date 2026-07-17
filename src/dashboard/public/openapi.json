@@ -1,0 +1,105 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Agent API Gateway",
+    "description": "Extract structured product, article, and company data from public web URLs. Create an API key at https://agentapigw.dpdns.org/ after signup.",
+    "version": "0.1.0",
+    "contact": {
+      "name": "NexusCore Support",
+      "email": "support@agentapigw.dpdns.org",
+      "url": "https://agentapigw.dpdns.org/"
+    },
+    "license": {
+      "name": "Proprietary — see Terms of Service",
+      "url": "https://agentapigw.dpdns.org/terms"
+    }
+  },
+  "servers": [
+    { "url": "https://agentapigw.dpdns.org", "description": "Production" }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Service healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "service": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/schemas": {
+      "get": {
+        "summary": "List extraction schemas",
+        "operationId": "listSchemas",
+        "responses": { "200": { "description": "Schema catalog" } }
+      }
+    },
+    "/v1/billing/pricing": {
+      "get": {
+        "summary": "Public pricing tiers and credit packs",
+        "operationId": "getPricing",
+        "responses": { "200": { "description": "Pricing JSON" } }
+      }
+    },
+    "/v1/extract": {
+      "post": {
+        "summary": "Extract structured fields from a public URL",
+        "operationId": "extract",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["url", "schema"],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Public http(s) URL to extract"
+                  },
+                  "schema": {
+                    "type": "string",
+                    "enum": ["product", "article", "company"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Validated extraction result" },
+          "401": { "description": "Missing or invalid API key" },
+          "429": { "description": "Rate limit or quota exceeded" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "API key from the Agent API Gateway dashboard"
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Human docs and MCP setup",
+    "url": "https://agentapigw.dpdns.org/docs"
+  }
+}
