@@ -164,6 +164,10 @@ const processStartedAt = Date.now();
 const publicStatsCache: { at: number; data: Record<string, number> } = { at: 0, data: {} };
 const publicStatsHits = new Map<string, number[]>();
 app.get('/v1/public/stats', async (c) => {
+  // Public, read-only, aggregate-only data — safe to expose cross-origin
+  // (the landing/SEO pages live on other origins).
+  c.header('Access-Control-Allow-Origin', '*');
+  c.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   const now = Date.now();
   const hits = (publicStatsHits.get(ip) ?? []).filter((t) => t > now - 60_000);
