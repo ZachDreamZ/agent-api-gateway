@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { betterAuth } from 'better-auth';
 import { apiKey } from '@better-auth/api-key';
 import { bearer } from 'better-auth/plugins';
+import { twoFactor } from 'better-auth/plugins';
 import { getPool } from '../api/lib/db.js';
 import {
   isEmailTransportConfigured,
@@ -292,6 +293,13 @@ export const auth = betterAuth({
       },
     }),
     bearer(),
+    // Opt-in TOTP 2FA (OpenVPN checklist: MFA). Not enforced at sign-in;
+    // users enable it voluntarily from the dashboard.
+    twoFactor({
+      issuer: 'Agent API Gateway',
+      // Verify the TOTP on enable (default). Account lockout on repeated
+      // failed 2FA attempts is enabled by default (10 tries / 15 min).
+    }),
   ],
 });
 

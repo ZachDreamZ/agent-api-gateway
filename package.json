@@ -10,6 +10,7 @@
     "test": "tsx --test tests/**/*.test.ts",
     "test:product": "tsx --test tests/product-core.test.ts",
     "check:secrets": "node scripts/check-secrets.mjs",
+    "access:review": "tsx scripts/access-review.ts",
     "build:dashboard": "vite build src/dashboard",
     "build": "tsc && vite build src/dashboard",
     "start": "node dist/api/index.js",

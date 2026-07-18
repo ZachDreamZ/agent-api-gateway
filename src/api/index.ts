@@ -308,9 +308,22 @@ app.get('/v1/admin/stats', async (c) => {
 
 // ─── Better Auth (user sessions + API keys) ───
 
+import { alertAuthFailure } from './lib/alert.js';
+
 // Better Auth handles its own routing internally.
 // Mount both standard prefixes so API-key management routes work.
-app.all('/api/auth/*', (c) => auth.handler(c.req.raw));
+app.all('/api/auth/*', async (c) => {
+  const res = await auth.handler(c.req.raw);
+  // Threat monitoring: flag failed credential/2FA attempts (sign-in returns 401).
+  const path = new URL(c.req.raw.url).pathname;
+  if (res.status === 401 && /\/sign-in\/email|\/two-factor\/verify|\/forget-password/.test(path)) {
+    alertAuthFailure({
+      reason: `failed ${path.split('/').pop()}`,
+      ip: c.req.raw.headers.get('x-forwarded-for'),
+    });
+  }
+  return res;
+});
 // API-key routes are handled by Better Auth's internal router through auth.handler().
 app.all('/api-key/*', (c) => auth.handler(c.req.raw));
 

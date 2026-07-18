@@ -45,6 +45,7 @@ export async function runMigration(): Promise<void> {
       { name: '002_usage_logs', file: '002_usage_logs.sql' },
       { name: '003_rate_limit', file: '003_rate_limit.sql' },
       { name: '004_bonus_credits', file: '004_bonus_credits.sql' },
+      { name: '005_two_factor', file: '005_two_factor.sql' },
     ];
 
     for (const m of MIGRATIONS) {
