@@ -217,6 +217,37 @@ app.get('/api/dbcheck', async (c) => {
   }
 });
 
+// ─── Admin stats (TEMPORARY: user/signup counts) ───
+// Gated by ADMIN_STATS_TOKEN. Remove after the one-off count is collected.
+app.get('/v1/admin/stats', async (c) => {
+  const adminToken = process.env['ADMIN_STATS_TOKEN'];
+  if (!adminToken) return c.json({ error: 'Not found' }, 404);
+  const provided = c.req.header('x-admin-token') || '';
+  if (provided.length !== adminToken.length || provided !== adminToken) {
+    return c.json({ error: 'Not found' }, 404);
+  }
+
+  const { default: pg } = await import('pg');
+  const connStr = process.env['DATABASE_URL'];
+  try {
+    const pool = new pg.Pool({ connectionString: connStr, connectionTimeoutMillis: 8000, max: 1 });
+    const stats = await pool.query(`
+      SELECT
+        (SELECT count(*) FROM "user")                                              AS total_users,
+        (SELECT count(*) FROM "user" WHERE "createdAt" > now() - interval '7 days') AS signups_7d,
+        (SELECT count(*) FROM "user" WHERE "createdAt" > now() - interval '30 days') AS signups_30d,
+        (SELECT count(*) FROM session)                                             AS active_sessions,
+        (SELECT count(*) FROM "account")                                           AS linked_accounts,
+        (SELECT count(*) FROM sp_workspace)                                        AS statusplate_workspaces,
+        (SELECT count(*) FROM sp_monitor)                                          AS statusplate_monitors
+    `);
+    await pool.end();
+    return c.json({ stats: stats.rows[0] });
+  } catch (e) {
+    return c.json({ error: 'Stats query failed', detail: e instanceof Error ? e.message : String(e) }, 500);
+  }
+});
+
 // ─── Better Auth (user sessions + API keys) ───
 
 // Better Auth handles its own routing internally.
