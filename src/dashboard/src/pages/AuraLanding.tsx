@@ -353,6 +353,42 @@ function LiveStatsBar() {
   );
 }
 
+// ─── Social proof (real usage from /v1/public/stats) ───
+
+function SocialProof() {
+  const [data, setData] = useState<{ total_users?: number; signups_7d?: number } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/v1/public/stats')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (!cancelled && d) setData(d); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  if (!data) return null;
+
+  const users = Number(data.total_users ?? 0);
+  const recent = Number(data.signups_7d ?? 0);
+  const label =
+    users === 0
+      ? 'Join early — be among the first to build on the Agent API Gateway'
+      : recent > 0
+        ? `${users.toLocaleString()} developers already signed up · ${recent.toLocaleString()} joined this week`
+        : `${users.toLocaleString()} developers building on the Agent API Gateway`;
+
+  return (
+    <div
+      className="stats-glass mx-auto mb-6 flex max-w-xl items-center justify-center gap-2 px-5 py-2.5 text-xs"
+      style={{ color: 'var(--color-text-tertiary)' }}
+    >
+      <span className="signal-dot signal-dot-ok" />
+      <span>{label}</span>
+    </div>
+  );
+}
+
 // ─── Hero ───
 
 function Hero() {
@@ -398,6 +434,8 @@ function Hero() {
               Send a public page URL and a schema type. Get typed fields back:
               product, article, or company. No scraper farm to maintain.
             </motion.p>
+
+            <SocialProof />
 
             <motion.div
               className="mt-8 flex flex-col sm:flex-row gap-3"

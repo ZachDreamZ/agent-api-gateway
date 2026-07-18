@@ -157,6 +157,46 @@ app.use('/*', async (c, next) => {
 // ─── Health + public stats ───
 let healthHits = 0;
 const processStartedAt = Date.now();
+
+// ─── Public social-proof stats (cached, aggregate-only, no PII) ───
+// Landing page pulls this to show real usage. Server-side cached 5 min,
+// strict rate limit. No user rows / no enumeration surface.
+const publicStatsCache: { at: number; data: Record<string, number> } = { at: 0, data: {} };
+const publicStatsHits = new Map<string, number[]>();
+app.get('/v1/public/stats', async (c) => {
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const now = Date.now();
+  const hits = (publicStatsHits.get(ip) ?? []).filter((t) => t > now - 60_000);
+  if (hits.length >= 30) {
+    publicStatsHits.set(ip, hits);
+    return c.json({ error: 'Rate limit exceeded' }, 429);
+  }
+  hits.push(now);
+  publicStatsHits.set(ip, hits);
+
+  if (now - publicStatsCache.at < 5 * 60_000 && publicStatsCache.at !== 0) {
+    return c.json(publicStatsCache.data);
+  }
+
+  const { default: pg } = await import('pg');
+  const connStr = process.env['DATABASE_URL'];
+  try {
+    const pool = new pg.Pool({ connectionString: connStr, connectionTimeoutMillis: 8000, statement_timeout: 5000, max: 1 });
+    const r = await pool.query(`
+      SELECT
+        (SELECT count(*) FROM "user")                                               AS total_users,
+        (SELECT count(*) FROM "user" WHERE "createdAt" > now() - interval '7 days')  AS signups_7d
+    `);
+    await pool.end();
+    const data = { total_users: Number(r.rows[0]?.total_users ?? 0), signups_7d: Number(r.rows[0]?.signups_7d ?? 0) };
+    publicStatsCache.at = now;
+    publicStatsCache.data = data;
+    return c.json(data);
+  } catch {
+    return c.json({ total_users: 0, signups_7d: 0 });
+  }
+});
+
 app.get('/health', (c) => {
   const uptimeSeconds = Math.max(0, Math.floor(process.uptime()));
   const uptimeHours = Math.round((uptimeSeconds / 3600) * 100) / 100; // 2 decimals so <1h is not 0.0
