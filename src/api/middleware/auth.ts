@@ -1,19 +1,10 @@
 import type { MiddlewareHandler } from 'hono';
 import { auth, type AuthUser } from '../../auth/auth.js';
-import { Pool } from 'pg';
+import { getPool } from '../lib/db.js';
 import type { Tier } from '@shared/types';
 
-// Shared connection pool — created once, reused across requests.
-// The auth.ts module also creates its own pool; this one is separate because
-// the middleware queries the "user" table directly for the API-key fallback path.
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 2, // Auth middleware rarely needs more than one, but 2 handles brief bursts
-  connectionTimeoutMillis: 5000,
-});
-
 async function findUserById(userId: string): Promise<(AuthUser & { tier?: string }) | null> {
-  const { rows } = await pool.query(
+  const { rows } = await getPool().query(
     `SELECT id, name, email, "emailVerified",
             image, "createdAt", "updatedAt",
             tier, stripe_customer_id

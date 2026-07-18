@@ -1,21 +1,6 @@
 // ─── Usage Logging — Direct PostgreSQL (no Supabase) ───
 
-import pg from 'pg';
-
-const { Pool } = pg;
-
-let pool: InstanceType<typeof Pool> | null = null;
-
-function getPool(): InstanceType<typeof Pool> {
-  if (!pool) {
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      max: 2,
-      connectionTimeoutMillis: 5000,
-    });
-  }
-  return pool;
-}
+import { getPool } from './db.js';
 
 export async function getMonthlyCreditsUsed(userId: string): Promise<number> {
   try {

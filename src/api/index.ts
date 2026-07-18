@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { runMigration } from './lib/migrate.js';
+import { getPool } from './lib/db.js';
 import { join, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Hono } from 'hono';
@@ -182,16 +183,13 @@ app.get('/v1/public/stats', async (c) => {
     return c.json(publicStatsCache.data);
   }
 
-  const { default: pg } = await import('pg');
-  const connStr = process.env['DATABASE_URL'];
   try {
-    const pool = new pg.Pool({ connectionString: connStr, connectionTimeoutMillis: 8000, statement_timeout: 5000, max: 1 });
+    const pool = getPool();
     const r = await pool.query(`
       SELECT
         (SELECT count(*) FROM "user")                                               AS total_users,
         (SELECT count(*) FROM "user" WHERE "createdAt" > now() - interval '7 days')  AS signups_7d
     `);
-    await pool.end();
     const data = { total_users: Number(r.rows[0]?.total_users ?? 0), signups_7d: Number(r.rows[0]?.signups_7d ?? 0) };
     publicStatsCache.at = now;
     publicStatsCache.data = data;
@@ -244,17 +242,11 @@ app.get('/api/dbcheck', async (c) => {
     return c.json({ error: 'Not found' }, 404);
   }
 
-  const { default: pg } = await import('pg');
   const connStr = process.env['DATABASE_URL'];
   try {
-    const pool = new pg.Pool({
-      connectionString: connStr,
-      connectionTimeoutMillis: 8000,
-      max: 1,
-    });
+    const pool = getPool();
     const r = await pool.query('SELECT 1 as ok');
     const ok = r.rows[0]?.ok === 1;
-    await pool.end();
     return c.json({ connOk: ok, dbUrlSet: !!connStr });
   } catch {
     return c.json({ connOk: false, dbUrlSet: !!connStr, error: 'Database check failed' }, 500);
@@ -295,17 +287,9 @@ app.get('/v1/admin/stats', async (c) => {
     return c.json({ error: 'Rate limit exceeded. Slow down.' }, 429);
   }
 
-  const { default: pg } = await import('pg');
-  const connStr = process.env['DATABASE_URL'];
   try {
-    // Read-only pool — set readonly + a low statement timeout so this can
-    // never be coerced into a write or a long-running query.
-    const pool = new pg.Pool({
-      connectionString: connStr,
-      connectionTimeoutMillis: 8000,
-      statement_timeout: 5000,
-      max: 1,
-    });
+    // Shared pool (statement_timeout already enforced) — read-only aggregate query.
+    const pool = getPool();
     const stats = await pool.query(`
       SELECT
         (SELECT count(*) FROM "user")                                               AS total_users,
@@ -314,9 +298,8 @@ app.get('/v1/admin/stats', async (c) => {
         (SELECT count(*) FROM session)                                              AS active_sessions,
         (SELECT count(*) FROM "account")                                            AS linked_accounts,
         (SELECT count(*) FROM sp_workspace)                                         AS statusplate_workspaces,
-        (SELECT count(*) FROM sp_monitor)                                           AS statusplate_monitors
+        (SELECT count(*) FROM sp_monitor)                                          AS statusplate_monitors
     `);
-    await pool.end();
     return c.json({ stats: stats.rows[0] });
   } catch (e) {
     return c.json({ error: 'Stats query failed' }, 500);

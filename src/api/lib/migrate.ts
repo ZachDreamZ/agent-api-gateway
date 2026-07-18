@@ -6,9 +6,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import pg from 'pg';
-
-const { Pool } = pg;
+import { getPool } from './db.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -21,19 +19,8 @@ export async function runMigration(): Promise<void> {
 
   console.log(`[migrate] Connecting to database...`);
 
-  // Connect using the raw connection string — system DNS handles resolution.
-  // Custom DNS is only needed for IPv6-only Supabase hosts; Render PostgreSQL
-  // uses IPv4 and Resolver's internal DNS.
-  const pool = new Pool({
-    connectionString: databaseUrl,
-    ssl: databaseUrl.includes('supabase.co')
-      ? { rejectUnauthorized: false }
-      : databaseUrl.includes('render.com') || databaseUrl.includes('dpg-')
-        ? { rejectUnauthorized: false }
-        : undefined,
-    max: 1,
-    connectionTimeoutMillis: 15000,
-  });
+  // Shared pool with a single, consistent SSL policy (db.ts).
+  const pool = getPool();
 
   try {
     // Test connectivity
@@ -94,7 +81,6 @@ export async function runMigration(): Promise<void> {
       console.error('[migrate] Stack:', err.stack.split('\n').slice(0, 4).join('\n'));
     }
     console.error('[migrate] Continuing despite migration failure');
-  } finally {
-    await pool.end();
   }
+  // Do NOT pool.end() — the shared pool is reused by the running server.
 }

@@ -2,19 +2,15 @@ import 'dotenv/config';
 import { betterAuth } from 'better-auth';
 import { apiKey } from '@better-auth/api-key';
 import { bearer } from 'better-auth/plugins';
-import { Pool } from 'pg';
+import { getPool } from '../api/lib/db.js';
 import {
   isEmailTransportConfigured,
   sendPasswordResetEmailMessage,
   sendVerificationEmailMessage,
 } from './email.js';
 
-const connectionString = process.env.DATABASE_URL;
-
-// Render PostgreSQL (internal network) — IPv4-reachable, no custom DNS needed.
-const pool = connectionString
-  ? new Pool({ connectionString, max: 5, connectionTimeoutMillis: 10000 })
-  : new Pool();
+// Shared PostgreSQL pool (consistent SSL + statement timeout policy).
+const pool = getPool();
 
 const githubClientId = process.env.GITHUB_CLIENT_ID?.trim();
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET?.trim();
