@@ -4,6 +4,7 @@
  */
 
 import { buildBrowserHeaders } from './browser-headers.js';
+import { assertSafePublicUrl } from '../api/lib/ssrf.js';
 
 export type ResilientFetchOptions = {
   timeoutMs?: number;
@@ -30,7 +31,20 @@ export async function fetchResilient(
   let current = targetUrl;
   let redirects = 0;
 
+  // Validate the initial URL before any network work.
+  const initialCheck = assertSafePublicUrl(current);
+  if (!initialCheck.ok) {
+    throw new ScrapeError(`Blocked URL: ${initialCheck.error} (${current})`);
+  }
+
   while (redirects <= maxRedirects) {
+    // Re-validate every redirect hop — a public URL may 30x to a private/
+    // metadata host, which would otherwise bypass the initial SSRF guard.
+    const hopCheck = assertSafePublicUrl(current);
+    if (!hopCheck.ok) {
+      throw new ScrapeError(`Blocked redirect target: ${hopCheck.error} (${current})`);
+    }
+
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
@@ -70,5 +84,15 @@ export async function fetchResilient(
     }
   }
 
-  throw new Error(`Too many redirects fetching ${targetUrl}`);
+  throw new ScrapeError(`Too many redirects fetching ${targetUrl}`);
+}
+
+export class ScrapeError extends Error {
+  constructor(
+    message: string,
+    public readonly url?: string,
+  ) {
+    super(message);
+    this.name = 'ScrapeError';
+  }
 }

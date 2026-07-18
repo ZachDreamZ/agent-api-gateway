@@ -1,6 +1,7 @@
 import { chromium, Browser, Page } from 'playwright';
 import { buildBrowserHeaders, CHROME_UA, resolveAcceptLanguage } from './browser-headers.js';
 import { fetchResilient } from './fetch-resilient.js';
+import { assertSafePublicUrl } from '../api/lib/ssrf.js';
 import { contentLooksThin, htmlToCleanMarkdown } from './html-to-markdown.js';
 
 // ─── Types ───
@@ -72,6 +73,19 @@ async function scrapeWithPlaywright(
       waitUntil: 'domcontentloaded',
       timeout,
     });
+
+    // Re-validate the post-redirect location. Playwright follows redirects
+    // internally, so the landing URL may differ from the (guarded) target.
+    const landed = page.url();
+    if (landed !== targetUrl) {
+      const landedCheck = assertSafePublicUrl(landed);
+      if (!landedCheck.ok) {
+        throw new ScrapeError(
+          `Blocked redirect target: ${landedCheck.error} (${landed})`,
+          targetUrl,
+        );
+      }
+    }
 
     if (options.waitFor) {
       try {
