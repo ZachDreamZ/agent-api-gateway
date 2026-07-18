@@ -217,6 +217,68 @@ app.get('/api/dbcheck', async (c) => {
   }
 });
 
+// ─── Admin stats (permanent, hardened) ───
+// Returns ONLY aggregate counts (no PII / no user rows). Gated by
+// ADMIN_HEALTH_TOKEN (same as /api/dbcheck). Strict per-IP rate limit so a
+// leaked token can't be brute-forced or abused. Disable by unsetting the token.
+const adminStatsHits = new Map<string, number[]>();
+function checkAdminStatsRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const cutoff = now - 60_000;
+  const hits = (adminStatsHits.get(ip) ?? []).filter((t) => t > cutoff);
+  if (hits.length >= 5) {
+    adminStatsHits.set(ip, hits);
+    return false;
+  }
+  hits.push(now);
+  adminStatsHits.set(ip, hits);
+  return true;
+}
+
+app.get('/v1/admin/stats', async (c) => {
+  const adminToken = process.env['ADMIN_HEALTH_TOKEN'];
+  // No token configured → endpoint does not exist.
+  if (!adminToken) return c.json({ error: 'Not found' }, 404);
+
+  const provided = c.req.header('x-admin-token') || '';
+  // Constant-time-ish length+equality compare; wrong token → 404 (no leak).
+  if (provided.length !== adminToken.length || provided !== adminToken) {
+    return c.json({ error: 'Not found' }, 404);
+  }
+
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (!checkAdminStatsRateLimit(ip)) {
+    return c.json({ error: 'Rate limit exceeded. Slow down.' }, 429);
+  }
+
+  const { default: pg } = await import('pg');
+  const connStr = process.env['DATABASE_URL'];
+  try {
+    // Read-only pool — set readonly + a low statement timeout so this can
+    // never be coerced into a write or a long-running query.
+    const pool = new pg.Pool({
+      connectionString: connStr,
+      connectionTimeoutMillis: 8000,
+      statement_timeout: 5000,
+      max: 1,
+    });
+    const stats = await pool.query(`
+      SELECT
+        (SELECT count(*) FROM "user")                                               AS total_users,
+        (SELECT count(*) FROM "user" WHERE "createdAt" > now() - interval '7 days')  AS signups_7d,
+        (SELECT count(*) FROM "user" WHERE "createdAt" > now() - interval '30 days') AS signups_30d,
+        (SELECT count(*) FROM session)                                              AS active_sessions,
+        (SELECT count(*) FROM "account")                                            AS linked_accounts,
+        (SELECT count(*) FROM sp_workspace)                                         AS statusplate_workspaces,
+        (SELECT count(*) FROM sp_monitor)                                           AS statusplate_monitors
+    `);
+    await pool.end();
+    return c.json({ stats: stats.rows[0] });
+  } catch (e) {
+    return c.json({ error: 'Stats query failed' }, 500);
+  }
+});
+
 // ─── Better Auth (user sessions + API keys) ───
 
 // Better Auth handles its own routing internally.
