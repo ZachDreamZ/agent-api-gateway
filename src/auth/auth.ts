@@ -122,12 +122,10 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 10,
     maxPasswordLength: 128,
-    // Email verification is currently NOT enforced at sign-in because the
-    // Resend sender domain is not yet verified, so verification emails cannot
-    // be delivered to arbitrary recipients (Resend free/restricted key only
-    // sends to the account owner's address). Re-enable once a verified
-    // from-domain is configured. GitHub OAuth users are still verified.
-    requireEmailVerification: false,
+    // Enforce email verification at sign-in. The Resend sender domain
+    // `agentapigw.dpdns.org` is now verified, so verification emails deliver
+    // to arbitrary recipients. GitHub OAuth users are verified automatically.
+    requireEmailVerification: true,
     revokeSessionsOnPasswordReset: true,
     resetPasswordTokenExpiresIn: 60 * 30, // 30 minutes
     sendResetPassword: async ({ user, url }) => {
