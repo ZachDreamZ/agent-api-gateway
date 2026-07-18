@@ -46,7 +46,10 @@ export async function sendEmail(msg: OutboundEmail): Promise<void> {
         detail: body.slice(0, 200),
         timestamp: new Date().toISOString(),
       }));
-      throw new Error('Failed to send email');
+      // Do NOT throw: a failed transactional email must not break sign-up /
+      // password-reset. The app already does not enforce email verification,
+      // so a non-delivered message should degrade gracefully (logged above).
+      return;
     }
     console.log(JSON.stringify({
       event: 'email.sent',
