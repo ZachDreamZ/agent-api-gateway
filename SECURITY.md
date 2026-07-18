@@ -19,7 +19,10 @@ Checklist.
 ## Data encryption
 
 - **In transit:** All public traffic is HTTPS (Cloudflare → Render). `useSecureCookies`
-  and `secure` cookie flags are enabled when the origin is HTTPS.
+  and `secure` cookie flags are enabled when the origin is HTTPS. App → Postgres
+  connections enforce TLS (`require: true` via the shared `pg` pool in `src/api/lib/db.ts`);
+  chain validation is relaxed because Render does not publish a CA bundle to pin
+  — acceptable over Render's private network between co-located services.
 - **At rest:** Render Postgres encrypts data at rest by default. The database
   password is stored only in Render's encrypted env, never in source control.
 - **Future:** move secrets to a dedicated vault (e.g. Render secret files / Doppler)

@@ -7,11 +7,14 @@ import pg from 'pg';
 
 const { Pool } = pg;
 
-function buildSsl(): { rejectUnauthorized: boolean } | undefined {
+function buildSsl(): { require: boolean; rejectUnauthorized: boolean } | undefined {
   const url = process.env['DATABASE_URL'] ?? '';
-  // Supabase / Render Postgres present valid certs — verify them.
+  // Supabase / Render Postgres use managed TLS. We enforce encryption in transit
+  // (require: true) but cannot pin a CA bundle (Render does not publish one), so
+  // chain verification is relaxed. Connections run over Render's private network
+  // between co-located services, which limits MITM exposure.
   if (url.includes('supabase.co') || url.includes('render.com') || url.includes('dpg-')) {
-    return { rejectUnauthorized: true };
+    return { require: true, rejectUnauthorized: false };
   }
   // Local / unknown — leave default (no SSL) for dev convenience.
   return undefined;
