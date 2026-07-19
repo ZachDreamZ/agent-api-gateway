@@ -37,7 +37,7 @@ async function ensureAppRole(
       console.log(`[migrate] Role "${role}" already exists, password synced`);
     }
     await pool.query('GRANT CONNECT ON DATABASE agentapi_kjz2 TO "' + role + '"');
-    await pool.query('GRANT USAGE ON SCHEMA public TO "' + role + '"');
+    await pool.query('GRANT USAGE, CREATE ON SCHEMA public TO "' + role + '"');
     await pool.query(
       'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "' + role + '"',
     );
