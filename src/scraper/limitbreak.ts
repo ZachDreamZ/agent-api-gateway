@@ -36,10 +36,15 @@ export async function fetchViaLimitBreak(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), Math.min(timeout, 60_000));
 
+  const apiKey = process.env['LIMITBREAK_API_KEY']?.trim();
+
   try {
     const res = await fetch(`${baseUrl.replace(/\/+$/, '')}/v1/fetch`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(apiKey ? { 'X-API-Key': apiKey } : {}),
+      },
       signal: controller.signal,
       body: JSON.stringify({
         url: targetUrl,
