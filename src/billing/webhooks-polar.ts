@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { validateEvent } from '@polar-sh/sdk/webhooks';
-import { getSupabase } from '../api/lib/supabase.js';
+import { getPool } from '../api/lib/db.js';
 import { addBonusCredits, findUserIdByEmail } from '../api/lib/usage-db.js';
 import type { Tier } from '@shared/types';
 
@@ -11,23 +11,34 @@ const webhookApp = new Hono();
 
 // Persist the purchased tier (and billing customer id) on the user row.
 async function grantTier(userId: string, tier: Tier, polarCustomerId: string | null): Promise<void> {
-  const supabase = getSupabase();
-  const update: Record<string, unknown> = { tier };
-  if (polarCustomerId) update.stripe_customer_id = polarCustomerId;
-  const { error } = await supabase.from('user').update(update).eq('id', userId);
-  if (error) {
-    console.error('[Polar] Failed to grant tier:', error.message);
-    throw new Error(error.message);
+  const pool = getPool();
+  const setClauses: string[] = ['tier = $1'];
+  const values: unknown[] = [tier];
+  if (polarCustomerId) {
+    setClauses.push('stripe_customer_id = $2');
+    values.push(polarCustomerId);
+    values.push(userId);
+  } else {
+    values.push(userId);
+  }
+  const idx = values.length;
+  const result = await pool.query(
+    `UPDATE "user" SET ${setClauses.join(', ')} WHERE id = $${idx}`,
+    values,
+  );
+  if (result.rowCount === 0) {
+    console.warn(`[Polar] User ${userId} not found for grantTier`);
+    return;
   }
   console.log(`[Polar] Granted tier=${tier} to user=${userId}`);
 }
 
 async function revokeTier(userId: string): Promise<void> {
-  const supabase = getSupabase();
-  const { error } = await supabase.from('user').update({ tier: 'free' }).eq('id', userId);
-  if (error) {
-    console.error('[Polar] Failed to revoke tier:', error.message);
-    throw new Error(error.message);
+  const pool = getPool();
+  const result = await pool.query('UPDATE "user" SET tier = $1 WHERE id = $2', ['free', userId]);
+  if (result.rowCount === 0) {
+    console.warn(`[Polar] User ${userId} not found for revokeTier`);
+    return;
   }
   console.log(`[Polar] Revoked tier to free for user=${userId}`);
 }

@@ -4,8 +4,6 @@ dotenv.config();
 export interface Config {
   port: number;
   corsOrigin: string;
-  supabaseUrl: string;
-  supabaseServiceRoleKey: string;
   redisUrl: string | undefined;
   apiKeyPrefix: string;
   extractionLLM: string;
@@ -39,8 +37,6 @@ export function getConfig(): Config {
   _config = {
     port: parseInt(env('PORT', '3000'), 10),
     corsOrigin: env('CORS_ORIGIN', 'http://localhost:3000'),
-    supabaseUrl: envOrEmpty('SUPABASE_URL'),
-    supabaseServiceRoleKey: envOrEmpty('SUPABASE_SERVICE_ROLE_KEY'),
     redisUrl: process.env['REDIS_URL'] || undefined,
     apiKeyPrefix: env('API_KEY_PREFIX', 'sk-'),
     extractionLLM: env('EXTRACTION_LLM', 'gemini'),

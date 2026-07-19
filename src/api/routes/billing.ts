@@ -19,7 +19,7 @@ import {
   getCreditPackProductId,
   formatOneTimePrice,
 } from '../../billing/pricing';
-import { getSupabase } from '../lib/supabase.js';
+import { getPool } from '../lib/db.js';
 import { getBonusCredits } from '../lib/usage-db.js';
 import type { Tier } from '@shared/types';
 
@@ -354,7 +354,7 @@ billingApp.post('/portal', zValidator('json', portalSchema), async (c) => {
     let customerId: string | null = user.stripe_customer_id ?? null;
     if (!customerId) {
       customerId = await createCustomer(user.email, userId);
-      await getSupabase().from('user').update({ stripe_customer_id: customerId }).eq('id', userId);
+      await getPool().query('UPDATE "user" SET stripe_customer_id = $1 WHERE id = $2', [customerId, userId]);
     }
 
     const url = await createCustomerPortalSession(customerId, return_url);
