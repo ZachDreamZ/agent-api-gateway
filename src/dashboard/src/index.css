@@ -1,5 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    Agent API Gateway — Design System
+   Hallmark · macrostructure: 01-bento-grid · genre: modern-minimal · theme: cobalt (dark-adapted) · nav: N1b · footer: Ft5
    Direction: "Signal plate" — precision instrument for structured extraction
    Display: Syne · Body: DM Sans · Mono: IBM Plex Mono
    Accent: signal teal on cool ink — not purple-SaaS, not acid-green dark
@@ -125,6 +126,8 @@ body {
   letter-spacing: -0.03em;
   line-height: 1.08;
   text-wrap: balance;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .text-display-lg {
@@ -134,10 +137,23 @@ body {
   letter-spacing: -0.035em;
   line-height: 1.02;
   text-wrap: balance;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .text-mono {
   font-family: var(--font-family-mono);
+}
+
+.text-display-sm {
+  font-family: var(--font-family-display);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .text-eyebrow {
@@ -305,7 +321,6 @@ a.sr-only:focus {
 }
 .btn-primary:hover {
   background: var(--color-accent-hover);
-  box-shadow: var(--shadow-glow);
 }
 .btn-primary:active {
   background: var(--color-accent-active);
@@ -832,55 +847,19 @@ a.sr-only:focus {
   height: 0.45rem;
   border-radius: 9999px;
   background: var(--color-accent-base);
-  box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0.45);
-  animation: signal-pulse 2.2s ease-out infinite;
 }
 
 .signal-dot-ok {
   background: var(--color-success);
-  box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0.45);
-  animation: signal-pulse-ok 2.4s ease-out infinite;
 }
 
-@keyframes signal-pulse {
-  0% { box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0.45); }
-  70% { box-shadow: 0 0 0 8px oklch(0.74 0.12 195 / 0); }
-  100% { box-shadow: 0 0 0 0 oklch(0.74 0.12 195 / 0); }
-}
-
-@keyframes signal-pulse-ok {
-  0% { box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0.4); }
-  70% { box-shadow: 0 0 0 8px oklch(0.72 0.14 155 / 0); }
-  100% { box-shadow: 0 0 0 0 oklch(0.72 0.14 155 / 0); }
-}
-
-/* Button sheen (Animista-style, restrained) */
+/* Button sheen (subtle, no-sweep) */
 .btn-shine {
   position: relative;
   overflow: hidden;
 }
-.btn-shine::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 35%,
-    oklch(1 0 0 / 0.18) 48%,
-    transparent 62%
-  );
-  transform: translateX(-120%);
-  transition: none;
-  pointer-events: none;
-}
-.btn-shine:hover::after {
-  animation: sheen-sweep 0.7s var(--ease-out) 1;
-}
-@keyframes sheen-sweep {
-  to { transform: translateX(120%); }
-}
 
-/* Soft border beam on hero playground (pure CSS) */
+/* Soft border beam on hero playground (hairline top, static) */
 .beam-border {
   position: relative;
   border-radius: var(--radius-lg);
@@ -888,35 +867,11 @@ a.sr-only:focus {
 .beam-border::before {
   content: '';
   position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(
-    from var(--beam-angle, 0deg),
-    transparent 0%,
-    oklch(0.74 0.12 195 / 0.55) 12%,
-    transparent 28%,
-    transparent 100%
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: beam-spin 6s linear infinite;
-  pointer-events: none;
-  opacity: 0.7;
-}
-@property --beam-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-@keyframes beam-spin {
-  to { --beam-angle: 360deg; }
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: oklch(0.74 0.12 195 / 0.5);
 }
 
 /* Status chip */
@@ -1000,8 +955,7 @@ a.sr-only:focus {
 
 .surface-glow:hover,
 .surface-glow:focus-within {
-  border-color: oklch(0.74 0.12 195 / 0.35);
-  box-shadow: var(--shadow-glow);
+  border-color: oklch(0.74 0.12 195 / 0.3);
 }
 
 /* ─── Spinner uses accent ────────────────────────────────────────────────── */
@@ -1060,72 +1014,40 @@ a.sr-only:focus {
   opacity: 0.28;
 }
 
+/* N1b — bordered full-width bar, frost on scroll */
 .nav-float {
   position: fixed;
-  top: 0.85rem;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
-  width: min(1120px, calc(100% - 1.5rem));
-  border-radius: 9999px;
-  border: 1px solid oklch(0.74 0.12 195 / 0.18);
-  background: oklch(0.145 0.018 255 / 0.72);
-  backdrop-filter: blur(18px) saturate(1.35);
-  -webkit-backdrop-filter: blur(18px) saturate(1.35);
-  box-shadow:
-    0 0 0 1px oklch(1 0 0 / 0.04) inset,
-    0 12px 40px oklch(0 0 0 / 0.35),
-    0 0 40px oklch(0.74 0.12 195 / 0.06);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: oklch(0.145 0.018 255 / 0.85);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  transition: border-color var(--dur-normal) var(--ease-out),
+              background var(--dur-normal) var(--ease-out);
 }
 
 .nav-float nav {
   height: 3.25rem;
-  padding-inline: 0.85rem 0.65rem;
+  padding-inline: clamp(1rem, 4vw, 1.5rem);
+  max-width: 72rem;
+  margin: 0 auto;
 }
 
 @media (max-width: 767px) {
-  .nav-float {
-    top: 0.5rem;
-    width: calc(100% - 1rem);
-    border-radius: 1rem;
+  .nav-float nav {
+    height: 3rem;
   }
 }
 
 .text-gradient-signal {
-  background: linear-gradient(
-    115deg,
-    oklch(0.96 0.02 195) 0%,
-    var(--color-accent-base) 45%,
-    oklch(0.78 0.1 230) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-accent-base);
 }
 
 .hero-float-card {
   position: relative;
-}
-
-.hero-float-card::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: calc(var(--radius-lg) + 2px);
-  background: linear-gradient(
-    135deg,
-    oklch(0.74 0.12 195 / 0.55),
-    transparent 40%,
-    oklch(0.6 0.1 255 / 0.35)
-  );
-  opacity: 0.7;
-  z-index: 0;
-  animation: hero-rim 6s ease-in-out infinite alternate;
-}
-
-@keyframes hero-rim {
-  0% { opacity: 0.45; filter: blur(0px); }
-  100% { opacity: 0.85; filter: blur(0.5px); }
 }
 
 .hero-chip-row {
@@ -1152,10 +1074,9 @@ a.sr-only:focus {
 .stats-glass {
   border-radius: 9999px;
   background: oklch(0.175 0.02 255 / 0.75);
-  border: 1px solid oklch(0.74 0.12 195 / 0.15);
+  border: 1px solid var(--color-border-subtle);
   backdrop-filter: blur(12px) saturate(1.2);
   -webkit-backdrop-filter: blur(12px) saturate(1.2);
-  box-shadow: 0 8px 28px oklch(0 0 0 / 0.25);
 }
 
 .bento-grid {
@@ -1183,12 +1104,9 @@ a.sr-only:focus {
   overflow: hidden;
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border-subtle);
-  background:
-    linear-gradient(165deg, oklch(0.22 0.025 255 / 0.9), var(--color-bg-surface) 55%),
-    var(--color-bg-surface);
+  background: var(--color-bg-surface);
   transition: border-color var(--dur-normal) var(--ease-out),
-              transform var(--dur-medium) var(--ease-out),
-              box-shadow var(--dur-medium) var(--ease-out);
+              transform var(--dur-medium) var(--ease-out);
 }
 
 .bento-tile::after {
@@ -1198,14 +1116,13 @@ a.sr-only:focus {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, oklch(0.74 0.12 195 / 0.45), transparent);
-  opacity: 0.6;
+  background: linear-gradient(90deg, transparent, oklch(0.74 0.12 195 / 0.35), transparent);
+  opacity: 0.5;
 }
 
 .bento-tile:hover {
-  border-color: oklch(0.74 0.12 195 / 0.4);
+  border-color: oklch(0.74 0.12 195 / 0.3);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
 }
 
 .bento-tile-lg {
@@ -1231,6 +1148,11 @@ a.sr-only:focus {
   gap: 2.5rem;
   padding: 0.85rem 0;
   animation: marquee-x 36s linear infinite;
+}
+
+.marquee-track:hover .marquee-inner,
+.marquee-track:focus-within .marquee-inner {
+  animation-play-state: paused;
 }
 
 .marquee-item {
@@ -1267,24 +1189,15 @@ a.sr-only:focus {
   width: min(100%, 72rem);
   height: 1px;
   transform: translateX(-50%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    oklch(0.74 0.12 195 / 0.35),
-    transparent
-  );
+  background: var(--color-border-subtle);
 }
 
 .cta-stage {
   position: relative;
   overflow: hidden;
   border-radius: calc(var(--radius-xl) + 0.25rem);
-  border: 1px solid oklch(0.74 0.12 195 / 0.3);
-  background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.74 0.12 195 / 0.22), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 80% 100%, oklch(0.55 0.1 255 / 0.15), transparent 50%),
-    var(--color-bg-elevated);
-  box-shadow: var(--shadow-glow);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-elevated);
 }
 
 .cta-stage::before {
@@ -1301,14 +1214,12 @@ a.sr-only:focus {
 
 .lift-card {
   transition: transform var(--dur-medium) var(--ease-out),
-              border-color var(--dur-normal) var(--ease-out),
-              box-shadow var(--dur-medium) var(--ease-out);
+              border-color var(--dur-normal) var(--ease-out);
 }
 
 .lift-card:hover {
   transform: translateY(-3px);
-  border-color: oklch(0.74 0.12 195 / 0.35);
-  box-shadow: var(--shadow-glow);
+  border-color: oklch(0.74 0.12 195 / 0.25);
 }
 
 /* ─── Reduced motion ─────────────────────────────────────────────────────── */
@@ -1339,9 +1250,7 @@ a.sr-only:focus {
   .signal-dot-ok,
   .chart-bar,
   .beam-border::before,
-  .btn-shine:hover::after,
-  .marquee-inner,
-  .hero-float-card::before {
+  .marquee-inner {
     animation: none !important;
   }
 
@@ -1349,4 +1258,43 @@ a.sr-only:focus {
   .lift-card:hover {
     transform: none !important;
   }
+}
+
+/* ─── Cobalt mono label (eyebrow) ─────────────────────────────────────── */
+
+.eyebrow {
+  font-family: var(--font-family-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* ─── Bento grid tile spans (Cobalt: varied sizes) ────────────────────── */
+
+@media (min-width: 768px) {
+  .bento-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: minmax(7rem, auto);
+  }
+  .bento-tile-lg {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 11rem;
+  }
+  .bento-tile-wide {
+    grid-column: span 2;
+  }
+  .bento-tile-tall {
+    grid-row: span 2;
+    min-height: 11rem;
+  }
+}
+
+/* ─── Glass nav frost on scroll (JS toggles .nav-frosted) ─────────────── */
+
+.nav-frosted {
+  border-bottom-color: oklch(0.74 0.12 195 / 0.12) !important;
+  background: oklch(0.145 0.018 255 / 0.92) !important;
 }

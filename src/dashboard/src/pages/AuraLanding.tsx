@@ -18,7 +18,7 @@ import {
   Code2,
   BookOpen,
 } from 'lucide-react';
-import { BrandLockup, AmbientBg, SectionLabel, Reveal } from '../components/Brand';
+import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
 import { easeOut } from '../lib/motion';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -68,7 +68,7 @@ function Navbar() {
           <Link to="/blog" className="link text-sm">Blog</Link>
           <Link to="/agents" className="link text-sm">For agents</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
-          <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem', borderRadius: '9999px' }}>
+          <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem', borderRadius: '6px' }}>
             Open dashboard
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
@@ -309,7 +309,7 @@ function SchemaPlayground() {
           onClick={handleRun}
           disabled={loading}
           className="btn btn-primary text-xs whitespace-nowrap"
-          style={{ padding: '0.45rem 1rem', borderRadius: '9999px' }}
+          style={{ padding: '0.45rem 1rem', borderRadius: '6px' }}
         >
           {loading ? 'Extracting…' : 'Try it'}
         </button>
@@ -374,7 +374,7 @@ function SchemaPlayground() {
           <Link
             to="/login"
             className="btn btn-primary text-xs"
-            style={{ padding: '0.35rem 0.9rem', borderRadius: '9999px' }}
+            style={{ padding: '0.35rem 0.9rem', borderRadius: '6px' }}
           >
             Sign up for full extraction
           </Link>
@@ -518,16 +518,11 @@ function Hero() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, ease: easeOut }}
-              className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium"
-              style={{
-                background: 'var(--color-accent-subtle)',
-                color: 'var(--color-accent-base)',
-                border: '1px solid oklch(0.74 0.12 195 / 0.25)',
-                boxShadow: '0 0 24px oklch(0.74 0.12 195 / 0.12)',
-              }}
+              className="mb-5 inline-flex items-center gap-2 px-3 py-1 text-xs"
+              style={{ color: 'var(--color-accent-base)' }}
             >
-              <span className="signal-dot" />
-              URL + schema → validated JSON
+              <span className="signal-dot signal-dot-ok" />
+              <span className="eyebrow">URL + schema → validated JSON</span>
             </motion.div>
 
             <motion.h1
@@ -563,7 +558,7 @@ function Hero() {
               <Link
                 to="/login"
                 className="btn btn-primary btn-shine"
-                style={{ padding: '0.8rem 1.6rem', borderRadius: '9999px' }}
+                style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
               >
                 Create free account
                 <ArrowRight className="w-4 h-4" />
@@ -571,22 +566,10 @@ function Hero() {
               <a
                 href="/buy?sku=credits_1k"
                 className="btn btn-secondary"
-                style={{ padding: '0.8rem 1.6rem', borderRadius: '9999px' }}
+                style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
               >
                 Buy credits from $1
               </a>
-            </motion.div>
-
-            <motion.div
-              className="hero-chip-row"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.28, ease: easeOut }}
-            >
-              <span className="hero-chip"><span className="signal-dot signal-dot-ok" /> Free 100 queries/mo</span>
-              <span className="hero-chip">Credit packs from $1</span>
-              <span className="hero-chip">REST + MCP</span>
-              <span className="hero-chip">Polar checkout</span>
             </motion.div>
           </div>
 
@@ -861,7 +844,6 @@ function Features() {
                   style={{
                     background: 'var(--color-accent-subtle)',
                     color: 'var(--color-accent-base)',
-                    boxShadow: '0 0 20px oklch(0.74 0.12 195 / 0.12)',
                   }}
                 >
                   <Icon className="w-4 h-4" strokeWidth={1.75} />
@@ -1117,7 +1099,6 @@ function PricingCard({
           background: highlighted ? 'var(--color-bg-elevated)' : 'var(--color-bg-surface)',
           border: `1px solid ${highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : 'var(--color-border-subtle)'}`,
           borderRadius: 'var(--radius-xl)',
-          boxShadow: highlighted ? 'var(--shadow-glow)' : undefined,
         }}
       >
         {badge && (
@@ -1296,7 +1277,7 @@ function FinalCTA() {
               <Link
                 to="/login"
                 className="btn btn-primary btn-shine"
-                style={{ padding: '0.85rem 1.75rem', borderRadius: '9999px' }}
+                style={{ padding: '0.85rem 1.75rem', borderRadius: '6px' }}
               >
                 Start free
                 <ArrowRight className="w-4 h-4" />
@@ -1304,7 +1285,7 @@ function FinalCTA() {
               <a
                 href="#pricing"
                 className="btn btn-secondary"
-                style={{ padding: '0.85rem 1.75rem', borderRadius: '9999px' }}
+                style={{ padding: '0.85rem 1.75rem', borderRadius: '6px' }}
               >
                 View plans & credits
                 <ChevronRight className="w-4 h-4" />
@@ -1322,14 +1303,14 @@ function FinalCTA() {
 function Footer() {
   return (
     <footer className="relative z-10" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
-      <div className="mx-auto max-w-6xl px-5 md:px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div>
-          <BrandLockup variant="org" markClassName="w-4 h-4" to="/" />
-          <p className="mt-2 text-xs max-w-xs" style={{ color: 'var(--color-text-tertiary)' }}>
-            Agent API Gateway — structured extraction for agents. Validated JSON from public pages.
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+      <div className="mx-auto max-w-6xl px-5 md:px-6 py-14 md:py-20 text-center">
+        <p className="text-display-sm max-w-lg mx-auto mb-4" style={{ color: 'var(--color-text-primary)' }}>
+          Ship structured data without a scraper farm.
+        </p>
+        <p className="text-xs max-w-sm mx-auto mb-8" style={{ color: 'var(--color-text-tertiary)' }}>
+          Agent API Gateway — validated JSON from public pages. Built for agents, not scrapers.
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
           <Link to="/docs" className="link">Docs</Link>
           <Link to="/blog" className="link">Blog</Link>
           <Link to="/agents" className="link">For agents</Link>
@@ -1355,7 +1336,7 @@ function Footer() {
         </div>
       </div>
       <div
-        className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-[11px]"
+        className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-center text-[11px]"
         style={{ color: 'var(--color-text-disabled)' }}
       >
         © {new Date().getFullYear()} NexusCore · Agent API Gateway · agentapigw.dpdns.org
@@ -1370,8 +1351,6 @@ export default function Landing() {
       className="landing-shell relative min-h-screen"
       style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
     >
-      <AmbientBg intensity="strong" />
-      <div className="landing-mesh" aria-hidden />
       <div className="relative z-10">
         <Navbar />
         <main>

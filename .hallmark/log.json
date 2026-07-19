@@ -1,23 +1,46 @@
 {
-  "entries": [
-    {
-      "build": "redesign-1",
-      "date": "2026-07-16T12:00:00Z",
-      "macrostructure": "Workbench",
-      "genre": "developer-tool",
-      "theme": "custom (Workbench · developer-tool)",
-      "files": [
-        "src/dashboard/src/index.css",
-        "src/dashboard/src/app.tsx",
-        "src/dashboard/src/pages/Overview.tsx",
-        "src/dashboard/src/pages/ApiKeys.tsx",
-        "src/dashboard/src/pages/Billing.tsx",
-        "src/dashboard/src/pages/AuraLanding.tsx",
-        "src/dashboard/src/pages/Docs.tsx",
-        "src/dashboard/src/pages/Auth.tsx"
-      ],
-      "slop_test": "all 58 gates passed by design review",
-      "notes": "Full Hallmark redesign: OKLCH token system, Workbench macrostructure for dashboard, solid-surfaces replacing glass/liquid-glass, centered nav on landing, no gradient headline, no InboxMockup chrome, lucide-react icon unification, 8-state interaction patterns, reduced-motion support, focus-visible rings ≥3:1 contrast."
-    }
-  ]
+  "version": "1.0.0",
+  "design": "modern-minimal",
+  "theme": "cobalt (adapted to dark mode)",
+  "macrostructure": "01-bento-grid",
+  "genre": "modern-minimal",
+  "typography": {
+    "heading": "Syne",
+    "body": "DM Sans",
+    "mono": "IBM Plex Mono"
+  },
+  "palette": {
+    "bg": "oklch(0.145 0.018 255)",
+    "surface": "oklch(0.175 0.02 255)",
+    "elevated": "oklch(0.20 0.022 255)",
+    "accent": "oklch(0.74 0.12 195)",
+    "text_primary": "oklch(0.93 0.01 255)",
+    "text_secondary": "oklch(0.68 0.02 255)"
+  },
+  "nav": "N1b bordered full-width bar",
+  "footer": "Ft5 Statement",
+  "changes": [
+    "Nav: floating pill → bordered full-width bar with frost-on-scroll",
+    "Hero: removed pill badge, removed gradient text, removed hero-chip-row",
+    "Hero: tightened button radii from 9999px to 6px",
+    "Bento grid: removed gradient background, simplified to flat surface with hairline top",
+    "Cards: removed glow/shadow effects, kept border-color shift on hover",
+    "CTA stage: removed radial gradient background, simplified to flat elevated surface",
+    "Feature icons: removed glow box-shadow",
+    "Pricing cards: removed shadow-glow on highlighted tier",
+    "Footer: converted to Ft5 Statement (centered closing line + link meta)",
+    "Landing root: removed AmbientBg and landing-mesh overlay",
+    "Beam border: replaced spinning conic-gradient with static hairline",
+    "Signal dots: removed pulsing glow animation",
+    "Button shine: removed sheen-sweep animation",
+    "Section rail: simplified to solid hairline",
+    "Stats glass: removed glow border and shadow",
+    "Primary button hover: removed shadow-glow",
+    "Reduced-motion: cleaned up references to removed animations",
+    "Added .eyebrow mono label class for Cobalt structural labels",
+    "Added .bento-tile-wide and .bento-tile-tall span classes",
+    "Added .nav-frosted class for frost-on-scroll toggle"
+  ],
+  "scope": "Landing page only (AuraLanding.tsx + index.css)",
+  "timestamp": "2026-07-19T00:00:00Z"
 }
