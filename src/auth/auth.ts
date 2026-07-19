@@ -285,11 +285,12 @@ export const auth = betterAuth({
         minExpiresIn: 1,
         maxExpiresIn: 365,
       },
-      // Per-key rate limiting (separate from endpoint rate limits)
+      // Rate limiting is handled by our own per-tier middleware (rateLimitMiddleware),
+      // not the apiKey plugin, to avoid returning "Unauthorized" on rate-limit hits.
       rateLimit: {
-        enabled: true,
-        timeWindow: 60_000, // 1 minute window
-        maxRequests: 60, // 60 requests per minute per key
+        enabled: false,
+        timeWindow: 60_000,
+        maxRequests: 60,
       },
     }),
     bearer(),
