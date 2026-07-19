@@ -15,7 +15,7 @@ import { billingApp, billingPricing } from './routes/billing.js';
 import { webhookApp } from '../billing/webhooks-polar.js';
 import { playgroundRoutes } from './routes/playground.js';
 import { auth } from '../auth/auth.js';
-// app.route('/v1/api-keys', apiKeysApp); — replaced by Better Auth apiKey plugin
+
 
 // ─── Static file serving (built frontend) ───
 

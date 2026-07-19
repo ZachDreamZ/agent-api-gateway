@@ -41,6 +41,7 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
           c.set('userId', user.id);
           c.set('user', user);
           c.set('tier', (user.tier ?? 'free') as Tier);
+          c.set('apiKey', { id: 'session' });
           await next();
           return;
         }
@@ -51,7 +52,9 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
   }
 
   // ── 2. Fallback: try Bearer as API key ──
-  if (!cookie && authHeader && authHeader.startsWith('Bearer ')) {
+  // Check API key even if an expired session cookie exists (line 26 path
+  // returned without calling next() meaning auth failed).
+  if (authHeader && authHeader.startsWith('Bearer ')) {
     const keyValue = authHeader.slice(7).trim();
     if (keyValue) {
       try {
@@ -64,6 +67,7 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
             c.set('userId', user.id);
             c.set('user', user);
             c.set('tier', (user.tier ?? 'free') as Tier);
+            c.set('apiKey', { id: result.key.id });
             await next();
             return;
           }

@@ -145,9 +145,6 @@ function PlanCard({
         <div className="mb-6">
           <div className="flex items-baseline gap-1">
             <span className="font-display text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{tier.price}</span>
-            {tier.price_monthly > 0 && (
-              <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>/month</span>
-            )}
           </div>
           {tier.price_monthly > 0 && (
             <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>

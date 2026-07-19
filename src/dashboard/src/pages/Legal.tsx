@@ -9,7 +9,7 @@ const COPY: Record<
 > = {
   privacy: {
     title: 'Privacy Policy',
-    updated: '2026-07-17',
+    updated: '2026-07-19',
     sections: [
       {
         h: 'Who we are',
@@ -55,7 +55,7 @@ const COPY: Record<
   },
   terms: {
     title: 'Terms of Service',
-    updated: '2026-07-17',
+    updated: '2026-07-19',
     sections: [
       {
         h: 'Agreement',
@@ -105,7 +105,7 @@ const COPY: Record<
   },
   aup: {
     title: 'Acceptable Use Policy',
-    updated: '2026-07-17',
+    updated: '2026-07-19',
     sections: [
       {
         h: 'Purpose',

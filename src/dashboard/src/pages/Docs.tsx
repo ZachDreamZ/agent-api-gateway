@@ -211,7 +211,7 @@ function DocsCopyMdButton() {
 
 Extract structured web data with one API call.
 
-**Base URL:** \`https://agent-api-gateway.onrender.com\`
+**Base URL:** \`https://agentapigw.dpdns.org\`
 
 ---
 
@@ -219,7 +219,7 @@ Extract structured web data with one API call.
 
 AgentAPI extracts structured data from any public URL. Send a URL and a schema type, receive clean JSON. Designed for AI agents — no markdown parsing, no raw HTML.
 
-**Pricing model:** Credit-based. Each successful extraction deducts 1 credit. Failed extractions do not count against your quota. Cached hits are free.
+**Pricing model:** Credit-based. Each extraction deducts 1 credit — including cache hits. Failed extractions also count against your monthly quota.
 
 ---
 
@@ -297,7 +297,10 @@ Check your current plan tier, credits used, and remaining quota for the current 
   "tier": "free",
   "credits_used": 0,
   "credits_limit": 100,
-  "credits_remaining": 100
+  "credits_remaining": 100,
+  "monthly_limit": 100,
+  "bonus_credits": 0,
+  "period_start": "2026-07-01T00:00:00.000Z"
 }
 \`\`\`
 
@@ -309,16 +312,23 @@ List subscription tiers and one-time credit packs. Credit packs stack on monthly
 
 \`\`\`json
 {
-  "tiers": [{ "id": "free", "name": "Free", "price": "Free", "queries_per_month": 100 }],
+  "tiers": [
+    { "id": "free", "name": "Free", "price": "Free", "queries_per_month": 100, "rate_limit_rpm": 10 },
+    { "id": "hobby", "name": "Hobby", "price": "$29/mo", "queries_per_month": 5000, "rate_limit_rpm": 60 },
+    { "id": "pro", "name": "Pro", "price": "$99/mo", "queries_per_month": 25000, "rate_limit_rpm": 300 },
+    { "id": "scale", "name": "Scale", "price": "Custom", "queries_per_month": 100000, "rate_limit_rpm": 1000 }
+  ],
   "credit_packs": [
     { "id": "credits_1k", "credits": 1000, "price": "$1", "one_time": true },
     { "id": "credits_5k", "credits": 5000, "price": "$4", "one_time": true },
     { "id": "credits_25k", "credits": 25000, "price": "$15", "one_time": true }
-  ]
+  ],
+  "checkout_enabled": true,
+  "note": "Subscriptions set monthly limits. Credit packs add bonus credits that stack on top and do not expire until used."
 }
 \`\`\`
 
-Buy: GET /buy?sku=credits_1k | POST /v1/billing/checkout {"sku":"credits_1k"}
+Buy: POST /v1/billing/checkout {"sku":"hobby"} or GET /buy?sku=credits_1k
 
 ---
 
@@ -326,7 +336,7 @@ Buy: GET /buy?sku=credits_1k | POST /v1/billing/checkout {"sku":"credits_1k"}
 
 ### cURL (article)
 \`\`\`bash
-curl -X POST https://agent-api-gateway.onrender.com/v1/extract \\
+curl -X POST https://agentapigw.dpdns.org/v1/extract \\
   -H "Authorization: Bearer sk-your-api-key" \\
   -H "Content-Type: application/json" \\
   -d '{"url": "https://en.wikipedia.org/wiki/Artificial_intelligence", "schema": "article"}'
@@ -334,7 +344,7 @@ curl -X POST https://agent-api-gateway.onrender.com/v1/extract \\
 
 ### Node.js / TypeScript
 \`\`\`typescript
-const res = await fetch('https://agent-api-gateway.onrender.com/v1/extract', {
+const res = await fetch('https://agentapigw.dpdns.org/v1/extract', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer sk-your-api-key',
@@ -349,7 +359,7 @@ const data = await res.json();
 \`\`\`python
 import requests
 resp = requests.post(
-    'https://agent-api-gateway.onrender.com/v1/extract',
+    'https://agentapigw.dpdns.org/v1/extract',
     headers={'Authorization': 'Bearer sk-your-api-key'},
     json={'url': '...', 'schema': 'article'}
 )
@@ -389,7 +399,7 @@ data = resp.json()
 
 Remaining = monthly plan limit + bonus credits − usage. Packs never expire until used.
 
-**Cache policy:** Successful extractions are cached for 24 hours. Cache hits do not deduct credits. Bypass the cache by including a unique query parameter.
+**Cache policy:** Successful extractions are cached for 24 hours. Cache hits deduct 1 credit (same as a fresh extraction). Bypass the cache by including a unique query parameter.
 `;
   }
 }
@@ -481,7 +491,7 @@ export default function Docs() {
 
           <Para className="mt-4">
             <strong style={{ color: 'var(--color-text-primary)' }}>Pricing model:</strong> Credit-based. Each successful extraction deducts 1 credit.
-            Failed extractions do not count against your quota. Cached hits are free.
+            Each extraction deducts 1 credit — including cache hits. Failed extractions also count toward your monthly quota.
           </Para>
         </Section>
 
@@ -627,7 +637,7 @@ export default function Docs() {
             </Code>
             <Para>
               The <code className="code-inline">usage</code> object shows credit consumption.
-              <code className="code-inline">cached</code> indicates whether the result was served from cache (no credit deducted).
+              <code className="code-inline">cached</code> indicates whether the result was served from cache. Cache hits still deduct 1 credit.
             </Para>
           </SubSection>
         </Section>
@@ -767,7 +777,7 @@ export default function Docs() {
         <Section id="examples" title="Examples">
           <SubSection title="Extract an article (cURL)">
             <Code lang="bash">
-{`curl -X POST https://agent-api-gateway.onrender.com/v1/extract \
+{`curl -X POST https://agentapigw.dpdns.org/v1/extract \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://en.wikipedia.org/wiki/Artificial_intelligence", "schema": "article"}'`}
@@ -776,7 +786,7 @@ export default function Docs() {
 
           <SubSection title="Extract a product (cURL)">
             <Code lang="bash">
-{`curl -X POST https://agent-api-gateway.onrender.com/v1/extract \
+{`curl -X POST https://agentapigw.dpdns.org/v1/extract \
   -H "Authorization: Bearer sk-your-api-key" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example-store.com/product/123", "schema": "product"}'`}
@@ -785,7 +795,7 @@ export default function Docs() {
 
           <SubSection title="Node.js / TypeScript">
             <Code lang="javascript">
-{`const res = await fetch('https://agent-api-gateway.onrender.com/v1/extract', {
+{`const res = await fetch('https://agentapigw.dpdns.org/v1/extract', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer sk-your-api-key',
@@ -807,7 +817,7 @@ console.log(data.data.title);`}
 {`import requests
 
 resp = requests.post(
-    'https://agent-api-gateway.onrender.com/v1/extract',
+    'https://agentapigw.dpdns.org/v1/extract',
     headers={'Authorization': 'Bearer sk-your-api-key'},
     json={'url': 'https://en.wikipedia.org/wiki/Artificial_intelligence', 'schema': 'article'}
 )
@@ -949,7 +959,7 @@ print(data['data']['title'])`}
           <div className="mt-8 rounded-xl px-4 py-3 surface" style={{ borderLeft: '3px solid var(--color-accent-base)' }}>
             <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
               <strong style={{ color: 'var(--color-text-primary)' }}>Cache policy:</strong> Successful extractions are cached for 24 hours.
-              Cache hits do not deduct credits. Bypass the cache by including a unique query parameter.
+              Cache hits deduct 1 credit (same as a fresh extraction). Bypass the cache by including a unique query parameter.
             </p>
           </div>
 
