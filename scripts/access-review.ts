@@ -14,7 +14,13 @@ const INACTIVE_DAYS = Number(
 ) || 90;
 
 async function main() {
-  const pool = new Pool({ connectionString: process.env['DATABASE_URL'] });
+  const url = process.env['DATABASE_URL'];
+  if (!url) {
+    console.error('ACCESS REVIEW FAILED: DATABASE_URL is not set. Run with:');
+    console.error('  DATABASE_URL=<internal-postgres-url> npx tsx scripts/access-review.ts');
+    process.exit(2);
+  }
+  const pool = new Pool({ connectionString: url });
   try {
     const { rows } = await pool.query(`
       SELECT

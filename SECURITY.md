@@ -28,12 +28,30 @@ Checklist.
 - **Future:** move secrets to a dedicated vault (e.g. Render secret files / Doppler)
   — tracked, not yet implemented.
 
+## Security headers (defense-in-depth)
+
+Both apps set the following response headers on every route via a global Hono
+middleware (`src/api/index.ts`): `Strict-Transport-Security` (1y, preload),
+`Content-Security-Policy` (same-origin, no framing), `X-Frame-Options: DENY`,
+`X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`
+(disabled sensors), `Cross-Origin-Opener-Policy` / `Cross-Origin-Resource-Policy:
+same-origin`, and strip `X-Powered-By`. This defends against clickjacking, MIME
+sniffing, and cross-origin data leaks.
+
 ## Threat monitoring
 
 `alertAuthFailure()` / `alertSecurityEvent()` (`src/api/lib/alert.ts`) log security
 events and, when `ALERT_WEBHOOK_URL` is set, post to a Slack/Discord incoming
 webhook. Detection is local + burst-based (≥10 failed auth events / 10 min per
-identity). To enable: set `ALERT_WEBHOOK_URL` in the service env.
+identity). Every event is also emitted to stdout with the `SECURITY_EVENT` marker,
+so it shows up in Render's log stream / log drains even without a webhook.
+
+**To enable external alerts:** set `ALERT_WEBHOOK_URL` in the service env
+(Render dashboard → service → Environment). Unset = logs only (no failures).
+
+**2FA issuer label** (`twoFactor({ issuer })`): set `TWO_FACTOR_ISSUER` in the
+service env to control the name shown in authenticator apps (defaults to the
+product name).
 
 ## Regular access reviews
 

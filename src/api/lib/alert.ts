@@ -24,7 +24,9 @@ async function send(section: string, detail: Record<string, unknown>): Promise<v
       `:rotating_light: [${section}] ${JSON.stringify(detail).slice(0, 800)}` +
       ` @ ${new Date().toISOString()}`,
   };
-  console.warn(`[alert:${section}] ${JSON.stringify(detail)}`);
+  // Structured marker ("SECURITY_EVENT") makes these easy to grep/filter in
+  // Render log drains even before a webhook is configured.
+  console.warn(`SECURITY_EVENT ${section} ${JSON.stringify(detail)}`);
   if (!ALERT_WEBHOOK_URL) return;
   try {
     await fetch(ALERT_WEBHOOK_URL, {
@@ -33,7 +35,7 @@ async function send(section: string, detail: Record<string, unknown>): Promise<v
       body: JSON.stringify(payload),
     });
   } catch (e) {
-    console.error('[alert] webhook dispatch failed:', e instanceof Error ? e.message : e);
+    console.error('SECURITY_EVENT webhook_dispatch_failed', e instanceof Error ? e.message : e);
   }
 }
 
