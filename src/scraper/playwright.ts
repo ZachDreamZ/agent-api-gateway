@@ -23,7 +23,7 @@ export interface ScrapeResult {
   statusCode: number;
   latencyMs: number;
   /** How content was obtained */
-  method: 'http' | 'playwright';
+  method: 'http' | 'playwright' | 'limitbreak';
 }
 
 // ─── Browser Pool ───
@@ -127,6 +127,38 @@ export async function scrapeUrl(
   const timeout = options.timeout ?? 30_000;
   const start = Date.now();
   const needBrowser = Boolean(options.forceBrowser || options.waitFor);
+
+  // 0. Limit-break gateway (if configured — TLS impersonation + proxy rotation)
+  const limitBreakUrl = process.env['LIMITBREAK_URL']?.trim();
+  if (limitBreakUrl && !needBrowser) {
+    try {
+      const { fetchViaLimitBreak } = await import('./limitbreak.js');
+      const lb = await fetchViaLimitBreak(targetUrl, {
+        timeout,
+        country: options.country,
+      });
+      const markdown = htmlToCleanMarkdown(lb.html);
+      if (!contentLooksThin(lb.html, markdown)) {
+        return {
+          html: lb.html,
+          markdown,
+          url: targetUrl,
+          finalUrl: lb.finalUrl,
+          statusCode: lb.statusCode,
+          latencyMs: lb.latencyMs,
+          method: 'limitbreak',
+        };
+      }
+      console.warn(
+        `[scrape] limit-break content thin for ${targetUrl}; falling back`,
+      );
+    } catch (lbErr) {
+      console.warn(
+        `[scrape] limit-break failed for ${targetUrl}:`,
+        lbErr instanceof Error ? lbErr.message : String(lbErr),
+      );
+    }
+  }
 
   // 1. Resilient HTTP with Chrome-like headers (fast path)
   if (!needBrowser) {

@@ -9,9 +9,27 @@ services:
       - LOG_LEVEL=info
       - EXTRACTION_LLM=gemini
       - GEMINI_API_KEY=${GEMINI_API_KEY:?Set GEMINI_API_KEY for free LLM extraction}
+      - LIMITBREAK_URL=http://limitbreak:8080
       # Supabase — optional, API works without for local testing
       - SUPABASE_URL=${SUPABASE_URL:-}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY:-}
+    depends_on:
+      - limitbreak
     restart: unless-stopped
     # Playwright needs shared memory for Chromium
     shm_size: "512m"
+
+  # Self-hosted scraping gateway with TLS impersonation + proxy rotation.
+  # Clone limit-break first: git clone https://github.com/ullamua/limit-break limitbreak
+  limitbreak:
+    build:
+      context: ./limitbreak
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - LIMITBREAK_PORT=8080
+      - LIMITBREAK_HOST=0.0.0.0
+      - LIMITBREAK_ENABLE_FREE_PROXIES=true
+      - LIMITBREAK_DIRECT_FALLBACK=true
+    restart: unless-stopped
