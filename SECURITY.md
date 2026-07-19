@@ -70,21 +70,24 @@ file creates per-app roles (`agentapi_app`, `statusplate_app`) with their own cr
 grants them the same working privileges the apps need, **without** altering or dropping the shared
 owner role (`agentapi_user`). This gives credential separation + independent revocation/rotation.
 
-**Run it** (inside Render's network — use the web service **Shell** tab at
-`dashboard.render.com/web/srv-d9av07e7r5hc739guseg/shell`, which can reach the internal DB host;
-no external IP exposure needed):
+**How it's provisioned (no manual SQL needed):** `src/api/lib/migrate.ts` creates
+the two roles at startup when these env secrets are present on the **agent-api**
+service (the migration runs in-network, where the DB is reachable):
 
-```bash
-# substitute strong passwords for CHANGE_ME_agentapi / CHANGE_ME_statusplate
-sed -e 's/CHANGE_ME_agentapi/<strong-pw-1>/' -e 's/CHANGE_ME_statusplate/<strong-pw-2>/' \
-  scripts/db-least-privilege.sql > /tmp/lp.sql
-psql "$DATABASE_URL" -f /tmp/lp.sql
-```
+- `AGENTAPI_APP_DB_PASSWORD` — password for the `agentapi_app` role
+- `STATUSPLATE_APP_DB_PASSWORD` — password for the `statusplate_app` role
 
-Then update each service's `DATABASE_URL` in its Render env to the new role's connection string
-and redeploy. The old `agentapi_user` role is retained as owner for rollback.
+Set both in the Render dashboard (service → Environment), redeploy agent-api, and
+the roles are created/rotated idempotently. Passwords are read from env only — they
+are never committed to source. `scripts/db-least-privilege.sql` is the equivalent
+reference SQL if you prefer to run it via `psql` against the internal host.
 
-**Rollback:** `DROP ROLE agentapi_app; DROP ROLE statusplate_app;` (apps keep working on `agentapi_user`).
+**Activate (optional, after roles exist):** point each service's `DATABASE_URL` at
+its role's connection string (`agentapi_app@…` / `statusplate_app@…`) and redeploy.
+The old `agentapi_user` role is retained as owner for rollback.
+
+**Rollback:** `DROP ROLE agentapi_app; DROP ROLE statusplate_app;` (apps keep working
+on `agentapi_user`).
 
 > Note: because both apps share the Better Auth tables, this provides *credential* isolation
 > (revocable per-app DB passwords), not schema-level table isolation. Full table isolation would
