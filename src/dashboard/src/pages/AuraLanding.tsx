@@ -14,6 +14,9 @@ import {
   Copy,
   Terminal,
   Lock,
+  Globe,
+  Code2,
+  BookOpen,
 } from 'lucide-react';
 import { BrandLockup, AmbientBg, SectionLabel, Reveal } from '../components/Brand';
 import { easeOut } from '../lib/motion';
@@ -62,6 +65,7 @@ function Navbar() {
           <a href="#how" className="link text-sm">How it works</a>
           <a href="#pricing" className="link text-sm">Pricing</a>
           <Link to="/docs" className="link text-sm">Docs</Link>
+          <Link to="/blog" className="link text-sm">Blog</Link>
           <Link to="/agents" className="link text-sm">For agents</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
           <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem', borderRadius: '9999px' }}>
@@ -126,6 +130,9 @@ function Navbar() {
                 ))}
                 <Link to="/docs" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Docs
+                </Link>
+                <Link to="/blog" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+                  Blog
                 </Link>
                 <Link to="/agents" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   For agents
@@ -206,7 +213,49 @@ type SchemaKey = keyof typeof SCHEMAS;
 
 function SchemaPlayground() {
   const [schema, setSchema] = useState<SchemaKey>('product');
+  const [url, setUrl] = useState('');
+  const [result, setResult] = useState<Record<string, unknown> | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [latency, setLatency] = useState<number | null>(null);
   const sample = SCHEMAS[schema];
+
+  async function handleRun() {
+    if (!url.trim()) {
+      setError('Enter a URL to try it out');
+      return;
+    }
+    let normalized = url.trim();
+    if (!/^https?:\/\//i.test(normalized)) normalized = 'https://' + normalized;
+    try { new URL(normalized); } catch {
+      setError('Enter a valid URL');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    setLatency(null);
+    const start = Date.now();
+    try {
+      const res = await fetch('/v1/playground', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: normalized, schema }),
+      });
+      const body = await res.json();
+      if (body.success && body.data) {
+        setResult(body.data as Record<string, unknown>);
+        setLatency(body.latency_ms ?? Date.now() - start);
+      } else {
+        setError(body.error ?? 'Something went wrong');
+      }
+    } catch {
+      setError('Network error — check your connection');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="beam-border">
@@ -223,7 +272,7 @@ function SchemaPlayground() {
               type="button"
               role="tab"
               aria-selected={schema === key}
-              onClick={() => setSchema(key)}
+              onClick={() => { setSchema(key); setResult(null); setError(null); }}
               className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors"
               style={{
                 background: schema === key ? 'var(--color-accent-subtle)' : 'transparent',
@@ -235,14 +284,46 @@ function SchemaPlayground() {
             </button>
           ))}
         </div>
-        <span className="ml-auto flex items-center gap-2">
-          <span className="signal-dot" />
-          <span className="badge badge-active">200</span>
-        </span>
       </div>
+
+      <div
+        className="flex items-center gap-2 px-4 py-3"
+        style={{ background: 'var(--color-bg-surface)', borderBottom: '1px solid var(--color-border-subtle)' }}
+      >
+        <input
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleRun(); }}
+          placeholder="https://store.example.com/headphones"
+          className="flex-1 rounded px-3 py-1.5 text-xs outline-none"
+          style={{
+            background: 'var(--color-bg-elevated)',
+            color: 'var(--color-text-primary)',
+            border: '1px solid var(--color-border-subtle)',
+          }}
+          aria-label="URL to extract"
+        />
+        <button
+          type="button"
+          onClick={handleRun}
+          disabled={loading}
+          className="btn btn-primary text-xs whitespace-nowrap"
+          style={{ padding: '0.45rem 1rem', borderRadius: '9999px' }}
+        >
+          {loading ? 'Extracting…' : 'Try it'}
+        </button>
+      </div>
+
+      {error && (
+        <div className="px-4 py-3 text-xs" style={{ color: 'var(--color-error)' }}>
+          {error}
+        </div>
+      )}
+
       <AnimatePresence mode="wait">
         <motion.div
-          key={schema}
+          key={result ? 'result' : schema}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
@@ -252,17 +333,53 @@ function SchemaPlayground() {
           <div className="p-4 md:border-r" style={{ borderColor: 'var(--color-border-subtle)' }}>
             <p className="text-eyebrow mb-3">Request</p>
             <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
-              <code>{sample.request}</code>
+              <code>{result ? JSON.stringify({ url: url || sample.request.match(/"url": "([^"]+)"/)?.[1] || 'https://example.com', schema }, null, 2) : sample.request}</code>
             </pre>
           </div>
           <div className="p-4">
-            <p className="text-eyebrow mb-3">Response</p>
-            <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
-              <code>{sample.response}</code>
-            </pre>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-eyebrow">Response</p>
+              {latency !== null && (
+                <span className="text-[10px]" style={{ color: 'var(--color-text-tertiary)' }}>
+                  {latency}ms
+                </span>
+              )}
+            </div>
+            {loading ? (
+              <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+                <span className="signal-dot signal-dot-ok" style={{ animation: 'pulse 1s infinite' }} />
+                Extracting structured data…
+              </div>
+            ) : result ? (
+              <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+                <code>{JSON.stringify(result, null, 2)}</code>
+              </pre>
+            ) : (
+              <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+                <code>{sample.response}</code>
+              </pre>
+            )}
           </div>
         </motion.div>
       </AnimatePresence>
+
+      {result && (
+        <div
+          className="flex items-center justify-between px-4 py-2.5 text-xs"
+          style={{ borderTop: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}
+        >
+          <span style={{ color: 'var(--color-text-tertiary)' }}>
+            Preview mode — results are approximate
+          </span>
+          <Link
+            to="/login"
+            className="btn btn-primary text-xs"
+            style={{ padding: '0.35rem 0.9rem', borderRadius: '9999px' }}
+          >
+            Sign up for full extraction
+          </Link>
+        </div>
+      )}
     </div>
     </div>
   );
@@ -764,6 +881,135 @@ function Features() {
   );
 }
 
+// ─── SDKs (multi-language code examples) ───
+
+const SDK_LANGUAGES = [
+  {
+    name: 'Python',
+    icon: Code2,
+    install: 'pip install agent-api-gateway',
+    code: `from agent_api_gateway import Client
+
+client = Client(api_key="sk-your-key")
+result = client.extract(
+    url="https://store.example.com/headphones",
+    schema="product",
+)
+print(result.data)
+# { name: "Studio Headphones Pro", price: 249.99, ... }`,
+  },
+  {
+    name: 'Node.js',
+    icon: Terminal,
+    install: 'npm install @agent-api-gateway/sdk',
+    code: `import { AgentAPIClient } from '@agent-api-gateway/sdk';
+
+const client = new AgentAPIClient({
+  apiKey: 'sk-your-key',
+});
+
+const result = await client.extract({
+  url: 'https://store.example.com/headphones',
+  schema: 'product',
+});
+console.log(result.data);`,
+  },
+  {
+    name: 'cURL',
+    icon: Terminal,
+    install: 'curl',
+    code: `curl -X POST https://agentapigw.dpdns.org/v1/extract \\
+  -H "Authorization: Bearer sk-your-key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "url": "https://store.example.com/headphones",
+    "schema": "product"
+  }'`,
+  },
+] as const;
+
+function SDKSection() {
+  const [lang, setLang] = useState<number>(0);
+  const active = SDK_LANGUAGES[lang];
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <section className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
+      <Reveal>
+        <SectionLabel>SDK & Client Libraries</SectionLabel>
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end mb-12">
+          <h2 className="text-display" style={{ color: 'var(--color-text-primary)' }}>
+            Ship in your stack.
+          </h2>
+          <p className="text-sm leading-relaxed max-w-md lg:justify-self-end" style={{ color: 'var(--color-text-secondary)' }}>
+            Python, Node.js, or cURL — pick your language and go. All SDKs wrap the same REST API.
+          </p>
+        </div>
+      </Reveal>
+      <div className="beam-border">
+      <div className="code-block overflow-hidden shadow-[var(--shadow-lg)] relative z-[1]">
+        <div
+          className="flex flex-wrap items-center gap-2 px-4 py-3"
+          style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}
+        >
+          <Globe className="w-3.5 h-3.5" style={{ color: 'var(--color-accent-base)' }} />
+          {(SDK_LANGUAGES.map((l, i) => (
+            <button
+              key={l.name}
+              type="button"
+              onClick={() => setLang(i)}
+              className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors"
+              style={{
+                background: lang === i ? 'var(--color-accent-subtle)' : 'transparent',
+                color: lang === i ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
+                border: `1px solid ${lang === i ? 'oklch(0.74 0.12 195 / 0.3)' : 'transparent'}`,
+              }}
+            >
+              {l.name}
+            </button>
+          )))}
+          <span className="ml-auto flex items-center gap-2">
+            <span className="text-[10px]" style={{ color: 'var(--color-text-tertiary)' }}>
+              {active.install}
+            </span>
+            <button
+              type="button"
+              onClick={() => { navigator.clipboard.writeText(active.code); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+              className="interactive p-1 rounded"
+              style={{ color: 'var(--color-text-tertiary)' }}
+              aria-label="Copy code"
+            >
+              {copied ? <Check className="w-3.5 h-3.5" style={{ color: 'var(--color-success)' }} /> : <Copy className="w-3.5 h-3.5" />}
+            </button>
+          </span>
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={lang}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.22, ease: easeOut }}
+          >
+            <pre className="p-4 text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              <code>{active.code}</code>
+            </pre>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      </div>
+      <div className="mt-8 flex flex-wrap items-center gap-6">
+        <Link to="/docs" className="link text-sm flex items-center gap-1.5">
+          <BookOpen className="w-3.5 h-3.5" /> Full SDK reference
+        </Link>
+        <a href="https://github.com/ZachDreamZ/agent-api-gateway" target="_blank" rel="noopener noreferrer" className="link text-sm flex items-center gap-1.5">
+          <Code2 className="w-3.5 h-3.5" /> GitHub
+        </a>
+      </div>
+    </section>
+  );
+}
+
 // ─── Pricing ───
 
 const creditPacks = [
@@ -1085,6 +1331,7 @@ function Footer() {
         </div>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
           <Link to="/docs" className="link">Docs</Link>
+          <Link to="/blog" className="link">Blog</Link>
           <Link to="/agents" className="link">For agents</Link>
           <a href="/llms.txt" className="link">llms.txt</a>
           <a href="/agent.json" className="link">agent.json</a>
@@ -1135,6 +1382,7 @@ export default function Landing() {
           <HowItWorks />
           <Quickstart />
           <Features />
+          <SDKSection />
           <Pricing />
           <FinalCTA />
         </main>

@@ -13,6 +13,7 @@ import { schemasRoutes } from './routes/schemas.js';
 import { usageRoutes } from './routes/usage.js';
 import { billingApp, billingPricing } from './routes/billing.js';
 import { webhookApp } from '../billing/webhooks-polar.js';
+import { playgroundRoutes } from './routes/playground.js';
 import { auth } from '../auth/auth.js';
 // app.route('/v1/api-keys', apiKeysApp); — replaced by Better Auth apiKey plugin
 
@@ -154,6 +155,9 @@ app.use('/*', async (c, next) => {
   ].join('; ');
   c.header('Content-Security-Policy', csp);
 });
+
+// ─── Public playground (no auth, rate-limited demo) ───
+app.route('/v1/playground', playgroundRoutes);
 
 // ─── Health + public stats ───
 let healthHits = 0;
