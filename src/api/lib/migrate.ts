@@ -21,14 +21,19 @@ async function ensureAppRole(
     console.log(`[migrate] ${role}: AGENTAPI/STATUSPLATE_APP_DB_PASSWORD not set, skipping role creation`);
     return;
   }
+  // CREATE/ALTER ROLE ... PASSWORD does not accept a $1 bind in DDL, so we
+  // interpolate the password as a safely-escaped SQL string literal. The value
+  // comes only from our own env secret (never user input).
+  const esc = (s: string): string => s.replace(/\\/g, '\\\\').replace(/'/g, "''");
+  const pw = esc(password);
   try {
     const { rows } = await pool.query('SELECT 1 FROM pg_roles WHERE rolname = $1', [role]);
     if (rows.length === 0) {
-      await pool.query(`CREATE ROLE "${role}" LOGIN PASSWORD $1`, [password]);
+      await pool.query(`CREATE ROLE "${role}" LOGIN PASSWORD '${pw}'`);
       console.log(`[migrate] Created role "${role}"`);
     } else {
       // Rotate password on each deploy so it stays in sync with the env secret.
-      await pool.query(`ALTER ROLE "${role}" LOGIN PASSWORD $1`, [password]);
+      await pool.query(`ALTER ROLE "${role}" LOGIN PASSWORD '${pw}'`);
       console.log(`[migrate] Role "${role}" already exists, password synced`);
     }
     await pool.query('GRANT CONNECT ON DATABASE agentapi_kjz2 TO "' + role + '"');
