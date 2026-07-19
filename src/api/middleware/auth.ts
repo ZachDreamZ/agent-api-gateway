@@ -23,23 +23,28 @@ export const authMiddleware: MiddlewareHandler = async (c, next) => {
   const authHeader = rawHeaders['authorization'] || rawHeaders['Authorization'];
   const cookie = rawHeaders['cookie'];
 
-    if (cookie || (authHeader && authHeader.startsWith('Bearer '))) {
-      try {
-        // Clone the request, rewrite to get-session, dispatch through Better Auth's
-        // full HTTP pipeline so cookie parsing + bearer plugin work correctly.
-        const url = new URL(raw.url);
-        url.pathname = '/api/auth/get-session';
-        // Strip body-related headers — the original POST's content-type/content-length
-        // would make Better Auth try to parse a non-existent GET body → "Malformed JSON".
-        const sessionHeaders = new Headers(raw.headers);
-        sessionHeaders.delete('content-type');
-        sessionHeaders.delete('content-length');
-        sessionHeaders.delete('transfer-encoding');
-        const sessionReq = new Request(url, {
-          method: 'GET',
-          headers: sessionHeaders,
-        });
-        const sessionRes = await auth.handler(sessionReq);
+  // ── 1. Try session via auth.handler (only when a cookie is present) ──
+  // We deliberately skip this for pure Bearer (API key) requests: auth.handler
+  // can consume the request body stream, which would break c.req.json() in the
+  // downstream Zod validator ("Malformed JSON in request body"). API keys are
+  // verified separately below without touching the request body.
+  if (cookie) {
+    try {
+      // Clone the request, rewrite to get-session, dispatch through Better Auth's
+      // full HTTP pipeline so cookie parsing + bearer plugin work correctly.
+      const url = new URL(raw.url);
+      url.pathname = '/api/auth/get-session';
+      // Strip body-related headers — the original POST's content-type/content-length
+      // would make Better Auth try to parse a non-existent GET body → "Malformed JSON".
+      const sessionHeaders = new Headers(raw.headers);
+      sessionHeaders.delete('content-type');
+      sessionHeaders.delete('content-length');
+      sessionHeaders.delete('transfer-encoding');
+      const sessionReq = new Request(url, {
+        method: 'GET',
+        headers: sessionHeaders,
+      });
+      const sessionRes = await auth.handler(sessionReq);
       if (sessionRes && sessionRes.ok) {
         const body = await sessionRes.json();
         if (body && body.user) {
