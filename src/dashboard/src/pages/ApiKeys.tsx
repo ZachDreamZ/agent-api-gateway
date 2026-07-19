@@ -331,7 +331,7 @@ export default function ApiKeys() {
   async function handleToggle(id: string) {
     setToggling(id);
     try {
-      await apiKey.update({ id, enabled: !keys.find((k) => k.id === id)?.enabled });
+      await apiKey.update({ keyId: id, enabled: !keys.find((k) => k.id === id)?.enabled });
       await loadKeys();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to toggle key');
@@ -344,7 +344,7 @@ export default function ApiKeys() {
     if (!revokeTarget) return;
     setToggling(revokeTarget.id);
     try {
-      await apiKey.delete({ id: revokeTarget.id });
+      await apiKey.delete({ keyId: revokeTarget.id });
       setRevokeTarget(null);
       await loadKeys();
     } catch (err) {

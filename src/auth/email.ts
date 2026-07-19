@@ -10,10 +10,27 @@ export type OutboundEmail = {
   html?: string;
 };
 
+const VERIFIED_DOMAIN = 'agentapigw.dpdns.org';
+
 const FROM =
   process.env.EMAIL_FROM?.trim() ||
   process.env.SUPPORT_EMAIL?.trim() ||
-  'Agent API <onboarding@resend.dev>';
+  `Agent API <noreply@${VERIFIED_DOMAIN}>`;
+
+function fromDomain(from: string): string {
+  const match = from.match(/@([^>\s]+)/);
+  return match ? match[1].toLowerCase() : '';
+}
+
+if (fromDomain(FROM) !== VERIFIED_DOMAIN) {
+  console.warn(JSON.stringify({
+    event: 'email.from_domain_unverified',
+    from: FROM,
+    expectedDomain: VERIFIED_DOMAIN,
+    detail: 'EMAIL_FROM must use the Resend-verified domain or DKIM/SPF will not apply',
+    timestamp: new Date().toISOString(),
+  }));
+}
 
 export function isEmailTransportConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim());
