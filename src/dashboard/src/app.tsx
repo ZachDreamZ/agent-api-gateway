@@ -19,7 +19,7 @@ import Auth from './pages/Auth';
 import Legal from './pages/Legal';
 import ForAgents from './pages/ForAgents';
 import ResetPassword from './pages/ResetPassword';
-import Blog from './pages/Blog';
+import { BlogListing, BlogPost } from './pages/Blog';
 import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
 import { easeOut, pageTransition, fadeUp } from './lib/motion';
@@ -263,7 +263,8 @@ export default function App() {
         <Route path="/terms" element={<Legal kind="terms" />} />
         <Route path="/aup" element={<Legal kind="aup" />} />
         <Route path="/acceptable-use" element={<Legal kind="aup" />} />
-        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog" element={<BlogListing />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route
           path="/dashboard/*"
           element={
