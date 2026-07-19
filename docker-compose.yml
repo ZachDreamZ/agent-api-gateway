@@ -19,12 +19,10 @@ services:
     # Playwright needs shared memory for Chromium
     shm_size: "512m"
 
-  # Self-hosted scraping gateway with TLS impersonation + proxy rotation.
-  # Clone limit-break first: git clone https://github.com/ullamua/limit-break limitbreak
+  # Self-hosted scraping gateway with TLS impersonation + free proxy rotation.
+  # Cloned automatically by Docker from the public repo on build.
   limitbreak:
-    build:
-      context: ./limitbreak
-      dockerfile: Dockerfile
+    build: https://github.com/ullamua/limit-break.git#main
     ports:
       - "8080:8080"
     environment:

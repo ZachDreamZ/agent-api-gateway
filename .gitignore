@@ -23,3 +23,6 @@ set-env*
 pooltest.mjs
 *test*.local.*
 
+# limit-break sidecar (clone manually from https://github.com/ullamua/limit-break)
+/limitbreak/
+
