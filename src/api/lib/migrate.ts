@@ -10,6 +10,51 @@ import { getPool } from './db.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
+// Creates a per-app login role with its own password (from env) and grants the
+// same working privileges the apps need on the public schema. Idempotent.
+async function ensureAppRole(
+  pool: ReturnType<typeof getPool>,
+  role: string,
+  password: string | undefined,
+): Promise<void> {
+  if (!password) {
+    console.log(`[migrate] ${role}: AGENTAPI/STATUSPLATE_APP_DB_PASSWORD not set, skipping role creation`);
+    return;
+  }
+  try {
+    const { rows } = await pool.query('SELECT 1 FROM pg_roles WHERE rolname = $1', [role]);
+    if (rows.length === 0) {
+      await pool.query(`CREATE ROLE "${role}" LOGIN PASSWORD $1`, [password]);
+      console.log(`[migrate] Created role "${role}"`);
+    } else {
+      // Rotate password on each deploy so it stays in sync with the env secret.
+      await pool.query(`ALTER ROLE "${role}" LOGIN PASSWORD $1`, [password]);
+      console.log(`[migrate] Role "${role}" already exists, password synced`);
+    }
+    await pool.query('GRANT CONNECT ON DATABASE agentapi_kjz2 TO "' + role + '"');
+    await pool.query('GRANT USAGE ON SCHEMA public TO "' + role + '"');
+    await pool.query(
+      'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "' + role + '"',
+    );
+    await pool.query(
+      'GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "' + role + '"',
+    );
+    await pool.query(
+      'ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO "' +
+        role +
+        '"',
+    );
+    await pool.query(
+      'ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO "' +
+        role +
+        '"',
+    );
+    console.log(`[migrate] Granted privileges to "${role}"`);
+  } catch (e) {
+    console.error(`[migrate] Failed to ensure role "${role}":`, e instanceof Error ? e.message : e);
+  }
+}
+
 export async function runMigration(): Promise<void> {
   const databaseUrl = process.env['DATABASE_URL'];
   if (!databaseUrl) {
@@ -76,6 +121,15 @@ export async function runMigration(): Promise<void> {
 
       console.log(`[migrate] "${m.name}" applied successfully`);
     }
+
+    // ─── Least-privilege per-app DB roles (network segmentation) ───
+    // Creates agentapi_app / statusplate_app roles with their own credentials so
+    // each app's DB password is independently revocable. Passwords come from env
+    // (AGENTAPI_APP_DB_PASSWORD / STATUSPLATE_APP_DB_PASSWORD) — never committed
+    // to source. Idempotent via IF NOT EXISTS. Does not alter the shared owner
+    // role (agentapi_user). Run after the schema migrations above.
+    await ensureAppRole(pool, 'agentapi_app', process.env['AGENTAPI_APP_DB_PASSWORD']);
+    await ensureAppRole(pool, 'statusplate_app', process.env['STATUSPLATE_APP_DB_PASSWORD']);
   } catch (err) {
     console.error('[migrate] Migration failed:', err instanceof Error ? err.message : String(err));
     if (err instanceof Error && err.stack) {
