@@ -640,6 +640,22 @@ export default function Docs() {
               <code className="code-inline">cached</code> indicates whether the result was served from cache. Cache hits still deduct 1 credit.
             </Para>
           </SubSection>
+
+          <div
+            className="mt-4 flex flex-wrap items-center gap-3 rounded-lg p-4"
+            style={{ background: 'var(--color-accent-subtle)', border: '1px solid var(--color-accent-base)' }}
+          >
+            <span className="text-sm" style={{ color: 'var(--color-text-primary)' }}>
+              Want to see it live? Open the product schema pre-filled in the playground.
+            </span>
+            <Link
+              to="/?playground_schema=product&playground_url=https://store.example.com/headphones"
+              className="btn btn-primary text-xs"
+            >
+              Try in playground
+              <BookOpen className="w-3.5 h-3.5" />
+            </Link>
+          </div>
         </Section>
 
         {/* Usage Endpoint */}

@@ -17,6 +17,7 @@ import {
   Globe,
   Code2,
   BookOpen,
+  ChevronDown,
 } from 'lucide-react';
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
 import { easeOut } from '../lib/motion';
@@ -219,6 +220,18 @@ function SchemaPlayground() {
   const [loading, setLoading] = useState(false);
   const [latency, setLatency] = useState<number | null>(null);
   const sample = SCHEMAS[schema];
+
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const u = params.get('playground_url');
+      const s = params.get('playground_schema') as SchemaKey | null;
+      if (u) setUrl(u);
+      if (s && SCHEMAS[s]) setSchema(s);
+    } catch {
+      /* ignore */
+    }
+  }, []);
 
   async function handleRun() {
     if (!url.trim()) {
@@ -1149,6 +1162,68 @@ function PricingCard({
   );
 }
 
+function FaqSection() {
+  const [open, setOpen] = useState<number | null>(0);
+  const items = [
+    {
+      q: 'What counts as one query?',
+      a: 'Each successful extraction of a URL with a schema is 1 credit. Cache hits still cost 1 credit but are much faster. Failed extractions (blocked URL, parse error) are not charged.',
+    },
+    {
+      q: 'Which LLM powers extraction?',
+      a: 'The gateway picks the best available engine by priority: OpenRouter, then Gemini, then Anthropic — or you can pin one with the EXTRACTION_LLM env var. Every result is schema-validated JSON.',
+    },
+    {
+      q: 'Can I extract private or internal URLs?',
+      a: 'No. All URLs pass through an SSRF guard that blocks private IP ranges, localhost, and cloud metadata endpoints. The gateway is built for public pages only.',
+    },
+    {
+      q: 'Do you store the pages I extract?',
+      a: 'Only aggregate, anonymized usage metadata (counts, latency, cache rate) is retained for your dashboard. Raw page content is not persisted beyond the request.',
+    },
+    {
+      q: 'Is there an SDK?',
+      a: 'Calls are plain HTTPS — any language works with requests, fetch, or curl. There is also an MCP server for Claude/Cursor and a live playground on this page.',
+    },
+  ];
+  return (
+    <section id="faq" className="mx-auto max-w-3xl px-5 md:px-6 py-20 md:py-24">
+      <Reveal>
+        <SectionLabel>FAQ</SectionLabel>
+        <h2 className="text-display mb-8">Questions, answered.</h2>
+      </Reveal>
+      <div className="space-y-2">
+        {items.map((item, i) => {
+          const isOpen = open === i;
+          return (
+            <div key={item.q} className="surface surface-glow overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setOpen(isOpen ? null : i)}
+                className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left"
+                aria-expanded={isOpen}
+              >
+                <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
+                  {item.q}
+                </span>
+                <ChevronDown
+                  className="w-4 h-4 shrink-0 transition-transform"
+                  style={{ color: 'var(--color-text-tertiary)', transform: isOpen ? 'rotate(180deg)' : 'none' }}
+                />
+              </button>
+              {isOpen && (
+                <p className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+                  {item.a}
+                </p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function Pricing() {
   return (
     <section id="pricing" className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
@@ -1365,6 +1440,7 @@ export default function Landing() {
           <Quickstart />
           <Features />
           <SDKSection />
+          <FaqSection />
           <Pricing />
           <FinalCTA />
         </main>
