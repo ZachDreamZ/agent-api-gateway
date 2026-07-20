@@ -20,8 +20,10 @@ import Legal from './pages/Legal';
 import ForAgents from './pages/ForAgents';
 import ResetPassword from './pages/ResetPassword';
 import { BlogListing, BlogPost } from './pages/Blog';
+import NotFound from './pages/NotFound';
 import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { easeOut, pageTransition, fadeUp } from './lib/motion';
 
 // ─── Route protection ───
@@ -250,6 +252,7 @@ function DashboardLayout() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ErrorBoundary>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
@@ -265,6 +268,7 @@ export default function App() {
         <Route path="/acceptable-use" element={<Legal kind="aup" />} />
         <Route path="/blog" element={<BlogListing />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="*" element={<NotFound />} />
         <Route
           path="/dashboard/*"
           element={
@@ -274,6 +278,7 @@ export default function App() {
           }
         />
       </Routes>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

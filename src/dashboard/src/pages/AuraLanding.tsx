@@ -869,32 +869,35 @@ const SDK_LANGUAGES = [
   {
     name: 'Python',
     icon: Code2,
-    install: 'pip install agent-api-gateway',
-    code: `from agent_api_gateway import Client
+    install: 'pip install requests',
+    code: `import requests
 
-client = Client(api_key="sk-your-key")
-result = client.extract(
-    url="https://store.example.com/headphones",
-    schema="product",
+res = requests.post(
+    "https://agentapigw.dpdns.org/v1/extract",
+    headers={"Authorization": "Bearer sk-your-key"},
+    json={"url": "https://store.example.com/headphones", "schema": "product"},
 )
-print(result.data)
+print(res.json()["data"])
 # { name: "Studio Headphones Pro", price: 249.99, ... }`,
   },
   {
     name: 'Node.js',
     icon: Terminal,
-    install: 'npm install @agent-api-gateway/sdk',
-    code: `import { AgentAPIClient } from '@agent-api-gateway/sdk';
-
-const client = new AgentAPIClient({
-  apiKey: 'sk-your-key',
+    install: 'npm install',
+    code: `const res = await fetch("https://agentapigw.dpdns.org/v1/extract", {
+  method: "POST",
+  headers: {
+    Authorization: "Bearer sk-your-key",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://store.example.com/headphones",
+    schema: "product",
+  }),
 });
 
-const result = await client.extract({
-  url: 'https://store.example.com/headphones',
-  schema: 'product',
-});
-console.log(result.data);`,
+const { data } = await res.json();
+console.log(data);`,
   },
   {
     name: 'cURL',
@@ -924,7 +927,7 @@ function SDKSection() {
             Ship in your stack.
           </h2>
           <p className="text-sm leading-relaxed max-w-md lg:justify-self-end" style={{ color: 'var(--color-text-secondary)' }}>
-            Python, Node.js, or cURL — pick your language and go. All SDKs wrap the same REST API.
+            Python, Node.js, or cURL — pick your language and go. Every call hits the same REST API.
           </p>
         </div>
       </Reveal>
