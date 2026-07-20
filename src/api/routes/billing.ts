@@ -9,6 +9,7 @@ import {
   createPublicCheckout,
   getStarterProductId,
   getPolarProductId,
+  listInvoices,
 } from '../../billing/polar';
 import {
   TIER_ORDER,
@@ -264,6 +265,19 @@ billingApp.get('/current', async (c) => {
     credit_balance_note:
       'Remaining credits = monthly plan limit + purchased bonus credits − usage this month. Bonus packs do not expire until used.',
   });
+});
+
+billingApp.get('/invoices', async (c) => {
+  const user = c.get('user');
+  const customerId = user.stripe_customer_id;
+  if (!customerId) return c.json({ invoices: [] });
+  try {
+    const invoices = await listInvoices(customerId);
+    return c.json({ invoices });
+  } catch (err) {
+    console.error('[billing/invoices] error:', err);
+    return c.json({ invoices: [], error: 'Could not load invoices' }, 502);
+  }
 });
 
 // ─── POST /checkout — Create Polar checkout (subscription tier OR credit pack) ───

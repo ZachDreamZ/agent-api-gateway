@@ -145,4 +145,35 @@ export async function createCustomer(email: string, userId: string): Promise<str
   return customer.id;
 }
 
+export interface BillingInvoice {
+  id: string;
+  created_at: string;
+  product_name: string | null;
+  amount: number | null;
+  currency: string;
+  status: string;
+  receipt_url: string | null;
+}
+
+export async function listInvoices(customerId: string): Promise<BillingInvoice[]> {
+  if (!polar) return [];
+  try {
+    const res = await polar.orders.list({ customerId, limit: 50 });
+    const items = (res as { items?: unknown[] }).items ?? (res as unknown as unknown[]) ?? [];
+    return (items as Record<string, any>[]).map((o) => ({
+      id: o.id,
+      created_at: o.createdAt ?? o.created_at ?? '',
+      product_name:
+        o.product?.name ?? o.product?.metadata?.name ?? (o.subscription?.product?.name ?? null),
+      amount: o.amount ?? o.amountPaid ?? null,
+      currency: o.currency ?? 'usd',
+      status: o.status ?? 'paid',
+      receipt_url: o.receipt?.url ?? o.receiptUrl ?? null,
+    }));
+  } catch (err) {
+    console.error('[polar] listInvoices error:', err);
+    return [];
+  }
+}
+
 export { polar };

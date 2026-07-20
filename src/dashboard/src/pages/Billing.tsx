@@ -43,6 +43,16 @@ interface CurrentPlan {
   bonus_credits?: number;
 }
 
+interface BillingInvoice {
+  id: string;
+  created_at: string;
+  product_name: string | null;
+  amount: number | null;
+  currency: string;
+  status: string;
+  receipt_url: string | null;
+}
+
 /** Always show packs even if pricing API is slow/partial */
 const FALLBACK_CREDIT_PACKS: CreditPack[] = [
   {
@@ -301,6 +311,7 @@ export default function Billing() {
   const [creditPacks, setCreditPacks] = useState<CreditPack[]>(FALLBACK_CREDIT_PACKS);
   const [current, setCurrent] = useState<CurrentPlan | null>(null);
   const [usage, setUsage] = useState<{ used: number; limit: number; bonus: number } | null>(null);
+  const [invoices, setInvoices] = useState<BillingInvoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -321,10 +332,11 @@ export default function Billing() {
 
     async function load() {
       try {
-        const [tiersRes, currentRes, usageRes] = await Promise.all([
+        const [tiersRes, currentRes, usageRes, invoicesRes] = await Promise.all([
           fetch('/v1/billing/pricing'),
           fetch('/v1/billing/current', { credentials: 'include' }),
           fetch('/v1/usage', { credentials: 'include' }),
+          fetch('/v1/billing/invoices', { credentials: 'include' }),
         ]);
 
         if (tiersRes.ok) {
@@ -358,6 +370,10 @@ export default function Billing() {
         if (!cancelled) {
           setCurrent(currentData);
           setUsage(usageData);
+          if (invoicesRes.ok) {
+            const inv = (await invoicesRes.json()) as { invoices: BillingInvoice[] };
+            setInvoices(inv.invoices ?? []);
+          }
         }
       } catch {
         if (!cancelled) {
@@ -536,6 +552,40 @@ export default function Billing() {
         limit={limit}
         label={bonus > 0 ? `Credits this month (incl. ${bonus.toLocaleString()} bonus)` : 'Credits this month'}
       />
+
+      {invoices.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+            Billing history
+          </h2>
+          <div className="surface surface-hover surface-glow divide-y" style={{ border: '1px solid var(--color-border-default)' }}>
+            {invoices.map((inv) => (
+              <div key={inv.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                <div className="min-w-0">
+                  <div className="text-sm font-medium truncate" style={{ color: 'var(--color-text-primary)' }}>
+                    {inv.product_name || 'Order'}
+                  </div>
+                  <div className="text-xs" style={{ color: 'var(--color-text-disabled)' }}>
+                    {inv.created_at ? new Date(inv.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+                    {inv.status ? ` · ${inv.status}` : ''}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-sm tabular-nums" style={{ color: 'var(--color-text-secondary)' }}>
+                    {inv.amount != null ? `${inv.currency.toUpperCase()} ${(inv.amount / 100).toLocaleString()}` : '—'}
+                  </span>
+                  {inv.receipt_url && (
+                    <a href={inv.receipt_url} target="_blank" rel="noreferrer" className="btn btn-ghost text-xs">
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Receipt
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {error && (
         <div className="rounded-md px-4 py-3 text-sm" style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}>
