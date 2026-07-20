@@ -11,7 +11,7 @@ import type { Cache } from '../lib/cache.js';
 import { getCache } from '../lib/cache.js';
 import { getCreditBalance, logUsage } from '../lib/usage-db.js';
 import { runExtractionPipeline } from '../../scraper/index.js';
-import { assertSafePublicUrl } from '../lib/ssrf.js';
+import { assertSafePublicUrl, resolveAndAssertSafe } from '../lib/ssrf.js';
 
 // ─── Zod Schemas ───
 
@@ -48,8 +48,9 @@ router.post('/', zValidator('json', extractBodySchema), async (c) => {
   const endpoint = 'POST /v1/extract';
 
   try {
-    // ── SSRF guard (defense in depth beyond Zod refine) ──
-    const safe = assertSafePublicUrl(body.url);
+    // ── SSRF guard (defense in depth beyond Zod refine; resolves host to
+    // block DNS-rebinding to internal/metadata addresses) ──
+    const safe = await resolveAndAssertSafe(body.url);
     if (!safe.ok) {
       return c.json({ success: false, error: safe.error }, 400);
     }

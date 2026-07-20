@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
-import { assertSafePublicUrl } from '../lib/ssrf.js';
+import { assertSafePublicUrl, resolveAndAssertSafe } from '../lib/ssrf.js';
 import { getPool } from '../lib/db.js';
 
 const bodySchema = z.object({
@@ -21,6 +21,38 @@ const demoCache = new Map<string, { data: Record<string, unknown>; at: number }>
 const CACHE_TTL = 5 * 60_000;
 const RATE_LIMIT_WINDOW = 60_000;
 const RATE_LIMIT_MAX = 3;
+
+/**
+ * Fetch with manual redirect handling. Every redirect Location is re-checked
+ * against the SSRF guard so a benign initial URL cannot 30x to an internal /
+ * metadata target.
+ */
+async function fetchWithSafeRedirect(initialUrl: string, maxHops = 5): Promise<Response> {
+  let current = initialUrl;
+  for (let hop = 0; hop <= maxHops; hop++) {
+    const res = await fetch(current, {
+      redirect: 'manual',
+      signal: AbortSignal.timeout(10_000),
+      headers: {
+        'User-Agent': 'AgentAPIGateway-Playground/1.0',
+        'Accept': 'text/html,application/xhtml+xml',
+      },
+    });
+    if (res.status >= 300 && res.status < 400) {
+      const loc = res.headers.get('location');
+      if (!loc) break;
+      const next = new URL(loc, current).toString();
+      const check = assertSafePublicUrl(next);
+      if (!check.ok) {
+        throw new Error(`Blocked redirect target: ${check.error}`);
+      }
+      current = next;
+      continue;
+    }
+    return res;
+  }
+  throw new Error('Too many redirects');
+}
 
 function getMeta(doc: string, name: string): string | null {
   const patterns = [
@@ -231,16 +263,21 @@ router.post('/', zValidator('json', bodySchema), async (c) => {
         const start = Date.now();
         let html: string;
         try {
-          const res = await fetch(url, {
-            signal: AbortSignal.timeout(10_000),
-            headers: {
-              'User-Agent': 'AgentAPIGateway-Playground/1.0',
-              'Accept': 'text/html,application/xhtml+xml',
-            },
-            redirect: 'follow',
-          });
-          html = await res.text();
-          html = html.slice(0, 100_000);
+          // Re-validate the resolved host (guards DNS-rebinding) then fetch
+          // with manual redirect handling so every hop is SSRF-checked.
+          const safe = await resolveAndAssertSafe(url);
+          if (!safe.ok) {
+            return c.json({ success: false, error: safe.error, data: null }, 422);
+          }
+          const finalRes = await fetchWithSafeRedirect(safe.url.toString());
+          if (!finalRes.ok) {
+            return c.json({
+              success: false,
+              error: 'Could not fetch the URL. Make sure the site is accessible.',
+              data: null,
+            }, 422);
+          }
+          html = (await finalRes.text()).slice(0, 100_000);
         } catch {
           return c.json({
             success: false,

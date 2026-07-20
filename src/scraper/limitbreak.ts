@@ -1,3 +1,5 @@
+import { assertSafePublicUrl } from '../api/lib/ssrf.js';
+
 export interface LimitBreakOptions {
   timeout?: number;
   country?: string;
@@ -28,6 +30,11 @@ export async function fetchViaLimitBreak(
   const baseUrl = process.env['LIMITBREAK_URL']?.trim();
   if (!baseUrl) {
     throw new LimitBreakError('LIMITBREAK_URL is not set', targetUrl);
+  }
+
+  const safety = assertSafePublicUrl(targetUrl);
+  if (!safety.ok) {
+    throw new LimitBreakError(`SSRF guard: ${safety.error}`, targetUrl);
   }
 
   const timeout = options.timeout ?? 30_000;

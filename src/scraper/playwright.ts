@@ -59,6 +59,11 @@ async function scrapeWithPlaywright(
   options: ScrapeOptions,
   start: number,
 ): Promise<ScrapeResult> {
+  const initialCheck = assertSafePublicUrl(targetUrl);
+  if (!initialCheck.ok) {
+    throw new ScrapeError(`SSRF guard: ${initialCheck.error}`, targetUrl);
+  }
+
   const timeout = options.timeout ?? 30_000;
   const b = await getBrowser();
   const context = await b.newContext({
@@ -124,6 +129,11 @@ export async function scrapeUrl(
   targetUrl: string,
   options: ScrapeOptions = {},
 ): Promise<ScrapeResult> {
+  const entryCheck = assertSafePublicUrl(targetUrl);
+  if (!entryCheck.ok) {
+    throw new ScrapeError(`SSRF guard: ${entryCheck.error}`, targetUrl);
+  }
+
   const timeout = options.timeout ?? 30_000;
   const start = Date.now();
   const needBrowser = Boolean(options.forceBrowser || options.waitFor);

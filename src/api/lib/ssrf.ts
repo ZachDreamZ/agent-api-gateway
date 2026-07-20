@@ -13,8 +13,48 @@ const BLOCKED_HOSTNAMES = new Set([
   'kubernetes.default.svc',
 ]);
 
+function normalizeIpv4Encoding(host: string): string | null {
+  // Reject/normalize decimal (2130706433), hex (0x7f.0.0.1), octal (0177.0.0.1) encodings
+  if (!/^[\d.]+$/.test(host) && !/^0x[0-9a-f.]+$/i.test(host)) return null;
+  const parts = host.split('.');
+  const nums: number[] = [];
+  for (const part of parts) {
+    let n: number;
+    if (/^0x/i.test(part)) n = parseInt(part.slice(2), 16);
+    else if (/^0\d/.test(part) && part !== '0') n = parseInt(part, 8);
+    else n = Number(part);
+    if (!Number.isFinite(n) || n < 0 || n > 0xffffffff) return null;
+    nums.push(n);
+  }
+  // Single decimal integer (e.g. 2130706433) => 127.0.0.1
+  if (nums.length === 1) {
+    const n = nums[0];
+    return `${(n >>> 24) & 255}.${(n >>> 16) & 255}.${(n >>> 8) & 255}.${n & 255}`;
+  }
+  if (nums.length !== 4) return null;
+  return nums.map((n) => n & 255).join('.');
+}
+
 function isIpv4(host: string): boolean {
   return /^\d{1,3}(\.\d{1,3}){3}$/.test(host);
+}
+
+/**
+ * Decode the trailing IPv4 address of an IPv4-mapped IPv6 literal
+ * (e.g. `127.0.0.1` or the hex-compressed `7f00:1`) to dotted-decimal.
+ * Returns null if the tail is not an IPv4-mapped address.
+ */
+function decodeIpv4Mapped(tail: string): string | null {
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(tail)) return tail;
+  const groups = tail.split(':');
+  if (groups.length === 2) {
+    const a = parseInt(groups[0]!, 16);
+    const b = parseInt(groups[1]!, 16);
+    if (Number.isFinite(a) && Number.isFinite(b)) {
+      return `${(a >>> 8) & 255}.${a & 255}.${(b >>> 8) & 255}.${b & 255}`;
+    }
+  }
+  return null;
 }
 
 function parseIpv4(host: string): number[] | null {
@@ -52,17 +92,27 @@ function isPrivateOrLocalHostname(hostname: string): boolean {
   if (bare.includes(':')) {
     const h = bare.toLowerCase();
     if (h === '::1' || h.startsWith('fc') || h.startsWith('fd') || h.startsWith('fe80')) return true;
-    // IPv4-mapped :ffff:x.x.x.x
-    const mapped = h.match(/:ffff:(\d{1,3}(?:\.\d{1,3}){3})$/);
+    // IPv4-mapped :ffff:x.x.x.x (also matches hex-compressed :ffff:7f00:1)
+    const mapped = h.match(/:ffff:(.+)$/);
     if (mapped) {
-      const parts = parseIpv4(mapped[1]!);
-      if (parts && isPrivateOrReservedIpv4(parts)) return true;
+      const dec = decodeIpv4Mapped(mapped[1]!);
+      if (dec) {
+        const parts = parseIpv4(dec);
+        if (parts && isPrivateOrReservedIpv4(parts)) return true;
+      }
     }
     return false;
   }
 
   if (isIpv4(host)) {
     const parts = parseIpv4(host);
+    if (parts && isPrivateOrReservedIpv4(parts)) return true;
+  }
+
+  // Handle decimal/hex/octal IP encodings (e.g. 2130706433, 0x7f.0.0.1, 0177.0.0.1)
+  const normalized = normalizeIpv4Encoding(host);
+  if (normalized) {
+    const parts = parseIpv4(normalized);
     if (parts && isPrivateOrReservedIpv4(parts)) return true;
   }
 
@@ -111,4 +161,39 @@ export function assertSafePublicUrl(raw: string): UrlSafetyResult {
   }
 
   return { ok: true, url };
+}
+
+import { lookup as dnsLookup } from 'node:dns/promises';
+
+/**
+ * Resolve the hostname to IPs and re-check each resolved address against the
+ * private/reserved blocklist. Guards against DNS-rebinding: a benign public
+ * hostname that resolves to an internal IP at fetch time is rejected.
+ */
+export async function resolveAndAssertSafe(raw: string): Promise<UrlSafetyResult> {
+  const base = assertSafePublicUrl(raw);
+  if (!base.ok) return base;
+
+  const hostname = base.url.hostname;
+  // Already a literal IP (and passed the private check above)
+  if (isIpv4(hostname) || hostname.includes(':') || /^[0-9.]+$/.test(hostname)) {
+    return base;
+  }
+
+  let addresses: string[];
+  try {
+    const recs = await dnsLookup(hostname, { all: true });
+    addresses = recs.map((r) => r.address);
+  } catch {
+    return { ok: false, error: 'Unable to resolve hostname' };
+  }
+
+  for (const addr of addresses) {
+    const check = assertSafePublicUrl(`http://${addr}`);
+    if (!check.ok) {
+      return { ok: false, error: `Resolved address ${addr} is not allowed` };
+    }
+  }
+
+  return base;
 }
