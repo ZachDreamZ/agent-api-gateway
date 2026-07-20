@@ -648,6 +648,15 @@ export default function Overview() {
             loading={loading}
           />
         </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Avg latency"
+            value={stats ? `${stats.avg_latency_ms ?? 0}ms` : '—'}
+            sub="Last 25 requests"
+            icon={Clock}
+            loading={loading}
+          />
+        </StaggerItem>
       </Stagger>
 
       <UsageBar
