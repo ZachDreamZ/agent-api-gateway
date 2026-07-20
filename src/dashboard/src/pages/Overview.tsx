@@ -639,6 +639,15 @@ export default function Overview() {
             loading={loading}
           />
         </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Cache hit rate"
+            value={`${(stats?.cache_hit_rate ?? 0)}%`}
+            sub="Last 25 requests"
+            icon={TrendingUp}
+            loading={loading}
+          />
+        </StaggerItem>
       </Stagger>
 
       <UsageBar
