@@ -657,6 +657,15 @@ export default function Overview() {
             loading={loading}
           />
         </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Active API keys"
+            value={(stats?.active_keys ?? 0).toLocaleString()}
+            sub="Used in recent requests"
+            icon={KeyRound}
+            loading={loading}
+          />
+        </StaggerItem>
       </Stagger>
 
       <UsageBar
