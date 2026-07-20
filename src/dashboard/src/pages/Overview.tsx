@@ -10,6 +10,7 @@ import { easeOut } from '../lib/motion';
 interface UsageStats {
   total_queries: number;
   queries_today: number;
+  queries_today_delta: number;
   queries_this_month: number;
   credits_used: number;
   credits_remaining: number;
@@ -352,9 +353,13 @@ export default function Overview() {
 
         const raw = (await statsRes.json()) as ApiUsageResponse;
         const chartData = (await chartRes.json()) as { days: DailyUsage[] };
+        const days = chartData.days ?? [];
+        const todayCount = days.length ? days[days.length - 1].count : 0;
+        const yesterdayCount = days.length > 1 ? days[days.length - 2].count : 0;
         const statsData: UsageStats = {
           total_queries: raw.credits_used,
-          queries_today: 0,
+          queries_today: todayCount,
+          queries_today_delta: todayCount - yesterdayCount,
           queries_this_month: raw.credits_used,
           credits_used: raw.credits_used,
           credits_remaining: raw.credits_remaining,
@@ -422,6 +427,17 @@ export default function Overview() {
             value={(stats?.total_queries ?? 0).toLocaleString()}
             sub="This period usage"
             icon={Zap}
+            loading={loading}
+          />
+        </StaggerItem>
+        <StaggerItem>
+          <StatCard
+            label="Today"
+            value={(stats?.queries_today ?? 0).toLocaleString()}
+            sub={`${(stats?.queries_today_delta ?? 0) >= 0 ? '+' : ''}${stats?.queries_today_delta ?? 0} vs yesterday`}
+            trend={(stats?.queries_today_delta ?? 0) >= 0 ? 'up' : 'down'}
+            trendValue={`${(stats?.queries_today_delta ?? 0) >= 0 ? '+' : ''}${stats?.queries_today_delta ?? 0}`}
+            icon={Activity}
             loading={loading}
           />
         </StaggerItem>

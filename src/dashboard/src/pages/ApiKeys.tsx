@@ -33,6 +33,19 @@ interface NewKeyResult {
   createdAt: string;
 }
 
+function relativeTime(iso: string | null): string {
+  if (!iso) return 'Never used';
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d ago`;
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 // ─── Copy Button ───
 
 function CopyButton({ text, className = '' }: { text: string; className?: string }) {
@@ -113,9 +126,7 @@ function KeyRow({
           </div>
           <p className="mt-2 ml-[42px] text-xs" style={{ color: 'var(--color-text-disabled)' }}>
             Created {new Date(item.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-            {item.lastRequest
-              ? ` · Last used ${new Date(item.lastRequest).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-              : ' · Never used'}
+            {` · Last used ${relativeTime(item.lastRequest)}`}
           </p>
         </div>
 
