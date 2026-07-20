@@ -49,7 +49,7 @@ function relativeTime(iso: string | null): string {
 
 // ─── Copy Button ───
 
-function CopyButton({ text, className = '' }: { text: string; className?: string }) {
+function CopyButton({ text, className = '', label }: { text: string; className?: string; label?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -65,7 +65,7 @@ function CopyButton({ text, className = '' }: { text: string; className?: string
       style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', gap: '0.25rem' }}
     >
       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-      {copied ? 'Copied' : 'Copy'}
+      {copied ? 'Copied' : (label ?? 'Copy')}
     </button>
   );
 }
@@ -162,7 +162,7 @@ function KeyRow({
                 >
                   {showKey ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                 </button>
-                <CopyButton text={`${displayStart}...`} />
+                <CopyButton text={item.id} label="Copy ID" />
               </div>
             </div>
           </div>
@@ -339,6 +339,7 @@ export default function ApiKeys() {
   const [keys, setKeys] = useState<ApiKeyItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [newKey, setNewKey] = useState<NewKeyResult | null>(null);
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
@@ -399,6 +400,8 @@ export default function ApiKeys() {
     try {
       await apiKey.delete({ keyId: revokeTarget.id });
       setRevokeTarget(null);
+      setSuccessMsg('API key revoked');
+      window.setTimeout(() => setSuccessMsg(null), 4000);
       await loadKeys();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to revoke key');
@@ -448,6 +451,20 @@ export default function ApiKeys() {
         >
           {error}
           <button type="button" onClick={() => setError(null)} className="ml-2 underline hover:opacity-80">
+            Dismiss
+          </button>
+        </motion.div>
+      )}
+
+      {successMsg && (
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 rounded-md px-4 py-3 text-sm"
+          style={{ background: 'var(--color-success-subtle)', color: 'var(--color-success)' }}
+        >
+          {successMsg}
+          <button type="button" onClick={() => setSuccessMsg(null)} className="ml-2 underline hover:opacity-80">
             Dismiss
           </button>
         </motion.div>

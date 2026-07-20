@@ -31,16 +31,17 @@ function CopyButton({ text, label = 'Copy' }: { text: string; label?: string }) 
 // ─── Code Block ───
 
 function Code({ children, lang }: { children: string; lang?: string }) {
+  const code = typeof children === 'string' ? children.trim() : children;
   return (
     <div className="group my-3 overflow-hidden rounded-xl code-block">
       {lang && (
         <div className="flex items-center justify-between px-4 py-2" style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}>
           <span className="text-xs font-medium" style={{ color: 'var(--color-text-tertiary)' }}>{lang}</span>
-          <CopyButton text={children} />
+          <CopyButton text={code} />
         </div>
       )}
       <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
-        <code style={{ color: 'var(--color-text-secondary)' }}>{children}</code>
+        <code style={{ color: 'var(--color-text-secondary)' }}>{code}</code>
       </pre>
     </div>
   );

@@ -442,7 +442,7 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
           </p>
           <div className="flex items-center gap-2">
             <code
-              className="flex-1 truncate rounded-md px-2 py-1.5 text-[11px]"
+              className="flex-1 break-all rounded-md px-2 py-1.5 text-[11px]"
               style={{ background: 'var(--color-bg-app)', border: '1px solid var(--color-border-subtle)', fontFamily: 'var(--font-family-mono)' }}
             >
               {createdKey}
@@ -590,9 +590,9 @@ export default function Overview() {
       <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StaggerItem>
           <StatCard
-            label="Total Queries"
+            label="Credits used"
             value={(stats?.total_queries ?? 0).toLocaleString()}
-            sub="This period usage"
+            sub="All-time billed"
             icon={Zap}
             loading={loading}
           />
