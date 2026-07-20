@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
-import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown, BookOpen, ArrowRight } from 'lucide-react';
+import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown, BookOpen, ArrowRight, Download } from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem, CopyButton } from '../components/Brand';
 import { apiKey } from '../lib/auth';
 import { easeOut } from '../lib/motion';
@@ -197,15 +197,47 @@ function UsageBar({ used, total }: { used: number; total: number }) {
 // ─── Usage Chart ───
 
 function RecentRequests({ items }: { items: RecentItem[] }) {
+  function exportCsv() {
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const rows = [
+      ['timestamp', 'endpoint', 'schema', 'url', 'cached', 'latency_ms', 'credits_used'],
+      ...items.map((r) => [
+        new Date(r.created_at).toISOString(),
+        r.endpoint,
+        r.schema ?? '',
+        r.url,
+        r.cached ? 'true' : 'false',
+        String(r.latency_ms ?? ''),
+        String(r.credits_used),
+      ]),
+    ];
+    const csv = rows.map((row) => row.map((c) => esc(String(c))).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `agent-gw-usage-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="surface surface-hover surface-glow p-5">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 gap-2">
         <h3 className="font-syne text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
           Recent requests
         </h3>
-        <span className="text-xs font-mono" style={{ color: 'var(--color-text-disabled)' }}>
-          {items.length}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono" style={{ color: 'var(--color-text-disabled)' }}>
+            {items.length}
+          </span>
+          {items.length > 0 && (
+            <button type="button" onClick={exportCsv} className="btn btn-secondary text-xs" title="Export last 25 requests">
+              <Download className="w-3.5 h-3.5" />
+              Export CSV
+            </button>
+          )}
+        </div>
       </div>
       {items.length === 0 ? (
         <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
