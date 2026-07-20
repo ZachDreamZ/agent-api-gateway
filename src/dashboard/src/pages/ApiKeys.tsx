@@ -8,6 +8,7 @@ import {
   Check,
   Plus,
   Trash2,
+  Pencil,
 } from 'lucide-react';
 import { apiKey } from '../lib/auth';
 import { PageHeader, Spinner, Stagger, StaggerItem } from '../components/Brand';
@@ -75,14 +76,18 @@ function KeyRow({
   item,
   onToggle,
   onRevoke,
+  onRename,
   toggling,
 }: {
   item: ApiKeyItem;
   onToggle: (id: string) => void;
   onRevoke: (id: string) => void;
+  onRename: (id: string, name: string) => void;
   toggling: boolean;
 }) {
   const [showKey, setShowKey] = useState(false);
+  const [renaming, setRenaming] = useState(false);
+  const [draftName, setDraftName] = useState(item.name || '');
   const displayStart = item.start || item.prefix || 'sk';
 
   return (
@@ -101,13 +106,50 @@ function KeyRow({
             >
               <KeyRound className="w-4 h-4" style={{ color: item.enabled ? 'var(--color-accent-base)' : 'var(--color-text-disabled)' }} />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-medium text-sm truncate" style={{ color: 'var(--color-text-primary)' }}>{item.name || 'Untitled key'}</span>
-                <span className={item.enabled ? 'badge badge-active shrink-0' : 'badge badge-inactive shrink-0'}>
-                  {item.enabled ? 'Active' : 'Disabled'}
-                </span>
-              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {renaming ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        onRename(item.id, draftName);
+                        setRenaming(false);
+                      }}
+                      className="flex items-center gap-1"
+                    >
+                      <input
+                        autoFocus
+                        value={draftName}
+                        onChange={(e) => setDraftName(e.target.value)}
+                        onBlur={() => setRenaming(false)}
+                        className="sp-input"
+                        style={{ fontSize: '0.8125rem', padding: '0.25rem 0.5rem', height: '1.75rem' }}
+                      />
+                      <button type="submit" className="btn btn-primary text-xs" disabled={toggling}>
+                        Save
+                      </button>
+                    </form>
+                  ) : (
+                    <>
+                      <span className="font-medium text-sm truncate" style={{ color: 'var(--color-text-primary)' }}>{item.name || 'Untitled key'}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDraftName(item.name || '');
+                          setRenaming(true);
+                        }}
+                        className="interactive shrink-0"
+                        style={{ color: 'var(--color-text-tertiary)' }}
+                        aria-label="Rename key"
+                      >
+                        <Pencil className="w-3 h-3" />
+                      </button>
+                    </>
+                  )}
+                  <span className={item.enabled ? 'badge badge-active shrink-0' : 'badge badge-inactive shrink-0'}>
+                    {item.enabled ? 'Active' : 'Disabled'}
+                  </span>
+                </div>
               <div className="mt-0.5 flex items-center gap-2 flex-wrap">
                 <code className="text-xs truncate max-w-[160px] sm:max-w-none" style={{ color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-family-mono)' }}>
                   {displayStart}...{showKey ? '****' : ''}
@@ -365,6 +407,20 @@ export default function ApiKeys() {
     }
   }
 
+  async function handleRename(id: string, newName: string) {
+    const trimmed = newName.trim();
+    if (!trimmed) return;
+    setToggling(id);
+    try {
+      await apiKey.update({ keyId: id, name: trimmed });
+      await loadKeys();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to rename key');
+    } finally {
+      setToggling(null);
+    }
+  }
+
   if (loading) {
     return (
       <div className="space-y-3">
@@ -441,6 +497,7 @@ export default function ApiKeys() {
                 item={item}
                 onToggle={handleToggle}
                 onRevoke={(id) => setRevokeTarget(keys.find((k) => k.id === id) ?? null)}
+                onRename={handleRename}
                 toggling={toggling === item.id}
               />
             </StaggerItem>
