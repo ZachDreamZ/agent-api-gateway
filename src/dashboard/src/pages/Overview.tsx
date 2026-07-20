@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView } from 'motion/react';
 import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown, BookOpen, ArrowRight } from 'lucide-react';
-import { PageHeader, Stagger, StaggerItem } from '../components/Brand';
+import { PageHeader, Stagger, StaggerItem, CopyButton } from '../components/Brand';
+import { apiKey } from '../lib/auth';
 import { easeOut } from '../lib/motion';
 
 // ─── Types ───
@@ -344,6 +345,25 @@ function CreditPacksMini() {
 }
 
 function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
+  const [creating, setCreating] = useState(false);
+  const [createdKey, setCreatedKey] = useState<string | null>(null);
+  const [keyError, setKeyError] = useState<string | null>(null);
+
+  async function createKey() {
+    setCreating(true);
+    setKeyError(null);
+    try {
+      const res = await apiKey.create({ name: 'Quickstart' });
+      const key = (res as { key?: string }).key;
+      if (!key) throw new Error('No key returned');
+      setCreatedKey(key);
+    } catch (e) {
+      setKeyError(e instanceof Error ? e.message : 'Could not create key');
+    } finally {
+      setCreating(false);
+    }
+  }
+
   if (hasUsage) {
     return (
       <div className="space-y-4">
@@ -382,33 +402,53 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
           Free tier includes 100 queries/month. Keys are shown once — copy them immediately.
         </p>
       </div>
-      <ol className="space-y-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-        <li className="flex gap-2">
-          <span className="font-mono tabular-nums" style={{ color: 'var(--color-accent-base)' }}>1</span>
-          Open API Keys and create a named key
-        </li>
-        <li className="flex gap-2">
-          <span className="font-mono tabular-nums" style={{ color: 'var(--color-accent-base)' }}>2</span>
-          POST to /v1/extract with Bearer auth
-        </li>
-        <li className="flex gap-2">
-          <span className="font-mono tabular-nums" style={{ color: 'var(--color-accent-base)' }}>3</span>
-          Optional: connect MCP for agent hosts
-        </li>
-      </ol>
+
+      {createdKey ? (
+        <div className="space-y-2">
+          <p className="text-xs font-medium" style={{ color: 'var(--color-success)' }}>
+            Key created — copy it now, you won't see it again:
+          </p>
+          <div className="flex items-center gap-2">
+            <code
+              className="flex-1 truncate rounded-md px-2 py-1.5 text-[11px]"
+              style={{ background: 'var(--color-bg-app)', border: '1px solid var(--color-border-subtle)', fontFamily: 'var(--font-family-mono)' }}
+            >
+              {createdKey}
+            </code>
+            <CopyButton text={createdKey} />
+          </div>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="btn btn-primary w-full text-xs"
+          onClick={createKey}
+          disabled={creating}
+        >
+          <KeyRound className="w-3.5 h-3.5" />
+          {creating ? 'Generating…' : 'Generate API key'}
+        </button>
+      )}
+
+      {keyError && (
+        <p className="text-xs" style={{ color: 'var(--color-error)' }}>
+          {keyError}
+        </p>
+      )}
+
       <pre
         className="rounded-md p-3 text-[10px] leading-relaxed overflow-x-auto"
         style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-tertiary)', border: '1px solid var(--color-border-subtle)' }}
       >
 {`curl -s https://agentapigw.dpdns.org/v1/extract \\
-  -H "Authorization: Bearer sk-YOUR_KEY" \\
+  -H "Authorization: Bearer ${createdKey ?? 'sk-YOUR_KEY'}" \\
   -H "Content-Type: application/json" \\
   -d '{"url":"https://example.com","schema":"article"}'`}
       </pre>
       <div className="flex flex-col gap-2">
-        <Link to="/dashboard/api-keys" className="btn btn-primary w-full text-xs">
+        <Link to="/dashboard/api-keys" className="btn btn-secondary w-full text-xs">
           <KeyRound className="w-3.5 h-3.5" />
-          Create API key
+          Manage keys
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
         <Link to="/docs" className="btn btn-secondary w-full text-xs">

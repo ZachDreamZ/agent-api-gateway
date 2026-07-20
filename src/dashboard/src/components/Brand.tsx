@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
+import { Copy, Check } from 'lucide-react';
 import { easeOut, fadeUp, staggerContainer, staggerItem, viewportOnce } from '../lib/motion';
 
 /**
@@ -300,3 +302,25 @@ export function LoadingScreen({ label = 'Loading…' }: { label?: string }) {
     </div>
   );
 }
+
+export function CopyButton({ text, className = '' }: { text: string; className?: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`btn ${copied ? 'btn-primary' : 'btn-ghost'} ${className}`}
+      style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', gap: '0.25rem' }}
+    >
+      {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+      {copied ? 'Copied' : 'Copy'}
+    </button>
+  );
+}
+
