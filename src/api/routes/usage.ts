@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { TIER_LIMITS } from '../../shared/types.js';
-import { getCreditBalance, getDailyUsage } from '../lib/usage-db.js';
+import { getCreditBalance, getDailyUsage, getRecentUsage } from '../lib/usage-db.js';
 
 const router = new Hono();
 
@@ -40,6 +40,18 @@ router.get('/daily', async (c) => {
   } catch (err) {
     console.error('[usage/daily] unexpected error:', err);
     return c.json({ days: [] });
+  }
+});
+
+router.get('/recent', async (c) => {
+  const user = c.get('user');
+
+  try {
+    const { recent, summary } = await getRecentUsage(user.id, 25);
+    return c.json({ recent, summary });
+  } catch (err) {
+    console.error('[usage/recent] unexpected error:', err);
+    return c.json({ recent: [], summary: { avg_latency_ms: 0, cache_hit_rate: 0, active_keys: 0, last_24h: 0 } });
   }
 });
 

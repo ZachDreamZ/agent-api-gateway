@@ -139,3 +139,78 @@ export async function getDailyUsage(userId: string, days: number): Promise<Array
     return [];
   }
 }
+
+export interface RecentUsageItem {
+  id: string;
+  endpoint: string;
+  schema: string | null;
+  url: string;
+  cached: boolean;
+  latency_ms: number | null;
+  credits_used: number;
+  created_at: string;
+}
+
+export interface RecentUsageSummary {
+  avg_latency_ms: number;
+  cache_hit_rate: number;
+  active_keys: number;
+  last_24h: number;
+}
+
+export async function getRecentUsage(
+  userId: string,
+  limit = 25,
+): Promise<{ recent: RecentUsageItem[]; summary: RecentUsageSummary }> {
+  const empty: RecentUsageSummary = { avg_latency_ms: 0, cache_hit_rate: 0, active_keys: 0, last_24h: 0 };
+  try {
+    const p = getPool();
+    const { rows } = await p.query(
+      `SELECT id, endpoint, schema, url, cached, latency_ms, credits_used, created_at
+       FROM usage_logs
+       WHERE user_id = $1
+       ORDER BY created_at DESC
+       LIMIT $2`,
+      [userId, limit],
+    );
+    const recent: RecentUsageItem[] = rows.map((r: any) => ({
+      id: r.id,
+      endpoint: r.endpoint,
+      schema: r.schema,
+      url: r.url,
+      cached: Boolean(r.cached),
+      latency_ms: r.latency_ms != null ? Number(r.latency_ms) : null,
+      credits_used: Number(r.credits_used ?? 0),
+      created_at: r.created_at,
+    }));
+    if (recent.length === 0) return { recent, summary: empty };
+
+    const lats = recent.filter((r) => r.latency_ms != null).map((r) => r.latency_ms as number);
+    const avgLatency = lats.length ? lats.reduce((a, b) => a + b, 0) / lats.length : 0;
+    const cachedCount = recent.filter((r) => r.cached).length;
+
+    const since = new Date();
+    since.setDate(since.getDate() - 1);
+    const last_24h = recent.filter((r) => new Date(r.created_at) >= since).length;
+
+    const { rows: keyRows } = await p.query(
+      `SELECT COUNT(DISTINCT api_key_id)::int AS n
+       FROM usage_logs
+       WHERE user_id = $1 AND api_key_id IS NOT NULL`,
+      [userId],
+    );
+
+    return {
+      recent,
+      summary: {
+        avg_latency_ms: Math.round(avgLatency),
+        cache_hit_rate: Math.round((cachedCount / recent.length) * 100),
+        active_keys: Number(keyRows[0]?.n ?? 0),
+        last_24h,
+      },
+    };
+  } catch (err) {
+    console.error('[usage-db] getRecentUsage error:', err);
+    return { recent: [], summary: empty };
+  }
+}

@@ -38,6 +38,29 @@ interface DailyUsage {
   count: number;
 }
 
+interface RecentItem {
+  id: string;
+  endpoint: string;
+  schema: string | null;
+  url: string;
+  cached: boolean;
+  latency_ms: number | null;
+  credits_used: number;
+  created_at: string;
+}
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d}d ago`;
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
 // ─── Animated Counter ───
 
 function AnimatedNumber({ value: raw }: { value: string }) {
@@ -171,6 +194,73 @@ function UsageBar({ used, total }: { used: number; total: number }) {
 }
 
 // ─── Usage Chart ───
+
+function RecentRequests({ items }: { items: RecentItem[] }) {
+  return (
+    <div className="surface surface-hover surface-glow p-5">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-syne text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          Recent requests
+        </h3>
+        <span className="text-xs font-mono" style={{ color: 'var(--color-text-disabled)' }}>
+          {items.length}
+        </span>
+      </div>
+      {items.length === 0 ? (
+        <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+          No requests yet. Fire your first extraction from the docs to see it here.
+        </p>
+      ) : (
+        <ul className="space-y-2 max-h-80 overflow-auto">
+          {items.map((r) => {
+            let host = r.url;
+            try {
+              host = new URL(r.url).host;
+            } catch {
+              /* keep raw */
+            }
+            return (
+              <li
+                key={r.id}
+                className="flex items-center justify-between gap-3 text-xs border-b pb-2"
+                style={{ borderColor: 'var(--color-border-default)' }}
+              >
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <code
+                      className="truncate"
+                      style={{ color: 'var(--color-text-primary)', fontFamily: 'var(--font-family-mono)' }}
+                    >
+                      {host}
+                    </code>
+                    {r.schema && (
+                      <span
+                        className="px-1.5 py-0.5 rounded shrink-0"
+                        style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
+                      >
+                        {r.schema}
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-0.5" style={{ color: 'var(--color-text-disabled)' }}>
+                    {r.latency_ms != null ? `${r.latency_ms}ms` : '—'}
+                    {r.cached ? ' · cached' : ''} · {relativeTime(r.created_at)}
+                  </div>
+                </div>
+                <span
+                  className="shrink-0 font-mono"
+                  style={{ color: r.cached ? 'var(--color-success)' : 'var(--color-text-tertiary)' }}
+                >
+                  {r.credits_used} cr
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 function UsageChart({ data }: { data: DailyUsage[] }) {
   if (data.length === 0) {
@@ -335,6 +425,7 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
 export default function Overview() {
   const [stats, setStats] = useState<UsageStats | null>(null);
   const [chart, setChart] = useState<DailyUsage[]>([]);
+  const [recent, setRecent] = useState<RecentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -343,9 +434,10 @@ export default function Overview() {
 
     async function load() {
       try {
-        const [statsRes, chartRes] = await Promise.all([
+        const [statsRes, chartRes, recentRes] = await Promise.all([
           fetch('/v1/usage'),
           fetch('/v1/usage/daily'),
+          fetch('/v1/usage/recent'),
         ]);
 
         if (!statsRes.ok) throw new Error(`Stats HTTP ${statsRes.status}`);
@@ -353,6 +445,8 @@ export default function Overview() {
 
         const raw = (await statsRes.json()) as ApiUsageResponse;
         const chartData = (await chartRes.json()) as { days: DailyUsage[] };
+        const recentData = recentRes.ok ? await recentRes.json() : { recent: [], summary: {} };
+        const s = recentData.summary ?? {};
         const days = chartData.days ?? [];
         const todayCount = days.length ? days[days.length - 1].count : 0;
         const yesterdayCount = days.length > 1 ? days[days.length - 2].count : 0;
@@ -365,9 +459,9 @@ export default function Overview() {
           credits_remaining: raw.credits_remaining,
           credits_limit: raw.credits_limit ?? (raw.credits_used + raw.credits_remaining),
           bonus_credits: raw.bonus_credits ?? 0,
-          cache_hit_rate: 0,
-          avg_latency_ms: 0,
-          active_keys: 0,
+          cache_hit_rate: s.cache_hit_rate ?? 0,
+          avg_latency_ms: s.avg_latency_ms ?? 0,
+          active_keys: s.active_keys ?? 0,
           recent_errors: 0,
           tier: raw.tier || 'free',
         };
@@ -375,6 +469,7 @@ export default function Overview() {
         if (!cancelled) {
           setStats(statsData);
           setChart(chartData.days ?? []);
+          setRecent(recentData.recent ?? []);
         }
       } catch (err) {
         if (!cancelled) {
@@ -486,6 +581,7 @@ export default function Overview() {
         <div className="lg:col-span-2 space-y-4">
           <OnboardingCard hasUsage={(stats?.total_queries ?? 0) > 0} />
           {(stats?.total_queries ?? 0) === 0 && <CreditPacksMini />}
+          <RecentRequests items={recent} />
         </div>
       </div>
     </div>
