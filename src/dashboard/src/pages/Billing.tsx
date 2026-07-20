@@ -553,12 +553,16 @@ export default function Billing() {
         label={bonus > 0 ? `Credits this month (incl. ${bonus.toLocaleString()} bonus)` : 'Credits this month'}
       />
 
-      {invoices.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
-            Billing history
-          </h2>
-          <div className="surface surface-hover surface-glow divide-y" style={{ border: '1px solid var(--color-border-default)' }}>
+      <section className="space-y-3">
+        <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          Billing history
+        </h2>
+        {invoices.length === 0 ? (
+          <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+            No invoices yet. Your first purchase will appear here.
+          </p>
+        ) : (
+        <div className="surface surface-hover surface-glow divide-y" style={{ border: '1px solid var(--color-border-default)' }}>
             {invoices.map((inv) => (
               <div key={inv.id} className="flex items-center justify-between gap-3 px-4 py-3">
                 <div className="min-w-0">
@@ -584,8 +588,8 @@ export default function Billing() {
               </div>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {error && (
         <div className="rounded-md px-4 py-3 text-sm" style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}>

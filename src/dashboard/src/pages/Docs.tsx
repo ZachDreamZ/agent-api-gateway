@@ -98,6 +98,10 @@ const SECTIONS = [
 ];
 
 function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onNavigate?: () => void }) {
+  const [filter, setFilter] = useState('');
+  const filtered = filter.trim()
+    ? SECTIONS.filter((s) => s.label.toLowerCase().includes(filter.toLowerCase()))
+    : SECTIONS;
   return (
     <aside className="sidebar-panel flex h-full w-60 flex-col">
       <Link to="/" className="flex items-center gap-2 px-5 pt-5 pb-4" onClick={onNavigate}>
@@ -107,8 +111,19 @@ function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onN
         </span>
       </Link>
       <p className="px-5 pb-2 text-eyebrow">Docs</p>
+      <div className="px-3 pb-2">
+        <input
+          type="text"
+          placeholder="Filter sections…"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="sp-input"
+          style={{ fontSize: '0.75rem', padding: '0.35rem 0.5rem' }}
+          aria-label="Filter docs sections"
+        />
+      </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3" aria-label="Documentation">
-        {SECTIONS.map((s) => {
+        {filtered.map((s) => {
           const isActive = activeSection === s.id;
           return (
             <a

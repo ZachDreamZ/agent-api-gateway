@@ -9,6 +9,7 @@ import {
   ChevronRight,
   BookOpen,
   LogOut,
+  Play,
 } from 'lucide-react';
 import Overview from './pages/Overview';
 import ApiKeys from './pages/ApiKeys';
@@ -58,6 +59,7 @@ const NAV_ITEMS = [
   { path: '/dashboard', label: 'Overview', icon: Grid3x3 },
   { path: '/dashboard/api-keys', label: 'API Keys', icon: KeyRound },
   { path: '/dashboard/billing', label: 'Billing', icon: CreditCard },
+  { path: '/?playground_schema=product', label: 'Playground', icon: Play },
 ];
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {

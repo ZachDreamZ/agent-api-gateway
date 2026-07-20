@@ -276,7 +276,19 @@ function RecentRequests({ items }: { items: RecentItem[] }) {
                     )}
                   </div>
                   <div className="mt-0.5" style={{ color: 'var(--color-text-disabled)' }}>
-                    {r.latency_ms != null ? `${r.latency_ms}ms` : '—'}
+                    <span
+                      style={{
+                        color: r.latency_ms == null
+                          ? undefined
+                          : r.latency_ms < 200
+                            ? 'var(--color-success)'
+                            : r.latency_ms < 500
+                              ? 'var(--color-warning, oklch(0.65 0.14 50))'
+                              : 'var(--color-error)',
+                      }}
+                    >
+                      {r.latency_ms != null ? `${r.latency_ms}ms` : '—'}
+                    </span>
                     {r.cached ? ' · cached' : ''} · {relativeTime(r.created_at)}
                   </div>
                 </div>
@@ -559,7 +571,7 @@ export default function Overview() {
             recent_errors: 0,
             tier: 'free',
           });
-          setError(null);
+          setError(err instanceof Error ? err.message : 'Failed to load');
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -570,17 +582,17 @@ export default function Overview() {
     return () => { cancelled = true; };
   }, []);
 
-  if (error) {
-    return (
-      <div className="stat-card" style={{ borderColor: 'var(--color-error-subtle)' }}>
-        <p className="font-medium" style={{ color: 'var(--color-error)' }}>Failed to load overview</p>
-        <p className="mt-1 text-sm" style={{ color: 'var(--color-error-subtle)' }}>{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
+      {error && (
+        <div
+          className="rounded-md px-4 py-3 text-sm"
+          style={{ background: 'var(--color-error-subtle)', color: 'var(--color-error)' }}
+        >
+          {error}
+        </div>
+      )}
+
       <PageHeader
         eyebrow="Dashboard"
         title="Overview"
