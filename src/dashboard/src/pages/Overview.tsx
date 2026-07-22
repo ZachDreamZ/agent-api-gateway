@@ -388,6 +388,56 @@ function CreditPacksMini() {
   );
 }
 
+function AgentIntegrationCard() {
+  const code = `# Agent API Gateway - Tool Usage
+To scrape and extract structured data from any public web page:
+Call POST https://agentapigw.dpdns.org/v1/extract
+Headers:
+  Authorization: Bearer sk-YOUR_API_KEY
+  Content-Type: application/json
+Body:
+  { "url": "https://example.com/item", "schema": "product" }
+Available schemas:
+  - product (returns name, price, currency, rating, in_stock)
+  - article (returns title, author, published_at, topics)
+  - company (returns name, description, location, founded)`;
+
+  return (
+    <div className="surface surface-hover surface-glow p-5 space-y-4">
+      <div>
+        <h3 className="font-syne text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          Agent integration
+        </h3>
+        <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+          Add these instructions to your system prompt or AI agent context (e.g. <code className="code-inline">.cursorrules</code>, <code className="code-inline">.claudeprompt</code>) so your agent knows how to extract web data automatically.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {['Cursor', 'Claude', 'Windsurf', 'Copilot'].map((tech) => (
+          <span
+            key={tech}
+            className="px-2 py-0.5 rounded text-[10px] font-medium"
+            style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border-subtle)' }}
+          >
+            {tech}
+          </span>
+        ))}
+      </div>
+
+      <div className="relative rounded-lg overflow-hidden border" style={{ borderColor: 'var(--color-border-subtle)' }}>
+        <div className="flex items-center justify-between px-3 py-2 text-xs" style={{ background: 'var(--color-bg-surface)', borderBottom: '1px solid var(--color-border-subtle)' }}>
+          <span className="font-mono text-[10px]" style={{ color: 'var(--color-text-disabled)' }}>system-instruction.txt</span>
+          <CopyButton text={code} label="Copy context" />
+        </div>
+        <pre className="p-3 text-[10px] leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
+          <code>{code}</code>
+        </pre>
+      </div>
+    </div>
+  );
+}
+
 function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
   const [creating, setCreating] = useState(false);
   const [createdKey, setCreatedKey] = useState<string | null>(null);
@@ -686,8 +736,9 @@ export default function Overview() {
       />
 
       <div className="grid gap-6 lg:grid-cols-5">
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 space-y-6">
           <UsageChart data={chart} />
+          <AgentIntegrationCard />
         </div>
         <div className="lg:col-span-2 space-y-4">
           <OnboardingCard hasUsage={(stats?.total_queries ?? 0) > 0} />
