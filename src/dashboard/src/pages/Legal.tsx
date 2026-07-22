@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom';
+import { Shield, FileText, Lock, Scale, Mail } from 'lucide-react';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 
 export type LegalKind = 'privacy' | 'terms' | 'aup';
+
+const KIND_ICONS = {
+  privacy: Lock,
+  terms: FileText,
+  aup: Shield,
+};
 
 const COPY: Record<
   LegalKind,

@@ -139,3 +139,76 @@ When a decision involves one of these areas, fetch the matching article for guid
 - Don't commit `.env` files (use `.env.example` for placeholders)
 - Don't hardcode API keys or secrets in source code
 - Don't use Express patterns — this is a Hono app
+
+## Recursive Learning Loop
+
+The LLM agent maintains a continuous improvement cycle. Each turn follows this loop:
+
+### 1. SCAN (60s)
+- Run `node scripts/self-audit.mjs` for codebase health
+- Check `.recursive-state.json` for completed/pending work
+- Verify the deployed site with `curl -sI https://agentapigw.dpdns.org/`
+- Check `git status` and `git log --oneline -5`
+
+### 2. ANALYZE (30s)
+- Cross-reference current state against the priority areas below
+- Check for: build errors, TypeScript issues, console errors in browser
+- Review the state tracker for pending improvements
+- Prioritize: bugs first → UX polish → features → infrastructure
+
+### 3. EXECUTE
+- Make the change with clear intent
+- Run `npm run typecheck` before any commit
+- Run `npm run build` to verify the frontend compiles
+- Run `npm run check:secrets` if adding env or config files
+
+### 4. VERIFY
+- Check `tsc --noEmit` passes
+- Check Vite build completes
+- Load the page in the in-app browser and check console for errors
+- Verify the dashboard and landing page both render
+
+### 5. COMMIT & DEPLOY
+```bash
+git add <files>
+git commit -m "type: concise description"
+git push origin master
+```
+- Wait for Render auto-deploy (1-2 min)
+- Verify the new bundle is served by checking asset hashes
+
+### 6. RETRO & UPDATE STATE
+- Update `.recursive-state.json` with completed work
+- Move completed items from `pending` to `completed`
+- Add any new `knownIssues` found during verification
+- Increment `iteration` counter
+
+### Priority Areas (in order)
+
+| Priority | Area | Why |
+|----------|------|-----|
+| P0 | Bugs/crashes | Site must render without console errors |
+| P1 | Security | SSRF, CSP, API key handling |
+| P2 | UX polish | Icons, micro-interactions, premium feel |
+| P3 | Features | New pages, schemas, integrations |
+| P4 | Infrastructure | Deploy perf, build optimization, tests |
+
+### Self-Correction
+
+If verification fails (build error, blank page, console error):
+1. Read the error message fully
+2. Revert the change with `git checkout -- <files>`
+3. Rebuild with `npm run build`
+4. Only retry with a fix, not the same change
+5. Record the failure in `.recursive-state.json.knownIssues`
+
+### Completion Criteria
+
+A change is done when:
+- `tsc --noEmit` passes with zero errors
+- `npm run build` completes
+- Deployed site shows zero console errors
+- Bundle hash changed from previous deploy
+- Commit is pushed to master
+
+Do not mark an item complete until all five criteria are met.

@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Lock, KeyRound } from 'lucide-react';
 import { resetPassword } from '../lib/auth';
 import { AmbientBg, BrandLockup, Spinner } from '../components/Brand';
 import { easeOut, scaleIn } from '../lib/motion';
@@ -82,7 +82,7 @@ export default function ResetPassword() {
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  className="input pr-10"
+                  className="input pl-10 pr-10"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -107,7 +107,7 @@ export default function ResetPassword() {
               <div className="relative">
                 <input
                   type={showConfirm ? 'text' : 'password'}
-                  className="input pr-10"
+                  className="input pl-10 pr-10"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   required

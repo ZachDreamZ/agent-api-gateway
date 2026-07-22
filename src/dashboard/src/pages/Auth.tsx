@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
-import { Mail, Eye, EyeOff } from 'lucide-react';
+import { Mail, Eye, EyeOff, Lock, User, ArrowLeft } from 'lucide-react';
 import {
   signIn,
   signUp,
@@ -401,15 +401,18 @@ export default function Auth() {
                     <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
                       Name
                     </label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Jane Doe"
-                      required
-                      autoComplete="name"
-                      className="input"
-                    />
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-disabled)" }} strokeWidth={1.75} />
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Jane Doe"
+                        required
+                        autoComplete="name"
+                        className="input pl-10"
+                      />
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -418,15 +421,18 @@ export default function Auth() {
                 <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
                   Email
                 </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  required
-                  autoComplete="email"
-                  className="input"
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-disabled)" }} strokeWidth={1.75} />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    required
+                    autoComplete="email"
+                    className="input pl-10"
+                  />
+                </div>
               </div>
 
               {mode !== 'forgot' && (
@@ -450,6 +456,7 @@ export default function Auth() {
                     )}
                   </div>
                   <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--color-text-disabled)' }} strokeWidth={1.75} />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -458,7 +465,7 @@ export default function Auth() {
                       required
                       minLength={10}
                       autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-                      className="input pr-10"
+                      className="input pl-10 pr-10"
                     />
                     <button
                       type="button"
