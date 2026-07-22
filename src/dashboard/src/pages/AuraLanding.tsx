@@ -819,6 +819,47 @@ function HowItWorks() {
     </section>
   );
 }
+// ─── Use Cases ───
+
+function UseCases() {
+  return (
+    <section className="mx-auto max-w-6xl px-5 md:px-6 py-20 md:py-24">
+      <Reveal>
+        <SectionLabel>Use cases</SectionLabel>
+        <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
+          Built for developers, designed for agents.
+        </h2>
+        <p className="text-sm mb-10 max-w-xl" style={{ color: 'var(--color-text-secondary)' }}>
+          Three schema types cover the most common web data patterns. One API call, one typed JSON response.
+        </p>
+      </Reveal>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { title: 'Price intelligence', body: 'Track competitor pricing across e-commerce sites. Product schema returns name, price, currency, rating, and stock status.', icon: 'Zap', color: 'oklch(0.74 0.12 195)' },
+          { title: 'Lead enrichment', body: 'Enrich CRM records from company pages. Company schema returns description, funding, size, industry, and location.', icon: 'Building2', color: 'oklch(0.72 0.08 270)' },
+          { title: 'Content research', body: 'Extract article metadata at scale. Article schema returns title, author, date, topics, and content summary.', icon: 'FileText', color: 'oklch(0.72 0.14 155)' },
+          { title: 'Agent tooling', body: 'Wire extraction into Claude, Cursor, or Windsurf via MCP. Agents call structured endpoints instead of scraping raw HTML.', icon: 'Bot', color: 'oklch(0.7 0.14 260)' },
+        ].map((uc, i) => {
+          const Icon = uc.icon === 'Zap' ? Zap : uc.icon === 'Building2' ? Building2 : uc.icon === 'FileText' ? FileText : Bot;
+          return (
+            <Reveal key={uc.title} delay={i * 0.05}>
+              <div className="glass-card p-5 h-full flex flex-col transition-all duration-300 hover:-translate-y-0.5">
+                <div className="rounded-lg p-2 w-fit mb-3" style={{ background: uc.color + '15' }}>
+                  <Icon className="w-4 h-4" strokeWidth={1.75} style={{ color: uc.color }} />
+                </div>
+                <h3 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--color-text-primary)' }}>{uc.title}</h3>
+                <p className="text-xs leading-relaxed flex-1" style={{ color: 'var(--color-text-secondary)' }}>{uc.body}</p>
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+
 
 // ─── Features ───
 
@@ -1476,6 +1517,7 @@ export default function Landing() {
           <CapabilityMarquee />
           <TrustStrip />
           <HowItWorks />
+          <UseCases />
           <Quickstart />
           <Features />
           <SDKSection />
