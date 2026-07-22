@@ -471,7 +471,7 @@ function LiveStatsBar() {
   return (
     <section className="mx-auto max-w-6xl px-5 md:px-6 -mt-2 mb-10" style={{ position: 'relative', zIndex: 1 }}>
       <div
-        className="stats-glass flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-3 text-xs"
+        className="stats-glass-premium flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-3 text-xs"
         style={{ color: 'var(--color-text-tertiary)' }}
       >
         <span className="flex items-center gap-2">
@@ -521,7 +521,7 @@ function SocialProof() {
 
   return (
     <div
-      className="stats-glass mx-auto mb-6 flex max-w-xl items-center justify-center gap-2 px-5 py-2.5 text-xs"
+      className="stats-glass-premium mx-auto mb-6 flex max-w-xl items-center justify-center gap-2 px-5 py-2.5 text-xs"
       style={{ color: 'var(--color-text-tertiary)' }}
     >
       <span className="signal-dot signal-dot-ok" />
@@ -535,6 +535,8 @@ function SocialProof() {
 function Hero() {
   return (
     <section id="start" className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-5 md:px-6 overflow-hidden">
+      <div className="hero-beam" aria-hidden />
+      <div className="hero-beam-secondary" aria-hidden="true" />
       <div className="relative mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
@@ -678,7 +680,7 @@ function Quickstart() {
             { n: '2', t: 'Mint an API key', d: 'Dashboard → API Keys. Secrets are shown once; store them safely.' },
             { n: '3', t: 'Call /v1/extract', d: 'Pass a public URL and schema. Credits only move on success paths you use.' },
           ].map((s) => (
-            <li key={s.n} className="surface surface-hover p-5 list-none">
+            <li key={s.n} className="glass-card p-5 list-none transition-all duration-300 hover:-translate-y-0.5">
               <span className="text-mono text-xs" style={{ color: 'var(--color-accent-base)' }}>{s.n}</span>
               <h3 className="mt-2 text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{s.t}</h3>
               <p className="mt-1.5 text-xs leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>{s.d}</p>
@@ -1376,7 +1378,7 @@ function FinalCTA() {
   return (
     <section className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-24">
       <Reveal>
-        <div className="cta-stage px-6 py-14 md:px-12 md:py-20 text-center">
+        <div className="cta-stage-glass px-6 py-14 md:px-12 md:py-20 text-center rounded-2xl">
           <div className="relative">
             <p className="text-eyebrow mb-4" style={{ color: 'var(--color-accent-base)' }}>
               Ready when you are

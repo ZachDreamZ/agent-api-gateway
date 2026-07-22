@@ -1,44 +1,35 @@
-# Agent API Gateway — allow AI and search crawlers on public pages
+# Agent API Gateway — search and AI crawler directives
+# https://agentapigw.dpdns.org/robots.txt
+
 User-agent: *
 Allow: /
 Allow: /docs
+Allow: /blog
 Allow: /login
 Allow: /privacy
 Allow: /terms
 Allow: /aup
+Allow: /agents
+Allow: /llms.txt
+Allow: /llms-full.txt
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /v1/admin/
+Disallow: /webhooks/
+
+# ChatGPT / AI crawlers - additional allowances
+User-agent: GPTBot
+Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /agent.json
 Allow: /openapi.json
-Allow: /agent-onboarding.md
-Allow: /agents
-Allow: /sitemap.xml
-Allow: /v1/billing/pricing
-Allow: /v1/schemas
-Allow: /health
-Disallow: /dashboard
-Disallow: /api/auth
-Disallow: /v1/extract
-Disallow: /v1/usage
-Disallow: /v1/billing/checkout
-Disallow: /webhooks
 
-User-agent: GPTBot
+User-agent: Claude-Web
 Allow: /
+Allow: /llms.txt
 
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: anthropic-ai
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Google-Extended
+User-agent: Googlebot
 Allow: /
 
 Sitemap: https://agentapigw.dpdns.org/sitemap.xml

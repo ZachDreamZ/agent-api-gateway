@@ -11,17 +11,20 @@ import {
   LogOut,
   Play,
 } from 'lucide-react';
-import Overview from './pages/Overview';
-import ApiKeys from './pages/ApiKeys';
-import Billing from './pages/Billing';
-import Landing from './pages/AuraLanding';
-import Docs from './pages/Docs';
-import Auth from './pages/Auth';
-import Legal from './pages/Legal';
-import ForAgents from './pages/ForAgents';
-import ResetPassword from './pages/ResetPassword';
-import { BlogListing, BlogPost } from './pages/Blog';
-import NotFound from './pages/NotFound';
+import { lazy, Suspense } from 'react';
+
+const Overview = lazy(() => import('./pages/Overview'));
+const ApiKeys = lazy(() => import('./pages/ApiKeys'));
+const Billing = lazy(() => import('./pages/Billing'));
+const Landing = lazy(() => import('./pages/AuraLanding'));
+const Docs = lazy(() => import('./pages/Docs'));
+const Auth = lazy(() => import('./pages/Auth'));
+const Legal = lazy(() => import('./pages/Legal'));
+const ForAgents = lazy(() => import('./pages/ForAgents'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const BlogListing = lazy(() => import('./pages/Blog').then(m => ({ default: m.BlogListing })));
+const BlogPost = lazy(() => import('./pages/Blog').then(m => ({ default: m.BlogPost })));
+const NotFound = lazy(() => import('./pages/NotFound'));
 import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -255,6 +258,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ErrorBoundary>
+      <Suspense fallback={<LoadingScreen label="Loading..." />}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/docs" element={<Docs />} />
@@ -280,6 +284,7 @@ export default function App() {
           }
         />
       </Routes>
+      </Suspense>
       </ErrorBoundary>
     </BrowserRouter>
   );

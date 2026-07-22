@@ -4,6 +4,20 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, Copy, Check, BookOpen } from 'lucide-react';
 import { LogoMark, AmbientBg, SectionLabel } from '../components/Brand';
 import { easeOut } from '../lib/motion';
+import {
+  Layout,
+  KeyRound,
+  Braces,
+  Terminal,
+  Activity,
+  CreditCard,
+  Bot,
+  Code2,
+  AlertTriangle,
+  Gauge,
+  Compass,
+  Scale,
+} from 'lucide-react';
 
 // ─── Copy Button ───
 
@@ -83,18 +97,18 @@ function Para({ children }: { children: React.ReactNode }) {
 // ─── Sidebar ───
 
 const SECTIONS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'auth', label: 'Authentication' },
-  { id: 'schemas', label: 'Extraction Schemas' },
-  { id: 'extract', label: 'POST /v1/extract' },
-  { id: 'usage', label: 'GET /v1/usage' },
-  { id: 'pricing', label: 'Pricing & credit packs' },
-  { id: 'mcp', label: 'MCP server' },
-  { id: 'examples', label: 'Examples' },
-  { id: 'errors', label: 'Error Handling' },
-  { id: 'limits', label: 'Rate Limits & Quotas' },
-  { id: 'discovery', label: 'Agent discovery' },
-  { id: 'legal', label: 'Legal' },
+  { id: 'overview', label: 'Overview', icon: Layout, color: 'oklch(0.74 0.12 195)' },
+  { id: 'auth', label: 'Authentication', icon: KeyRound, color: 'oklch(0.72 0.14 155)' },
+  { id: 'schemas', label: 'Extraction Schemas', icon: Braces, color: 'oklch(0.68 0.16 280)' },
+  { id: 'extract', label: 'POST /v1/extract', icon: Terminal, color: 'oklch(0.74 0.12 195)' },
+  { id: 'usage', label: 'GET /v1/usage', icon: Activity, color: 'oklch(0.72 0.14 155)' },
+  { id: 'pricing', label: 'Pricing & credit packs', icon: CreditCard, color: 'oklch(0.65 0.18 45)' },
+  { id: 'mcp', label: 'MCP server', icon: Bot, color: 'oklch(0.7 0.14 260)' },
+  { id: 'examples', label: 'Examples', icon: Code2, color: 'oklch(0.72 0.14 155)' },
+  { id: 'errors', label: 'Error Handling', icon: AlertTriangle, color: 'oklch(0.72 0.18 30)' },
+  { id: 'limits', label: 'Rate Limits & Quotas', icon: Gauge, color: 'oklch(0.74 0.12 195)' },
+  { id: 'discovery', label: 'Agent discovery', icon: Compass, color: 'oklch(0.7 0.14 260)' },
+  { id: 'legal', label: 'Legal', icon: Scale, color: 'oklch(0.65 0.12 280)' },
 ];
 
 function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onNavigate?: () => void }) {
@@ -123,17 +137,23 @@ function DocsSidebar({ activeSection, onNavigate }: { activeSection: string; onN
         />
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3" aria-label="Documentation">
-        {filtered.map((s) => {
-          const isActive = activeSection === s.id;
+        {filtered.map((section) => {
+          const isActive = activeSection === section.id;
+          const Icon = section.icon;
           return (
             <a
-              key={s.id}
-              href={`#${s.id}`}
+              key={section.id}
+              href={`#${section.id}`}
               onClick={onNavigate}
               className={`nav-item ${isActive ? 'nav-item-active' : ''}`}
               style={{ fontSize: '0.8125rem', padding: '0.5rem 0.75rem' }}
             >
-              {s.label}
+              <span className="flex items-center gap-2.5 min-w-0">
+                <span className="flex items-center justify-center w-4 h-4 shrink-0">
+                  <Icon className="w-3.5 h-3.5" strokeWidth={1.75} style={{ color: isActive ? section.color : 'var(--color-text-tertiary)' }} />
+                </span>
+                <span className="truncate">{section.label}</span>
+              </span>
             </a>
           );
         })}

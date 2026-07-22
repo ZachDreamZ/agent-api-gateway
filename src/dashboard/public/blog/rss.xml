@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+<title>Agent API Gateway Engineering and Updates</title>
+<link>https://agentapigw.dpdns.org/blog</link>
+<description>Building structured data extraction for AI agents</description>
+<language>en-us</language>
+<lastBuildDate>Wed, 22 Jul 2026 03:35:17 +0000</lastBuildDate>
+<atom:link href="https://agentapigw.dpdns.org/blog/rss.xml" rel="self" type="application/rss+xml"/>
+<item>
+<title>Why AI agents need structured data, not HTML</title>
+<link>https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents</link>
+<guid isPermaLink="true">https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents</guid>
+<pubDate>Wed, 15 Jul 2026 00:00:00 +0000</pubDate>
+<description>Raw HTML parsing is brittle and expensive. Here is how structured extraction APIs solve the reliability problem for agent tool-calling.</description>
+<category>agents</category><category>engineering</category>
+</item>
+<item>
+<title>SSRF protection for web extraction APIs</title>
+<link>https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis</link>
+<guid isPermaLink="true">https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis</guid>
+<pubDate>Fri, 10 Jul 2026 00:00:00 +0000</pubDate>
+<description>How we block private hosts, metadata endpoints, and credentialed URLs at every layer of the extraction pipeline.</description>
+<category>security</category><category>engineering</category>
+</item>
+<item>
+<title>Choosing the right extraction schema: product, article, or company</title>
+<link>https://agentapigw.dpdns.org/blog/choosing-extraction-schema</link>
+<guid isPermaLink="true">https://agentapigw.dpdns.org/blog/choosing-extraction-schema</guid>
+<pubDate>Sun, 05 Jul 2026 00:00:00 +0000</pubDate>
+<description>A guide to the three built-in schemas and when to use each one for your agent workflows.</description>
+<category>guides</category><category>schema</category>
+</item>
+</channel>
+</rss>

@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { BrandLockup, AmbientBg, SectionLabel } from '../components/Brand';
-import { BookOpen, Calendar, Clock, ArrowLeft } from 'lucide-react';
+import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkles } from 'lucide-react';
 
 const POSTS = [
   {
@@ -228,10 +229,22 @@ function BlogListing() {
 
           <div className="flex flex-col gap-6">
             {POSTS.map((post) => (
-              <article
+              <motion.article
                 key={post.slug}
-                className="surface surface-hover lift-card p-6"
+                className="surface surface-hover lift-card p-6 relative overflow-hidden group"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ y: -2 }}
+                style={{ borderLeft: '3px solid var(--color-accent-base)', borderLeftColor: 'transparent' }}
               >
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), oklch(0.74 0.12 195 / 0.04), transparent 60%)',
+                  }}
+                />
                 <Link to={`/blog/${post.slug}`} className="block">
                   <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
                     {post.title}
@@ -248,23 +261,39 @@ function BlogListing() {
                       <Clock className="w-3 h-3" />
                       {post.readTime}
                     </span>
-                    <div className="flex gap-1.5">
-                      {post.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded px-2 py-0.5 text-[10px] font-medium"
-                          style={{
-                            background: 'var(--color-accent-subtle)',
-                            color: 'var(--color-accent-base)',
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="flex flex-wrap gap-1.5">
+                      {post.tags.map((tag) => {
+                        const tagConfig: Record<string, { icon: typeof Sparkles; color: string; bg: string }> = {
+                          agents: { icon: Bot, color: 'oklch(0.7 0.14 260)', bg: 'oklch(0.7 0.14 260 / 0.12)' },
+                          architecture: { icon: Layout, color: 'oklch(0.74 0.12 195)', bg: 'oklch(0.74 0.12 195 / 0.12)' },
+                          security: { icon: Shield, color: 'oklch(0.72 0.14 155)', bg: 'oklch(0.72 0.14 155 / 0.12)' },
+                          guides: { icon: BookOpen, color: 'oklch(0.65 0.18 45)', bg: 'oklch(0.65 0.18 45 / 0.12)' },
+                          schema: { icon: Tag, color: 'oklch(0.68 0.16 280)', bg: 'oklch(0.68 0.16 280 / 0.12)' },
+                          engineering: { icon: Code2, color: 'oklch(0.72 0.14 155)', bg: 'oklch(0.72 0.14 155 / 0.12)' },
+                        };
+                        const cfg = tagConfig[tagLower];
+                        const TagIcon = cfg?.icon ?? Sparkles;
+                        const tagColor = cfg?.color ?? 'var(--color-accent-base)';
+                        const tagBg = cfg?.bg ?? 'var(--color-accent-subtle)';
+                        return (
+                          <span
+                            key={tag}
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium"
+                            style={{
+                              background: tagBg,
+                              color: tagColor,
+                              border: `1px solid ${tagColor}22`,
+                            }}
+                          >
+                            <TagIcon className="w-2.5 h-2.5" strokeWidth={2.5} />
+                            {tag}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                 </Link>
-              </article>
+              </motion.article>
             ))}
           </div>
 
