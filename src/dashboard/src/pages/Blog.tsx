@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { BrandLockup, AmbientBg, SectionLabel } from '../components/Brand';
-import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkles } from 'lucide-react';
+import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkles, Code2 } from 'lucide-react';
 
 const POSTS = [
   {

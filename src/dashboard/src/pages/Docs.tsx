@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, Copy, Check, BookOpen } from 'lucide-react';
-import { LogoMark, AmbientBg, SectionLabel } from '../components/Brand';
-import { easeOut } from '../lib/motion';
 import {
+  Menu,
+  Copy,
+  Check,
+  BookOpen,
   Layout,
   KeyRound,
   Braces,
@@ -18,6 +19,9 @@ import {
   Compass,
   Scale,
 } from 'lucide-react';
+import { LogoMark, AmbientBg, SectionLabel } from '../components/Brand';
+import { easeOut } from '../lib/motion';
+
 
 // ─── Copy Button ───
 
