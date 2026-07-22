@@ -200,6 +200,39 @@ Start with \`product\` — it's the most tested schema and handles the widest va
 
 Custom schemas are available on the Pro plan. Contact support for schema reviews.`,
   },
+  {
+    slug: 'agent-api-gateway-gets-premium-ui-code-splitting-and-seo',
+    title: 'Premium UI redesign, 30% faster loads, and better SEO',
+    excerpt: 'Glassmorphism design system, code-split bundles, lazy-loaded pages, RSS feed, and enhanced meta tags - what we shipped and why.',
+    date: '2026-07-22',
+    readTime: '3 min',
+    tags: ['engineering', 'architecture'],
+    content: `Today we shipped a major update to the Agent API Gateway - touching every part of the user experience from the landing page to the API docs.
+
+## What changed
+
+### Glassmorphism design system
+The landing page, feature cards, and CTA sections now use a cohesive glassmorphism design language: frosted glass panels with backdrop blur, subtle beam glow effects on the hero section, and animated gradient borders on the CTA stage.
+
+### 30% smaller main bundle
+We lazy-loaded every page with React.lazy. The main JavaScript bundle dropped from 601 KB to 417 KB, and each page now loads as its own tiny chunk (none bigger than 50 KB).
+
+### Docs sidebar icons
+Every section in the documentation sidebar now has a Lucide icon with a per-section brand color.
+
+### Blog tag icons
+Blog post tags now show specific icons per category with color-coded badges for quick scanning.
+
+### SEO infrastructure
+- RSS feed at /blog/rss.xml (auto-discoverable)
+- Enhanced JSON-LD structured data (WebSite + Organization + SoftwareApplication)
+- Proper OG and Twitter cards (summary_large_image)
+- Robots.txt updated for GPTBot and Claude-Web crawlers
+- Sitemap expanded with blog post URLs
+
+### What is next
+We are working on webhook support for async extractions, batch URL processing, and a custom schema builder for Pro plan users. Stay tuned.`
+  },
 ];
 
 function BlogListing() {
@@ -238,6 +271,11 @@ function BlogListing() {
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -2 }}
                 style={{ borderLeft: '3px solid var(--color-accent-base)', borderLeftColor: 'transparent' }}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  e.currentTarget.style.setProperty('--mouse-x', (e.clientX - rect.left) + 'px');
+                  e.currentTarget.style.setProperty('--mouse-y', (e.clientY - rect.top) + 'px');
+                }}
               >
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
