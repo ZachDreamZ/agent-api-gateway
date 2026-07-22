@@ -18,7 +18,7 @@ import {
   Code2,
   BookOpen,
   ChevronDown,
-  ExternalLink,
+  ExternalLink, FileText, Building2, Bot
 } from 'lucide-react';
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
 import { easeOut } from '../lib/motion';
