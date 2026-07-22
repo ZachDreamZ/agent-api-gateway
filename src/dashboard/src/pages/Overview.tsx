@@ -15,6 +15,9 @@ import {
   Sparkles,
   Compass,
   Bot,
+  Package,
+  FileText,
+  Building2,
 } from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem, CopyButton } from '../components/Brand';
 import { apiKey } from '../lib/auth';
