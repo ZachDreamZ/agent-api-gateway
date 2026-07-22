@@ -18,6 +18,7 @@ import {
   Code2,
   BookOpen,
   ChevronDown,
+  ExternalLink,
 } from 'lucide-react';
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
 import { easeOut } from '../lib/motion';
@@ -279,23 +280,33 @@ function SchemaPlayground() {
       >
         <span className="text-eyebrow mr-2">POST /v1/extract</span>
         <div className="flex gap-1" role="tablist" aria-label="Schema type">
-          {(Object.keys(SCHEMAS) as SchemaKey[]).map((key) => (
-            <button
-              key={key}
-              type="button"
-              role="tab"
-              aria-selected={schema === key}
-              onClick={() => { setSchema(key); setResult(null); setError(null); }}
-              className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors"
-              style={{
-                background: schema === key ? 'var(--color-accent-subtle)' : 'transparent',
-                color: schema === key ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
-                border: `1px solid ${schema === key ? 'oklch(0.74 0.12 195 / 0.3)' : 'transparent'}`,
-              }}
-            >
-              {key}
-            </button>
-          ))}
+          {(Object.keys(SCHEMAS) as SchemaKey[]).map((key) => {
+            const isActive = schema === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => { setSchema(key); setResult(null); setError(null); }}
+                className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer"
+                style={{
+                  color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
+                  border: `1px solid ${isActive ? 'oklch(0.74 0.12 195 / 0.3)' : 'transparent'}`,
+                }}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="activePlaygroundTab"
+                    className="absolute inset-0 rounded"
+                    style={{ background: 'var(--color-accent-subtle)', zIndex: -1 }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {key}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -951,21 +962,31 @@ function SDKSection() {
           style={{ borderBottom: '1px solid var(--color-border-subtle)', background: 'var(--color-bg-surface)' }}
         >
           <Globe className="w-3.5 h-3.5" style={{ color: 'var(--color-accent-base)' }} />
-          {(SDK_LANGUAGES.map((l, i) => (
-            <button
-              key={l.name}
-              type="button"
-              onClick={() => setLang(i)}
-              className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors"
-              style={{
-                background: lang === i ? 'var(--color-accent-subtle)' : 'transparent',
-                color: lang === i ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
-                border: `1px solid ${lang === i ? 'oklch(0.74 0.12 195 / 0.3)' : 'transparent'}`,
-              }}
-            >
-              {l.name}
-            </button>
-          )))}
+          {(SDK_LANGUAGES.map((l, i) => {
+            const isActive = lang === i;
+            return (
+              <button
+                key={l.name}
+                type="button"
+                onClick={() => setLang(i)}
+                className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer"
+                style={{
+                  color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
+                  border: `1px solid ${isActive ? 'oklch(0.74 0.12 195 / 0.3)' : 'transparent'}`,
+                }}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="activeSdkTab"
+                    className="absolute inset-0 rounded"
+                    style={{ background: 'var(--color-accent-subtle)', zIndex: -1 }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+                {l.name}
+              </button>
+            );
+          }))}
           <span className="ml-auto flex items-center gap-2">
             <span className="text-[10px]" style={{ color: 'var(--color-text-tertiary)' }}>
               {active.install}
@@ -1200,7 +1221,7 @@ function FaqSection() {
               <button
                 type="button"
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left"
+                className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left cursor-pointer"
                 aria-expanded={isOpen}
               >
                 <span className="text-sm font-medium" style={{ color: 'var(--color-text-primary)' }}>
@@ -1211,11 +1232,25 @@ function FaqSection() {
                   style={{ color: 'var(--color-text-tertiary)', transform: isOpen ? 'rotate(180deg)' : 'none' }}
                 />
               </button>
-              {isOpen && (
-                <p className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
-                  {item.a}
-                </p>
-              )}
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    initial="collapsed"
+                    animate="open"
+                    exit="collapsed"
+                    variants={{
+                      open: { opacity: 1, height: 'auto' },
+                      collapsed: { opacity: 0, height: 0 }
+                    }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-4 pb-4 text-sm leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+                      {item.a}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
@@ -1238,20 +1273,22 @@ function Pricing() {
           Prefer Gumroad?{' '}
           <a
             href="https://shadowcraft41.gumroad.com/l/spwxix"
-            className="link"
+            className="link inline-flex items-center gap-1 cursor-pointer"
             target="_blank"
             rel="noopener noreferrer"
           >
             $1 Starter
+            <ExternalLink className="w-3 h-3" />
           </a>
           {' · '}
           <a
             href="https://shadowcraft41.gumroad.com/l/nhvqdw"
-            className="link"
+            className="link inline-flex items-center gap-1 cursor-pointer"
             target="_blank"
             rel="noopener noreferrer"
           >
             $9 debug ticket
+            <ExternalLink className="w-3 h-3" />
           </a>
           .
         </p>

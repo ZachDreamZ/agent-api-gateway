@@ -470,7 +470,7 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
           disabled={creating}
         >
           <KeyRound className="w-3.5 h-3.5" />
-          {creating ? 'Generating…' : 'Generate API key'}
+          {creating ? 'Creating…' : 'Create API key'}
         </button>
       )}
 

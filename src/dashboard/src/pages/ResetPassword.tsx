@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { Eye, EyeOff } from 'lucide-react';
 import { resetPassword } from '../lib/auth';
 import { AmbientBg, BrandLockup, Spinner } from '../components/Brand';
 import { easeOut, scaleIn } from '../lib/motion';
@@ -9,7 +10,9 @@ export default function ResetPassword() {
   const [params] = useSearchParams();
   const token = useMemo(() => params.get('token') || '', [params]);
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [confirm, setConfirm] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -76,29 +79,51 @@ export default function ResetPassword() {
               <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
                 New password
               </label>
-              <input
-                type="password"
-                className="input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={10}
-                autoComplete="new-password"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className="input pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={10}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5 cursor-pointer"
+                  style={{ color: 'var(--color-text-tertiary)' }}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
                 Confirm password
               </label>
-              <input
-                type="password"
-                className="input"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                required
-                minLength={10}
-                autoComplete="new-password"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  className="input pr-10"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  required
+                  minLength={10}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5 cursor-pointer"
+                  style={{ color: 'var(--color-text-tertiary)' }}
+                  aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
             <button type="submit" disabled={loading} className="btn btn-primary w-full">
               {loading ? <Spinner /> : 'Update password'}
