@@ -1,15 +1,16 @@
 import { Link } from 'react-router-dom';
+import { FileText, Braces, Code2, Heart, Activity, BookOpen, List } from 'lucide-react';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 
 const ENDPOINTS = [
-  { href: '/llms.txt', label: 'llms.txt', desc: 'Short brief for LLMs and crawlers' },
-  { href: '/llms-full.txt', label: 'llms-full.txt', desc: 'Expanded product brief' },
-  { href: '/agent.json', label: 'agent.json', desc: 'Machine catalog (JSON)' },
-  { href: '/openapi.json', label: 'openapi.json', desc: 'Extract API shape' },
-  { href: '/agent-onboarding.md', label: 'agent-onboarding.md', desc: 'Markdown onboarding' },
-  { href: '/v1/billing/pricing', label: 'GET /v1/billing/pricing', desc: 'Live pricing JSON' },
-  { href: '/health', label: 'GET /health', desc: 'Liveness probe' },
-  { href: '/v1/schemas', label: 'GET /v1/schemas', desc: 'Schema catalog' },
+  { href: '/llms.txt', label: 'llms.txt', icon: FileText, desc: 'Short brief for LLMs and crawlers' },
+  { href: '/llms-full.txt', label: 'llms-full.txt', icon: FileText, desc: 'Expanded product brief' },
+  { href: '/agent.json', label: 'agent.json', icon: Braces, desc: 'Machine catalog (JSON)' },
+  { href: '/openapi.json', label: 'openapi.json', icon: Code2, desc: 'Extract API shape' },
+  { href: '/agent-onboarding.md', label: 'agent-onboarding.md', icon: BookOpen, desc: 'Markdown onboarding' },
+  { href: '/v1/billing/pricing', label: 'GET /v1/billing/pricing', icon: Activity, desc: 'Live pricing JSON' },
+  { href: '/health', label: 'GET /health', icon: Heart, desc: 'Liveness probe' },
+  { href: '/v1/schemas', label: 'GET /v1/schemas', icon: List, desc: 'Schema catalog' },
 ];
 
 export default function ForAgents() {
@@ -38,16 +39,21 @@ export default function ForAgents() {
         <h2 className="text-sm font-semibold mb-3">Machine entry points</h2>
         <ul className="space-y-2 mb-10">
           {ENDPOINTS.map((e) => (
-            <li key={e.href} className="surface p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-              <div>
-                <a href={e.href} className="link-accent text-sm font-mono">
-                  {e.label}
-                </a>
-                <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-tertiary)' }}>
-                  {e.desc}
-                </p>
+            <li key={e.href} className="surface p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 group">
+              <div className="flex items-start gap-3 min-w-0">
+                <div className="rounded-lg p-1.5 shrink-0 mt-0.5" style={{ background: 'var(--color-accent-subtle)' }}>
+                  <e.icon className="w-4 h-4" style={{ color: 'var(--color-accent-base)' }} strokeWidth={1.75} />
+                </div>
+                <div className="min-w-0">
+                  <a href={e.href} className="link-accent text-sm font-mono">
+                    {e.label}
+                  </a>
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-tertiary)' }}>
+                    {e.desc}
+                  </p>
+                </div>
               </div>
-              <a href={e.href} className="text-xs link shrink-0">
+              <a href={e.href} className="text-xs link shrink-0 transition-transform duration-200" style={{ paddingLeft: '0.5rem' }}>
                 Open →
               </a>
             </li>

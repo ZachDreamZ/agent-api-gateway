@@ -1,7 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView } from 'motion/react';
-import { Zap, Activity, Clock, KeyRound, TrendingUp, TrendingDown, BookOpen, ArrowRight, Download } from 'lucide-react';
+import { motion, useInView, AnimatePresence } from 'motion/react';
+import {
+  Zap,
+  Activity,
+  Clock,
+  KeyRound,
+  TrendingUp,
+  TrendingDown,
+  BookOpen,
+  ArrowRight,
+  Download,
+  MousePointer2,
+  Sparkles,
+  Compass,
+  Bot,
+} from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem, CopyButton } from '../components/Brand';
 import { apiKey } from '../lib/auth';
 import { easeOut } from '../lib/motion';
@@ -388,6 +402,55 @@ function CreditPacksMini() {
   );
 }
 
+
+
+// --- Schema Showcase ---
+const SCHEMAS = [
+  { name: "Product", icon: Package, slug: "product", color: "oklch(0.72 0.14 155)", bgColor: "oklch(0.72 0.14 155 / 0.1)", fields: "name, price, currency, rating, in_stock, variants", description: "E-commerce product pages." },
+  { name: "Article", icon: FileText, slug: "article", color: "oklch(0.74 0.12 195)", bgColor: "oklch(0.74 0.12 195 / 0.1)", fields: "title, author, published_at, topics, content_summary", description: "Blogs, news, docs." },
+  { name: "Company", icon: Building2, slug: "company", color: "oklch(0.72 0.08 270)", bgColor: "oklch(0.72 0.08 270 / 0.1)", fields: "name, description, location, founded, funding, industry", description: "Company pages, Crunchbase." },
+];
+
+function SchemaCards() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {SCHEMAS.map((schema, i) => {
+        const Icon = schema.icon;
+        return (
+          <motion.div
+            key={schema.slug}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 + i * 0.08, duration: 0.35, ease: easeOut }}
+            className="relative rounded-xl overflow-hidden border p-4 group"
+            style={{
+              borderColor: "var(--color-border-subtle)",
+              background: "var(--color-bg-surface)",
+            }}
+            whileHover={{ y: -2, borderColor: schema.color }}
+          >
+            <div className="flex items-start gap-3 mb-2">
+              <div className="rounded-lg p-2 shrink-0" style={{ background: schema.bgColor }}>
+                <Icon className="w-4 h-4" style={{ color: schema.color }} strokeWidth={1.75} />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold mb-0.5" style={{ color: "var(--color-text-primary)" }}>{schema.name}</div>
+                <code className="text-[10px]" style={{ color: "var(--color-text-tertiary)" }}>/{schema.slug}</code>
+              </div>
+            </div>
+            <p className="text-[11px] leading-relaxed mb-1.5" style={{ color: "var(--color-text-secondary)" }}>{schema.description}</p>
+            <div className="flex flex-wrap gap-1">
+              {schema.fields.split(", ").map((f) => (
+                <span key={f} className="px-1.5 py-0.5 rounded text-[9px] font-mono font-medium" style={{ background: "var(--color-bg-elevated)", color: "var(--color-text-disabled)" }}>{f}</span>
+              ))}
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
 function AgentIntegrationCard() {
   const code = `# Agent API Gateway - Tool Usage
 To scrape and extract structured data from any public web page:
@@ -414,15 +477,24 @@ Available schemas:
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {['Cursor', 'Claude', 'Windsurf', 'Copilot'].map((tech) => (
-          <span
-            key={tech}
-            className="px-2 py-0.5 rounded text-[10px] font-medium"
-            style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border-subtle)' }}
-          >
-            {tech}
-          </span>
-        ))}
+        {[
+          { name: 'Cursor', icon: MousePointer2, color: 'text-sky-400' },
+          { name: 'Claude', icon: Sparkles, color: 'text-amber-400' },
+          { name: 'Windsurf', icon: Compass, color: 'text-emerald-400' },
+          { name: 'Copilot', icon: Bot, color: 'text-indigo-400' },
+        ].map((tech) => {
+          const Icon = tech.icon;
+          return (
+            <span
+              key={tech.name}
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium"
+              style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border-subtle)' }}
+            >
+              <Icon className={`w-3 h-3 ${tech.color}`} strokeWidth={2.2} />
+              {tech.name}
+            </span>
+          );
+        })}
       </div>
 
       <div className="relative rounded-lg overflow-hidden border" style={{ borderColor: 'var(--color-border-subtle)' }}>
@@ -738,6 +810,16 @@ export default function Overview() {
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3 space-y-6">
           <UsageChart data={chart} />
+          
+          <Stagger>
+            <StaggerItem>
+              <div className="surface surface-hover surface-glow p-5 space-y-4">
+                <h3 className="font-syne text-base font-semibold" style={{ color: "var(--color-text-primary)" }}>Extraction schemas</h3>
+                <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-tertiary)" }}>Each URL + schema pair returns structured JSON. Fields are nullable.</p>
+                <SchemaCards />
+              </div>
+            </StaggerItem>
+          </Stagger>
           <AgentIntegrationCard />
         </div>
         <div className="lg:col-span-2 space-y-4">
