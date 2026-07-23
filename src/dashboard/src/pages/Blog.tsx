@@ -398,43 +398,11 @@ function BlogPost() {
   }
 
   
-  // Inject BlogPosting structured data for SEO
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'blog-post-structured-data';
-    script.textContent = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: post.title,
-      description: post.excerpt,
-      datePublished: post.date,
-      author: {
-        '@type': 'Organization',
-        name: 'NexusCore',
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: 'NexusCore',
-        logo: {
-          '@type': 'ImageObject',
-          url: 'https://agentapigw.dpdns.org/brand/agent-api-gateway-mark.png',
-        },
-      },
-      mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': `https://agentapigw.dpdns.org/blog/${post.slug}`,
-      },
-      keywords: post.tags.join(', '),
-      articleSection: post.tags[0],
-      timeRequired: post.readTime,
-    });
-    document.head.appendChild(script);
-    return () => {
-      const existing = document.getElementById('blog-post-structured-data');
-      if (existing) existing.remove();
-    };
-  }, [post]);
+  useSEO({
+    title: post.title,
+    description: post.excerpt,
+    keywords: post.tags.join(', '),
+  });
 
   // Inject BlogPosting structured data for SEO
   useEffect(() => {
