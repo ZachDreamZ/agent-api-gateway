@@ -237,6 +237,90 @@ Blog post tags now show specific icons per category with color-coded badges for 
 ### What is next
 We are working on webhook support for async extractions, batch URL processing, and a custom schema builder for Pro plan users. Stay tuned.`
   },
+  {
+    slug: 'rate-limiting-strategies-for-ai-agents',
+    title: 'Rate limiting strategies for AI agent APIs',
+    excerpt: 'How to design rate limits that protect your infrastructure without breaking agent workflows. Token buckets, sliding windows, and graceful degradation.',
+    date: '2026-07-23',
+    readTime: '5 min',
+    tags: ['engineering', 'architecture'],
+    content: `AI agents make API calls differently than humans. They burst, retry aggressively, and often run multiple instances in parallel. Traditional rate limiting designed for human-driven applications breaks agent workflows. Here's how we approach it at Agent API Gateway.
+
+## The problem with naive rate limits
+
+A simple "60 requests per minute" limit works for dashboards. It fails for agents because:
+
+1. **Burst patterns**: An agent processing a batch of URLs sends 20 requests in 2 seconds, then nothing for 58 seconds. A per-second limiter blocks it; a per-minute limiter is fine.
+2. **Retry storms**: When an agent hits a limit, many frameworks retry immediately with exponential backoff. Without proper 429 headers, this creates thundering herds.
+3. **Concurrency vs. rate**: An agent might need 10 concurrent requests but only 100 total per minute. These are different dimensions.
+
+## Our approach: layered limits
+
+Agent API Gateway uses three layers:
+
+### 1. Requests per minute (RPM)
+
+The primary limit. Measured with a sliding window (not fixed buckets) to avoid the "minute boundary" problem where an agent could send 60 requests at :59 and 60 more at :00.
+
+\`\`\`
+Free:   10 RPM
+Hobby:  60 RPM
+Pro:   300 RPM
+Scale: 1000 RPM
+\`\`\`
+
+### 2. Concurrent request limit
+
+How many in-flight requests you can have simultaneously. This protects our extraction workers from being monopolized by a single user.
+
+\`\`\`
+Free:    1 concurrent
+Hobby:   5 concurrent
+Pro:    20 concurrent
+Scale: 100 concurrent
+\`\`\`
+
+### 3. Monthly credit budget
+
+A hard cap on total extractions. When you hit it, requests return 402 (Payment Required) with a link to buy more credits. Credits never expire once purchased.
+
+## Proper 429 responses
+
+When a limit is hit, we return:
+
+\`\`\`json
+{
+  "error": "rate_limit_exceeded",
+  "message": "RPM limit reached (60/min on hobby plan)",
+  "retry_after_ms": 1200,
+  "limit": 60,
+  "remaining": 0,
+  "reset_at": "2026-07-23T10:01:00Z"
+}
+\`\`\`
+
+Plus standard headers:
+- \`Retry-After: 1\` (seconds)
+- \`X-RateLimit-Limit: 60\`
+- \`X-RateLimit-Remaining: 0\`
+- \`X-RateLimit-Reset: 1690106460\`
+
+## Graceful degradation
+
+For agents on the Free tier, we offer a "queue mode": instead of rejecting requests, we queue them and process at the allowed rate. The response includes a \`queued: true\` field and an estimated completion time.
+
+## Best practices for agent developers
+
+1. **Read the headers**: Always check \`X-RateLimit-Remaining\` before sending the next request.
+2. **Respect Retry-After**: Don't retry before the indicated time.
+3. **Use concurrency pools**: Limit your parallel requests to your plan's concurrent limit.
+4. **Batch when possible**: One request with multiple URLs is better than multiple single requests.
+5. **Cache responses**: Our API returns \`Cache-Control\` headers. Use them.
+
+## What's next
+
+We're building adaptive rate limits that learn your agent's usage patterns and pre-allocate capacity during predictable burst windows. Pro and Scale users will get this automatically.`
+  },
 ];
 
 function BlogListing() {
