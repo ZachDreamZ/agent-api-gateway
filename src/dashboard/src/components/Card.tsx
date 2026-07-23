@@ -26,14 +26,14 @@ export function Card({
 
   const variantStyles = {
     default: {
-      background: 'oklch(0.99 0.005 195)',
+      background: 'var(--color-bg-surface)',
       border: '1px solid var(--color-border-default)',
       boxShadow: 'none',
     },
     elevated: {
-      background: 'oklch(0.99 0.005 195)',
+      background: 'var(--color-bg-elevated)',
       border: 'none',
-      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
     },
     outline: {
       background: 'transparent',
@@ -41,9 +41,9 @@ export function Card({
       boxShadow: 'none',
     },
     glass: {
-      background: 'oklch(0.99 0.005 195 / 0.8)',
-      border: '1px solid oklch(0.9 0.01 195 / 0.5)',
-      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)',
+      background: 'oklch(0.175 0.02 255 / 0.8)',
+      border: '1px solid oklch(0.34 0.025 255 / 0.5)',
+      boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
       backdropFilter: 'blur(12px)',
     },
   };
@@ -71,9 +71,9 @@ export function Card({
         if (hoverable || onClick) {
           e.currentTarget.style.transform = 'translateY(-2px)';
           if (variant === 'elevated') {
-            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.12)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.4)';
           } else if (variant === 'default' || variant === 'outline') {
-            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.3)';
           }
         }
       }}
