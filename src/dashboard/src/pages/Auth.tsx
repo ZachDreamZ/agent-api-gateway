@@ -402,7 +402,7 @@ export default function Auth() {
                       Name
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-disabled)" }} strokeWidth={1.75} />
+                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-disabled)" }} strokeWidth={1.75} />
                       <input
                         type="text"
                         value={name}
@@ -410,7 +410,7 @@ export default function Auth() {
                         placeholder="Jane Doe"
                         required
                         autoComplete="name"
-                        className="input pl-10"
+                        className="input pl-11"
                       />
                     </div>
                   </motion.div>
@@ -422,7 +422,7 @@ export default function Auth() {
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-disabled)" }} strokeWidth={1.75} />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--color-text-disabled)" }} strokeWidth={1.75} />
                   <input
                     type="email"
                     value={email}
@@ -430,7 +430,7 @@ export default function Auth() {
                     placeholder="you@example.com"
                     required
                     autoComplete="email"
-                    className="input pl-10"
+                    className="input pl-11"
                   />
                 </div>
               </div>
@@ -456,7 +456,7 @@ export default function Auth() {
                     )}
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--color-text-disabled)' }} strokeWidth={1.75} />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--color-text-disabled)' }} strokeWidth={1.75} />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -465,7 +465,7 @@ export default function Auth() {
                       required
                       minLength={10}
                       autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-                      className="input pl-10 pr-10"
+                      className="input pl-11 pr-11"
                     />
                     <button
                       type="button"

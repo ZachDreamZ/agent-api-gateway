@@ -1,4 +1,6 @@
-import React from 'react';
+import os
+
+pagination_content = """import React from 'react';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 interface PaginationProps {
@@ -60,8 +62,8 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          aria-label="First page"
+          className=\"p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors\"
+          aria-label=\"First page\"
         >
           <ChevronsLeft size={18} />
         </button>
@@ -70,17 +72,17 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        aria-label="Previous page"
+        className=\"p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors\"
+        aria-label=\"Previous page\"
       >
         <ChevronLeft size={18} />
       </button>
 
-      <div className="flex items-center gap-1">
+      <div className=\"flex items-center gap-1\">
         {pages.map((page, index) => {
           if (page === '...') {
             return (
-              <span key={+"llipsis-"+} className="px-3 py-2 text-gray-400">
+              <span key={+"llipsis-"+} className=\"px-3 py-2 text-gray-400\">
                 ...
               </span>
             );
@@ -106,8 +108,8 @@ export const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        aria-label="Next page"
+        className=\"p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors\"
+        aria-label=\"Next page\"
       >
         <ChevronRight size={18} />
       </button>
@@ -116,8 +118,8 @@ export const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          aria-label="Last page"
+          className=\"p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors\"
+          aria-label=\"Last page\"
         >
           <ChevronsRight size={18} />
         </button>
@@ -147,22 +149,28 @@ export const SimplePagination: React.FC<SimplePaginationProps> = ({
       <button
         onClick={() => onPageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className=\"px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors\"
       >
         Previous
       </button>
       
-      <span className="text-sm text-gray-700">
+      <span className=\"text-sm text-gray-700\">
         Page {currentPage} of {totalPages}
       </span>
 
       <button
         onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className=\"px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors\"
       >
         Next
       </button>
     </div>
   );
 };
+"""
+
+with open('src/dashboard/src/components/Pagination.tsx', 'w', encoding='utf-8') as f:
+    f.write(pagination_content)
+
+print('Created Pagination.tsx')

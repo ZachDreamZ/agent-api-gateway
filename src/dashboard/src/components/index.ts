@@ -24,7 +24,7 @@ export { LoadingStates } from './LoadingStates';
 export { Logo, LogoLink } from './Logo';
 export { Modal } from './Modal';
 export { Newsletter, NewsletterFooter } from './Newsletter';
-export { Pagination } from './Pagination';
+export { Pagination, SimplePagination } from './Pagination';
 export { PricingCalculator } from './PricingCalculator';
 export { ProgressBar } from './ProgressBar';
 export { SearchBar } from './SearchBar';
