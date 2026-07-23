@@ -1,68 +1,73 @@
-import { Component, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { LogoMark } from './Brand';
-import { reportError } from '../lib/error-reporter';
+import React, { Component, ReactNode } from 'react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
+
 interface State {
+  hasError: boolean;
   error: Error | null;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
-  state: State = { error: null };
-
-  static getDerivedStateFromError(error: Error) {
-    return { error };
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false, error: null };
   }
 
-  componentDidCatch(error: Error, errorInfo: { componentStack?: string }) {
-    reportError(error, errorInfo.componentStack);
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Report to error tracking service if configured
+    if (typeof window !== 'undefined' && (window as any).reportError) {
+      (window as any).reportError(error, errorInfo);
+    }
+  }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
 
   render() {
-    if (this.state.error) {
+    if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
       return (
-        <div
-          className="relative min-h-screen flex flex-col items-center justify-center px-5 text-center"
-          style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
-        >
-          <LogoMark className="w-9 h-9 mb-5" style={{ color: 'var(--color-accent-base)' }} />
-          <h1 className="text-display-sm mb-2">Something went sideways</h1>
-          <p className="text-sm max-w-sm mb-6" style={{ color: 'var(--color-text-secondary)' }}>
-            An unexpected error occurred while rendering this page. Your API keys and data are safe —
-            try reloading, or head back to the home page.
-          </p>
-          <div className="flex gap-3">
+        <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'var(--color-bg-app)' }}>
+          <div className="surface p-8 rounded-xl max-w-md text-center">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full mx-auto mb-4" style={{ background: 'oklch(0.65 0.18 25 / 0.12)', color: 'oklch(0.65 0.18 25)' }}>
+              <AlertTriangle className="w-8 h-8" />
+            </div>
+            <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>
+              Something went wrong
+            </h2>
+            <p className="text-sm mb-6" style={{ color: 'var(--color-text-secondary)' }}>
+              {this.state.error?.message || 'An unexpected error occurred'}
+            </p>
             <button
-              type="button"
-              className="btn btn-primary text-sm"
-              onClick={() => window.location.reload()}
-            >
-              Reload
-            </button>
-            <Link to="/" className="btn btn-secondary text-sm">
-              Back to home
-            </Link>
-          </div>
-          {import.meta.env.DEV && (
-            <pre
-              className="mt-8 max-w-lg text-left text-xs overflow-auto rounded-lg p-4"
+              onClick={this.handleReset}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all hover:scale-105"
               style={{
-                background: 'var(--color-bg-elevated)',
-                color: 'var(--color-error)',
-                border: '1px solid var(--color-border-default)',
+                background: 'var(--color-accent-base)',
+                color: 'white',
               }}
             >
-              {this.state.error.message}
-              {'\n\n'}
-              {this.state.error.stack}
-            </pre>
-          )}
+              <RefreshCw className="w-4 h-4" />
+              Try again
+            </button>
+          </div>
         </div>
       );
     }
+
     return this.props.children;
   }
 }
