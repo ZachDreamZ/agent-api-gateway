@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FileText, Braces, Code2, Heart, Activity, BookOpen, List } from 'lucide-react';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
+import { useSEO } from '../hooks/useSEO';
 
 const ENDPOINTS = [
   { href: '/llms.txt', label: 'llms.txt', icon: FileText, desc: 'Short brief for LLMs and crawlers' },
@@ -14,6 +15,12 @@ const ENDPOINTS = [
 ];
 
 export default function ForAgents() {
+  useSEO({
+    title: 'For AI Agents',
+    description: 'Machine-readable endpoints for AI agents: llms.txt, agent.json, OpenAPI spec, and MCP integration.',
+    keywords: 'AI agents, MCP, llms.txt, agent.json, OpenAPI, structured data',
+  });
+
   return (
     <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
