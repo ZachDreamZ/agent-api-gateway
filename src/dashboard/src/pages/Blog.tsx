@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { BrandLockup, AmbientBg, SectionLabel } from '../components/Brand';
+import { BackToTop } from '../components/BackToTop';
 import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkles, Code2 } from 'lucide-react';
 
 const POSTS = [
@@ -356,6 +357,7 @@ function BlogListing() {
             <span>&copy; {new Date().getFullYear()} NexusCore</span>
           </div>
         </footer>
+      <BackToTop />
       </div>
     </div>
   );
@@ -589,6 +591,7 @@ function BlogPost() {
             <span>&copy; {new Date().getFullYear()} NexusCore</span>
           </div>
         </footer>
+      <BackToTop />
       </div>
     </div>
   );
