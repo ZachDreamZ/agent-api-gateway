@@ -964,6 +964,17 @@ a.sr-only:focus {
   background: var(--color-accent-subtle);
   color: var(--color-accent-base);
 }
+.nav-item-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 2px 2px 0;
+  background: var(--color-accent-base);
+}
 
 .nav-item-active::before {
   content: '';
