@@ -5,9 +5,16 @@
 <link>https://agentapigw.dpdns.org/blog</link>
 <description>Building structured data extraction for AI agents</description>
 <language>en-us</language>
-<lastBuildDate>Wed, 22 Jul 2026 03:42:02 +0000</lastBuildDate>
-  Wed, 22 Jul 2026 03:35:17 +0000</lastBuildDate>
+<lastBuildDate>Wed, 23 Jul 2026 08:00:00 +0000</lastBuildDate>
 <atom:link href="https://agentapigw.dpdns.org/blog/rss.xml" rel="self" type="application/rss+xml"/>
+<item>
+<title>Rate limiting strategies for AI agent APIs</title>
+<link>https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents</link>
+<guid isPermaLink="true">https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents</guid>
+<pubDate>Wed, 23 Jul 2026 08:00:00 +0000</pubDate>
+<description>How to design rate limits that protect your infrastructure without breaking agent workflows. Token buckets, sliding windows, and graceful degradation.</description>
+<category>engineering</category><category>architecture</category>
+</item>
 <item>
 <title>Premium UI redesign, 30% faster loads, and better SEO</title>
 <link>https://agentapigw.dpdns.org/blog/agent-api-gateway-gets-premium-ui-code-splitting-and-seo</link>
