@@ -5,47 +5,48 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  maxVisible?: number;
   showFirstLast?: boolean;
+  maxVisible?: number;
   className?: string;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({
+export function Pagination({
   currentPage,
   totalPages,
   onPageChange,
-  maxVisible = 5,
   showFirstLast = true,
+  maxVisible = 7,
   className = '',
-}) => {
+}: PaginationProps) {
   if (totalPages <= 1) return null;
 
-  const getPageNumbers = () => {
+  const getPageNumbers = (): (number | string)[] => {
+    if (totalPages <= maxVisible) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
     const pages: (number | string)[] = [];
-    const halfVisible = Math.floor(maxVisible / 2);
-    
-    let startPage = Math.max(1, currentPage - halfVisible);
-    let endPage = Math.min(totalPages, currentPage + halfVisible);
+    const sidePages = Math.floor((maxVisible - 3) / 2);
 
-    if (currentPage <= halfVisible) {
-      endPage = Math.min(totalPages, maxVisible);
-    }
-    
-    if (currentPage + halfVisible >= totalPages) {
-      startPage = Math.max(1, totalPages - maxVisible + 1);
-    }
-
-    if (startPage > 1) {
+    if (currentPage <= sidePages + 2) {
+      for (let i = 1; i <= maxVisible - 2; i++) {
+        pages.push(i);
+      }
+      pages.push('...');
+      pages.push(totalPages);
+    } else if (currentPage >= totalPages - sidePages - 1) {
       pages.push(1);
-      if (startPage > 2) pages.push('...');
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) pages.push('...');
+      pages.push('...');
+      for (let i = totalPages - maxVisible + 3; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      pages.push(1);
+      pages.push('...');
+      for (let i = currentPage - sidePages; i <= currentPage + sidePages; i++) {
+        pages.push(i);
+      }
+      pages.push('...');
       pages.push(totalPages);
     }
 
@@ -55,114 +56,172 @@ export const Pagination: React.FC<PaginationProps> = ({
   const pages = getPageNumbers();
 
   return (
-    <div className={+"lex items-center justify-center gap-1 "+}>
+    <nav className={lex items-center justify-center gap-1 } aria-label="Pagination">
       {showFirstLast && (
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="pagination-button"
           aria-label="First page"
         >
-          <ChevronsLeft size={18} />
+          <ChevronsLeft className="w-4 h-4" />
         </button>
       )}
-      
+
       <button
-        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+        onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="pagination-button"
         aria-label="Previous page"
       >
-        <ChevronLeft size={18} />
+        <ChevronLeft className="w-4 h-4" />
       </button>
 
-      <div className="flex items-center gap-1">
-        {pages.map((page, index) => {
-          if (page === '...') {
-            return (
-              <span key={+"llipsis-"+} className="px-3 py-2 text-gray-400">
-                ...
-              </span>
-            );
-          }
-
-          const pageNumber = page as number;
-          const isActive = pageNumber === currentPage;
-
+      {pages.map((page, index) => {
+        if (page === '...') {
           return (
-            <button
-              key={pageNumber}
-              onClick={() => onPageChange(pageNumber)}
-              className={+"px-3 py-2 rounded-lg font-medium transition-colors "+}
-              aria-label={+"Page "+}
-              aria-current={isActive ? 'page' : undefined}
+            <span
+              key={llipsis-}
+              className="px-3 py-2 text-sm"
+              style={{ color: 'var(--color-text-tertiary)' }}
             >
-              {pageNumber}
-            </button>
+              ...
+            </span>
           );
-        })}
-      </div>
+        }
+
+        const pageNum = page as number;
+        const isActive = pageNum === currentPage;
+
+        return (
+          <button
+            key={pageNum}
+            onClick={() => onPageChange(pageNum)}
+            className={pagination-button }
+            aria-label={Page }
+            aria-current={isActive ? 'page' : undefined}
+          >
+            {pageNum}
+          </button>
+        );
+      })}
 
       <button
-        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+        onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        className="pagination-button"
         aria-label="Next page"
       >
-        <ChevronRight size={18} />
+        <ChevronRight className="w-4 h-4" />
       </button>
 
       {showFirstLast && (
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="pagination-button"
           aria-label="Last page"
         >
-          <ChevronsRight size={18} />
+          <ChevronsRight className="w-4 h-4" />
         </button>
       )}
-    </div>
-  );
-};
 
-// Simple pagination variant
+      <style jsx>{
+        .pagination-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 2.5rem;
+          height: 2.5rem;
+          padding: 0.5rem;
+          border-radius: 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          background: var(--color-surface);
+          color: var(--color-text-secondary);
+          border: 1px solid var(--color-border);
+          transition: all 0.2s ease;
+        }
+
+        .pagination-button:hover:not(:disabled) {
+          background: var(--color-surface-hover);
+          border-color: var(--color-accent);
+          color: var(--color-accent);
+        }
+
+        .pagination-button:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        .pagination-button-active {
+          background: var(--color-accent);
+          color: white;
+          border-color: var(--color-accent);
+        }
+
+        .pagination-button-active:hover {
+          background: var(--color-accent-hover);
+          border-color: var(--color-accent-hover);
+          color: white;
+        }
+      }</style>
+    </nav>
+  );
+}
+
 interface SimplePaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  itemsPerPage?: number;
+  totalItems?: number;
   className?: string;
 }
 
-export const SimplePagination: React.FC<SimplePaginationProps> = ({
+export function SimplePagination({
   currentPage,
   totalPages,
   onPageChange,
+  itemsPerPage,
+  totalItems,
   className = '',
-}) => {
-  if (totalPages <= 1) return null;
+}: SimplePaginationProps) {
+  const startItem = totalItems ? (currentPage - 1) * (itemsPerPage || 10) + 1 : null;
+  const endItem = totalItems ? Math.min(currentPage * (itemsPerPage || 10), totalItems) : null;
 
   return (
-    <div className={+"lex items-center justify-between "+}>
-      <button
-        onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-        disabled={currentPage === 1}
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        Previous
-      </button>
-      
-      <span className="text-sm text-gray-700">
-        Page {currentPage} of {totalPages}
-      </span>
+    <div className={lex items-center justify-between }>
+      {startItem && endItem && totalItems && (
+        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+          Showing <span className="font-medium">{startItem}</span> to{' '}
+          <span className="font-medium">{endItem}</span> of{' '}
+          <span className="font-medium">{totalItems}</span> results
+        </p>
+      )}
 
-      <button
-        onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-        disabled={currentPage === totalPages}
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        Next
-      </button>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 text-sm font-medium rounded-lg surface-elevated border border-border transition-colors hover:border-accent hover:text-accent disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+
+        <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+          Page <span className="font-medium">{currentPage}</span> of{' '}
+          <span className="font-medium">{totalPages}</span>
+        </span>
+
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 text-sm font-medium rounded-lg surface-elevated border border-border transition-colors hover:border-accent hover:text-accent disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
-};
+}
