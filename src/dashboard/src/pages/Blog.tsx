@@ -570,7 +570,7 @@ function BlogPost() {
 
 
             <div className="mt-6 flex justify-center">
-              {/* <ShareButton url={post.slug} title={post.title} /> */}
+              <ShareButton url={post.slug} title={post.title} />
             </div>
 
           <div className="prose-container">

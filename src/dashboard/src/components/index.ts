@@ -37,7 +37,7 @@ export { Tooltip } from './Tooltip';
 // Interactive Components
 export { Accordion } from './Accordion';
 export { Tabs } from './Tabs';
-// export { ShareButton } from './ShareButton';
+export { ShareButton } from './ShareButton';
 
 // Landing Page Components
 export { Hero } from './Hero';
