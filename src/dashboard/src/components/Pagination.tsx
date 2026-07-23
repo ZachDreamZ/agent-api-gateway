@@ -5,223 +5,129 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  showFirstLast?: boolean;
-  maxVisible?: number;
-  className?: string;
+  siblingCount?: number;
 }
 
 export function Pagination({
   currentPage,
   totalPages,
   onPageChange,
-  showFirstLast = true,
-  maxVisible = 7,
-  className = '',
+  siblingCount = 1,
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
-
-  const getPageNumbers = (): (number | string)[] => {
-    if (totalPages <= maxVisible) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-
-    const pages: (number | string)[] = [];
-    const sidePages = Math.floor((maxVisible - 3) / 2);
-
-    if (currentPage <= sidePages + 2) {
-      for (let i = 1; i <= maxVisible - 2; i++) {
-        pages.push(i);
-      }
-      pages.push('...');
-      pages.push(totalPages);
-    } else if (currentPage >= totalPages - sidePages - 1) {
-      pages.push(1);
-      pages.push('...');
-      for (let i = totalPages - maxVisible + 3; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      pages.push(1);
-      pages.push('...');
-      for (let i = currentPage - sidePages; i <= currentPage + sidePages; i++) {
-        pages.push(i);
-      }
-      pages.push('...');
-      pages.push(totalPages);
-    }
-
-    return pages;
+  const range = (start: number, end: number) => {
+    const length = end - start + 1;
+    return Array.from({ length }, (_, idx) => idx + start);
   };
 
-  const pages = getPageNumbers();
+  const generatePageNumbers = () => {
+    const totalPageNumbers = siblingCount + 5;
+
+    if (totalPages <= totalPageNumbers) {
+      return range(1, totalPages);
+    }
+
+    const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
+    const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
+
+    const shouldShowLeftDots = leftSiblingIndex > 2;
+    const shouldShowRightDots = rightSiblingIndex < totalPages - 2;
+
+    if (!shouldShowLeftDots && shouldShowRightDots) {
+      const leftItemCount = 3 + 2 * siblingCount;
+      const leftRange = range(1, leftItemCount);
+      return [...leftRange, 'dots', totalPages];
+    }
+
+    if (shouldShowLeftDots && !shouldShowRightDots) {
+      const rightItemCount = 3 + 2 * siblingCount;
+      const rightRange = range(totalPages - rightItemCount + 1, totalPages);
+      return [1, 'dots', ...rightRange];
+    }
+
+    if (shouldShowLeftDots && shouldShowRightDots) {
+      const middleRange = range(leftSiblingIndex, rightSiblingIndex);
+      return [1, 'dots', ...middleRange, 'dots', totalPages];
+    }
+
+    return [];
+  };
+
+  const pages = generatePageNumbers();
 
   return (
-    <nav className={lex items-center justify-center gap-1 } aria-label="Pagination">
-      {showFirstLast && (
+    <nav className="flex items-center justify-between px-4 py-3" role="navigation" aria-label="Pagination">
+      <div className="flex items-center gap-2">
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="pagination-button"
+          className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5"
           aria-label="First page"
         >
-          <ChevronsLeft className="w-4 h-4" />
+          <ChevronsLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
         </button>
-      )}
-
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="pagination-button"
-        aria-label="Previous page"
-      >
-        <ChevronLeft className="w-4 h-4" />
-      </button>
-
-      {pages.map((page, index) => {
-        if (page === '...') {
-          return (
-            <span
-              key={llipsis-}
-              className="px-3 py-2 text-sm"
-              style={{ color: 'var(--color-text-tertiary)' }}
-            >
-              ...
-            </span>
-          );
-        }
-
-        const pageNum = page as number;
-        const isActive = pageNum === currentPage;
-
-        return (
-          <button
-            key={pageNum}
-            onClick={() => onPageChange(pageNum)}
-            className={pagination-button }
-            aria-label={Page }
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {pageNum}
-          </button>
-        );
-      })}
-
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="pagination-button"
-        aria-label="Next page"
-      >
-        <ChevronRight className="w-4 h-4" />
-      </button>
-
-      {showFirstLast && (
-        <button
-          onClick={() => onPageChange(totalPages)}
-          disabled={currentPage === totalPages}
-          className="pagination-button"
-          aria-label="Last page"
-        >
-          <ChevronsRight className="w-4 h-4" />
-        </button>
-      )}
-
-      <style jsx>{
-        .pagination-button {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 2.5rem;
-          height: 2.5rem;
-          padding: 0.5rem;
-          border-radius: 0.5rem;
-          font-size: 0.875rem;
-          font-weight: 500;
-          background: var(--color-surface);
-          color: var(--color-text-secondary);
-          border: 1px solid var(--color-border);
-          transition: all 0.2s ease;
-        }
-
-        .pagination-button:hover:not(:disabled) {
-          background: var(--color-surface-hover);
-          border-color: var(--color-accent);
-          color: var(--color-accent);
-        }
-
-        .pagination-button:disabled {
-          opacity: 0.4;
-          cursor: not-allowed;
-        }
-
-        .pagination-button-active {
-          background: var(--color-accent);
-          color: white;
-          border-color: var(--color-accent);
-        }
-
-        .pagination-button-active:hover {
-          background: var(--color-accent-hover);
-          border-color: var(--color-accent-hover);
-          color: white;
-        }
-      }</style>
-    </nav>
-  );
-}
-
-interface SimplePaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  itemsPerPage?: number;
-  totalItems?: number;
-  className?: string;
-}
-
-export function SimplePagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-  itemsPerPage,
-  totalItems,
-  className = '',
-}: SimplePaginationProps) {
-  const startItem = totalItems ? (currentPage - 1) * (itemsPerPage || 10) + 1 : null;
-  const endItem = totalItems ? Math.min(currentPage * (itemsPerPage || 10), totalItems) : null;
-
-  return (
-    <div className={lex items-center justify-between }>
-      {startItem && endItem && totalItems && (
-        <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-          Showing <span className="font-medium">{startItem}</span> to{' '}
-          <span className="font-medium">{endItem}</span> of{' '}
-          <span className="font-medium">{totalItems}</span> results
-        </p>
-      )}
-
-      <div className="flex items-center gap-2">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-4 py-2 text-sm font-medium rounded-lg surface-elevated border border-border transition-colors hover:border-accent hover:text-accent disabled:opacity-40 disabled:cursor-not-allowed"
+          className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5"
+          aria-label="Previous page"
         >
-          Previous
+          <ChevronLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
         </button>
+      </div>
 
-        <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-          Page <span className="font-medium">{currentPage}</span> of{' '}
-          <span className="font-medium">{totalPages}</span>
-        </span>
+      <div className="flex items-center gap-1">
+        {pages.map((page, index) => {
+          if (page === 'dots') {
+            return (
+              <span
+                key={dots-}
+                className="px-3 py-2 text-sm"
+                style={{ color: 'var(--color-text-tertiary)' }}
+              >
+                ...
+              </span>
+            );
+          }
 
+          const pageNumber = page as number;
+          const isActive = pageNumber === currentPage;
+
+          return (
+            <button
+              key={pageNumber}
+              onClick={() => onPageChange(pageNumber)}
+              className="px-3 py-2 text-sm rounded-lg transition-colors"
+              style={{
+                backgroundColor: isActive ? 'var(--color-accent-base)' : 'transparent',
+                color: isActive ? 'white' : 'var(--color-text-secondary)',
+              }}
+              aria-label={Page }
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="flex items-center gap-2">
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 text-sm font-medium rounded-lg surface-elevated border border-border transition-colors hover:border-accent hover:text-accent disabled:opacity-40 disabled:cursor-not-allowed"
+          className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5"
+          aria-label="Next page"
         >
-          Next
+          <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
+        </button>
+        <button
+          onClick={() => onPageChange(totalPages)}
+          disabled={currentPage === totalPages}
+          className="p-2 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed hover:bg-black/5"
+          aria-label="Last page"
+        >
+          <ChevronsRight className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
         </button>
       </div>
-    </div>
+    </nav>
   );
 }
