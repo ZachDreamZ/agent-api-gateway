@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+content = '''import React, { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 export function BackToTop() {
@@ -32,8 +32,8 @@ export function BackToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
-      aria-label="Back to top"
+      className=\"fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 rounded-full shadow-lg transition-all duration-200 hover:scale-110\"
+      aria-label=\"Back to top\"
       style={{
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
@@ -50,7 +50,13 @@ export function BackToTop() {
         e.currentTarget.style.borderColor = 'var(--color-accent-base)';
       }}
     >
-      <ArrowUp className="w-5 h-5" strokeWidth={2.5} />
+      <ArrowUp className=\"w-5 h-5\" strokeWidth={2.5} />
     </button>
   );
 }
+'''
+
+with open('src/dashboard/src/components/BackToTop.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('Improved BackToTop component with proper accent colors')
