@@ -29,6 +29,7 @@ import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { easeOut, pageTransition, fadeUp } from './lib/motion';
+import { useGlobalShortcuts } from './hooks/useKeyboardShortcuts';
 
 // ─── Route protection ───
 
@@ -209,6 +210,7 @@ function UserBar({ user }: { user: UserInfo | null }) {
 
 function DashboardLayout() {
   const user = useUser();
+  useGlobalShortcuts();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
