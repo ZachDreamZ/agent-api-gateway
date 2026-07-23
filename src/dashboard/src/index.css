@@ -1468,26 +1468,6 @@ a.sr-only:focus {
     transform: translateY(0) scale(1);
   }
 }
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Button spinner animation */
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
 /* Skeleton wave animation */
 @keyframes skeleton-wave {
   0% {
