@@ -20,6 +20,8 @@ import {
   Building2,
 } from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem, CopyButton } from '../components/Brand';
+import { Breadcrumbs } from '../components/Breadcrumbs';
+import { WhatsNew } from '../components/WhatsNew';
 import { apiKey } from '../lib/auth';
 import { easeOut } from '../lib/motion';
 
@@ -709,6 +711,7 @@ export default function Overview() {
 
   return (
     <div className="space-y-6">
+      <WhatsNew />
       {error && (
         <div
           className="rounded-md px-4 py-3 text-sm"
