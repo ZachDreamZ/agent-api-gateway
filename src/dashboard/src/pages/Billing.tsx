@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Check, X, Star, ExternalLink, Zap } from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem } from '../components/Brand';
 import { easeOut } from '../lib/motion';
+import { useSEO } from '../hooks/useSEO';
 
 // ─── Types ───
 
@@ -314,6 +315,8 @@ export default function Billing() {
   const [invoices, setInvoices] = useState<BillingInvoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+
+  useSEO({ title: 'Billing & Plans', description: 'Manage your subscription, view pricing tiers, and purchase credit packs.' });
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 

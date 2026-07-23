@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useSEO } from '../hooks/useSEO';
 import {
   KeyRound,
   Eye,
@@ -341,6 +342,8 @@ export default function ApiKeys() {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [newKey, setNewKey] = useState<NewKeyResult | null>(null);
+
+  useSEO({ title: 'API Keys', description: 'Create and manage your API keys for the Agent API Gateway.' });
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
   const [toggling, setToggling] = useState<string | null>(null);
