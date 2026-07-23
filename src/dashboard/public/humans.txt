@@ -1,0 +1,21 @@
+/* TEAM */
+Product: Agent API Gateway
+Organization: NexusCore
+Website: https://agentapigw.dpdns.org
+Location: Global
+
+/* THANKS */
+Built with: Hono, React, Vite, Better Auth, Polar
+Inspired by: Stripe API design, Railway dashboard UX
+LLM Providers: OpenRouter, Google Gemini, Anthropic Claude
+
+/* SITE */
+Last update: 2026-07-23
+Standards: HTML5, CSS3, ES2024, TypeScript
+Components: Motion, Lucide Icons
+Fonts: Syne, Inter, JetBrains Mono
+Software: Vite 6, React 19, Node.js
+
+/* CONTACT */
+Email: support@agentapigw.dpdns.org
+GitHub: https://github.com/ZachDreamZ/agent-api-gateway

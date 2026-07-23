@@ -1,0 +1,13 @@
+Contact: mailto:security@agentapigw.dpdns.org
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://agentapigw.dpdns.org/.well-known/security.txt
+Policy: https://agentapigw.dpdns.org/aup
+Acknowledgments: https://agentapigw.dpdns.org/blog
+
+# Security Disclosure Policy
+# We take security seriously. If you discover a vulnerability, please:
+# 1. Email security@agentapigw.dpdns.org with details
+# 2. Allow 90 days for remediation before public disclosure
+# 3. Do not exploit the vulnerability or access user data
+# Thank you for responsible disclosure.
