@@ -21,6 +21,7 @@ import {
   ExternalLink, FileText, Building2, Bot
 } from 'lucide-react';
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
+import { NewsletterSignup } from '../components/NewsletterSignup';
 import { BackToTop } from '../components/BackToTop';
 import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
@@ -1626,7 +1627,7 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer className="relative z-10" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
+      <footer className="relative z-10" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
       <div className="mx-auto max-w-6xl px-5 md:px-6 py-14 md:py-20 text-center">
         <p className="text-display-sm max-w-lg mx-auto mb-4" style={{ color: 'var(--color-text-primary)' }}>
           Ship structured data without a scraper farm.
