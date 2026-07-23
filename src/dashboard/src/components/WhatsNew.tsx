@@ -11,14 +11,15 @@ interface Update {
 
 const LATEST_UPDATES: Update[] = [
   {
-    version: '1.2.0',
+    version: '1.3.0',
     date: '2026-07-23',
-    title: 'Performance & Navigation',
+    title: 'Premium Polish & New Content',
     items: [
-      'Added service worker for offline support',
-      'Breadcrumb navigation in dashboard',
-      'Back to top button on landing page',
-      'Improved SEO with meta tags and sitemap updates'
+      'New blog: Rate limiting strategies for AI agents',
+      'Premium button animations and hover effects',
+      'Fixed ShareButton and PerformanceMonitor crashes',
+      'SEO page titles on all pages',
+      'Tooltip accessibility improvements'
     ]
   }
 ];
