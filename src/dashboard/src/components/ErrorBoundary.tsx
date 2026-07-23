@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { LogoMark } from './Brand';
+import { reportError } from '../lib/error-reporter';
 
 interface Props {
   children: ReactNode;
@@ -16,9 +17,8 @@ export class ErrorBoundary extends Component<Props, State> {
     return { error };
   }
 
-  componentDidCatch(error: Error) {
-    // eslint-disable-next-line no-console
-    console.error('[ErrorBoundary]', error);
+  componentDidCatch(error: Error, errorInfo: { componentStack?: string }) {
+    reportError(error, errorInfo.componentStack);
   }
 
   render() {
