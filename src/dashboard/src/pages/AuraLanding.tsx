@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
 import { BackToTop } from '../components/BackToTop';
+import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { easeOut } from '../lib/motion';
 
@@ -1658,7 +1659,10 @@ function Footer() {
           </a>
         </div>
       </div>
-      <div
+                <div className="mt-6 mb-4 flex justify-center">
+            <ApiHealthBadge />
+          </div>
+<div
         className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-center text-[11px]"
         style={{ color: 'var(--color-text-disabled)' }}
       >

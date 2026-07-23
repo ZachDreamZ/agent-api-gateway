@@ -1,35 +1,55 @@
-# Agent API Gateway — search and AI crawler directives
-# https://agentapigw.dpdns.org/robots.txt
-
 User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://agentapigw.dpdns.org/sitemap.xml
+
+# AI Crawlers
+User-agent: GPTBot
 Allow: /
 Allow: /docs
 Allow: /blog
-Allow: /login
-Allow: /privacy
-Allow: /terms
-Allow: /aup
 Allow: /agents
-Allow: /llms.txt
-Allow: /llms-full.txt
-Disallow: /dashboard/
-Disallow: /api/
-Disallow: /v1/admin/
-Disallow: /webhooks/
-
-# ChatGPT / AI crawlers - additional allowances
-User-agent: GPTBot
-Allow: /
-Allow: /llms.txt
-Allow: /llms-full.txt
-Allow: /agent.json
-Allow: /openapi.json
 
 User-agent: Claude-Web
 Allow: /
-Allow: /llms.txt
+Allow: /docs
+Allow: /blog
+Allow: /agents
 
-User-agent: Googlebot
+User-agent: ChatGPT-User
 Allow: /
+Allow: /docs
+Allow: /blog
+Allow: /agents
 
-Sitemap: https://agentapigw.dpdns.org/sitemap.xml
+User-agent: anthropic-ai
+Allow: /
+Allow: /docs
+Allow: /blog
+Allow: /agents
+
+User-agent: cohere-ai
+Allow: /
+Allow: /docs
+Allow: /blog
+Allow: /agents
+
+User-agent: Perplexitybot
+Allow: /
+Allow: /docs
+Allow: /blog
+Allow: /agents
+
+# Block aggressive scrapers
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Rate limiting recommendations
+Crawl-delay: 1
