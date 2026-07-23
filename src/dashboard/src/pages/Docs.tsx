@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { useSEO } from '../hooks/useSEO';
 import {
   Menu,
   Copy,
@@ -449,6 +450,12 @@ Remaining = monthly plan limit + bonus credits − usage. Packs never expire unt
 export default function Docs() {
   const [activeSection, setActiveSection] = useState('overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useSEO({
+    title: 'API Documentation',
+    description: 'Complete API documentation for Agent API Gateway. Learn how to extract structured data from any URL using REST or MCP.',
+    keywords: 'API docs, extraction API, structured data, REST API, MCP, AI agents',
+  });
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {

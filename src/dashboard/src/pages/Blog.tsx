@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { useSEO } from '../hooks/useSEO';
 import { BrandLockup, AmbientBg, SectionLabel } from '../components/Brand';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { BackToTop, ShareButton } from '../components';
@@ -239,6 +240,12 @@ We are working on webhook support for async extractions, batch URL processing, a
 ];
 
 function BlogListing() {
+  useSEO({
+    title: 'Blog',
+    description: 'Technical articles on AI agents, structured data extraction, and web scraping best practices.',
+    keywords: 'AI agents blog, structured data, web scraping, extraction API, LLM tools',
+  });
+
   return (
     <div
       className="landing-shell relative min-h-screen"
