@@ -404,6 +404,9 @@ a.sr-only:focus {
     outline: none;
     transition: border-color var(--dur-fast) var(--ease-out),
                 box-shadow var(--dur-fast) var(--ease-out);
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+    height: 2.5rem;
   }
   
   /* Input without icon - default padding */
