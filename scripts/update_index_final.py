@@ -1,4 +1,4 @@
-// Component Library Index
+content = '''// Component Library Index
 // All reusable UI components for the Agent API Gateway dashboard
 
 // Layout & Navigation
@@ -49,3 +49,9 @@ export { ErrorBoundary } from './ErrorBoundary';
 
 // Brand & Branding
 export * from './Brand';
+'''
+
+with open('src/dashboard/src/components/index.ts', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('Updated component library index')
