@@ -312,7 +312,7 @@ function BlogListing() {
                           schema: { icon: Tag, color: 'oklch(0.68 0.16 280)', bg: 'oklch(0.68 0.16 280 / 0.12)' },
                           engineering: { icon: Code2, color: 'oklch(0.72 0.14 155)', bg: 'oklch(0.72 0.14 155 / 0.12)' },
                         };
-                        const cfg = tagConfig[tagLower];
+                        const cfg = tagConfig[tag.toLowerCase()];
                         const TagIcon = cfg?.icon ?? Sparkles;
                         const tagColor = cfg?.color ?? 'var(--color-accent-base)';
                         const tagBg = cfg?.bg ?? 'var(--color-accent-subtle)';
