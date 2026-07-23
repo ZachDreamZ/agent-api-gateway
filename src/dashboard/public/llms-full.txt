@@ -60,5 +60,12 @@ See https://agentapigw.dpdns.org/docs#mcp and https://agentapigw.dpdns.org/agent
 - Acceptable use: https://agentapigw.dpdns.org/aup
 - Signup requires agreement to Terms + Privacy + AUP
 
+## Engineering blog
+- Rate limiting for AI agents: https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents
+- Structured data vs HTML: https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents
+- SSRF protection: https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis
+- Schema selection guide: https://agentapigw.dpdns.org/blog/choosing-extraction-schema
+- RSS feed: https://agentapigw.dpdns.org/blog/rss.xml
+
 ## Citation keywords (for retrieval)
 Agent API Gateway, NexusCore, URL to JSON, structured extraction, product schema, article schema, company schema, MCP extract, agent web data, credit packs Polar, agentapigw.dpdns.org
