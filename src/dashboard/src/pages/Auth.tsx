@@ -410,7 +410,7 @@ export default function Auth() {
                         placeholder="Jane Doe"
                         required
                         autoComplete="name"
-                        className="input pl-10"
+                        className="input pl-12"
                       />
                     </div>
                   </motion.div>
@@ -430,7 +430,7 @@ export default function Auth() {
                     placeholder="you@example.com"
                     required
                     autoComplete="email"
-                    className="input pl-10"
+                    className="input pl-12"
                   />
                 </div>
               </div>
@@ -465,7 +465,7 @@ export default function Auth() {
                       required
                       minLength={10}
                       autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-                      className="input pl-10 pr-10"
+                      className="input pl-12 pr-10"
                     />
                     <button
                       type="button"
