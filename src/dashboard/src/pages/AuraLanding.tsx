@@ -1295,27 +1295,55 @@ function PricingCard({
 function FaqSection() {
   const [open, setOpen] = useState<number | null>(0);
   const items = [
-    {
-      q: 'What counts as one query?',
-      a: 'Each successful extraction of a URL with a schema is 1 credit. Cache hits still cost 1 credit but are much faster. Failed extractions (blocked URL, parse error) are not charged.',
-    },
-    {
-      q: 'Which LLM powers extraction?',
-      a: 'The gateway picks the best available engine by priority: OpenRouter, then Gemini, then Anthropic — or you can pin one with the EXTRACTION_LLM env var. Every result is schema-validated JSON.',
-    },
-    {
-      q: 'Can I extract private or internal URLs?',
-      a: 'No. All URLs pass through an SSRF guard that blocks private IP ranges, localhost, and cloud metadata endpoints. The gateway is built for public pages only.',
-    },
-    {
-      q: 'Do you store the pages I extract?',
-      a: 'Only aggregate, anonymized usage metadata (counts, latency, cache rate) is retained for your dashboard. Raw page content is not persisted beyond the request.',
-    },
-    {
-      q: 'Is there an SDK?',
-      a: 'Calls are plain HTTPS — any language works with requests, fetch, or curl. There is also an MCP server for Claude/Cursor and a live playground on this page.',
-    },
-  ];
+      {
+        q: 'What counts as one query?',
+        a: 'Each successful extraction of a URL with a schema is 1 credit. Cache hits still cost 1 credit but are much faster. Failed extractions (blocked URL, parse error) are not charged.',
+      },
+      {
+        q: 'Which LLM powers extraction?',
+        a: 'The gateway picks the best available engine by priority: OpenRouter, then Gemini, then Anthropic — or you can pin one with the EXTRACTION_LLM env var. Every result is schema-validated JSON.',
+      },
+      {
+        q: 'Can I extract private or internal URLs?',
+        a: 'No. All URLs pass through an SSRF guard that blocks private IP ranges, localhost, and cloud metadata endpoints. The gateway is built for public pages only.',
+      },
+      {
+        q: 'Do you store the pages I extract?',
+        a: 'Only aggregate, anonymized usage metadata (counts, latency, cache rate) is retained for your dashboard. Raw page content is not persisted beyond the request.',
+      },
+      {
+        q: 'Is there an SDK?',
+        a: 'Calls are plain HTTPS — any language works with requests, fetch, or curl. There is also an MCP server for Claude/Cursor and a live playground on this page.',
+      },
+      {
+        q: 'What happens if extraction fails?',
+        a: 'Failed requests return a 400 or 500 status with error details. No credits are deducted for failed extractions. Common failures include blocked URLs, invalid schemas, or unreachable pages.',
+      },
+      {
+        q: 'Can I use custom schemas?',
+        a: 'Yes. POST your own JSON schema definition to /v1/schemas, then reference it by name in extraction requests. Custom schemas count toward your tier limit.',
+      },
+      {
+        q: 'How fast is the API?',
+        a: 'Average latency is 800ms-2s for cache misses (full scrape + LLM extraction). Cache hits return in under 100ms. Performance varies with page complexity and LLM availability.',
+      },
+      {
+        q: 'What rate limits apply?',
+        a: 'Free tier: 10 requests/minute. Hobby: 60/min. Pro: 300/min. Scale: 1000/min. Rate limits are per API key. Exceeded requests return 429 status.',
+      },
+      {
+        q: 'How does caching work?',
+        a: 'Successful extractions are cached by URL+schema for 24 hours. Cache hits are much faster but still consume 1 credit. Cache keys are tenant-isolated.',
+      },
+      {
+        q: 'Can I integrate with Claude Desktop or Cursor?',
+        a: 'Yes. Install the MCP server from /agents to enable schema-driven extraction directly in Claude Desktop or Cursor. Full setup instructions are in the docs.',
+      },
+      {
+        q: 'What about compliance and data privacy?',
+        a: 'The gateway does not store raw page content. Usage logs are aggregate and anonymized. See our Privacy Policy for GDPR and data handling details.',
+      },
+    ];
   return (
     <section id="faq" className="mx-auto max-w-3xl px-5 md:px-6 py-20 md:py-24">
       <Reveal>
