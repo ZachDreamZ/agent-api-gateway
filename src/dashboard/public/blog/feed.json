@@ -15,34 +15,49 @@
   "language": "en",
   "items": [
     {
-      "id": "https://agentapigw.dpdns.org/blog/welcome",
-      "url": "https://agentapigw.dpdns.org/blog/welcome",
-      "title": "Welcome to Agent API Gateway",
-      "content_html": "<p>Agent API Gateway is a structured data extraction API built specifically for AI agents. Instead of wrestling with HTML parsers, rate limits, and data validation—you send a URL and a schema type, and get back clean, validated JSON.</p><p>We handle the scraping, validation, and caching so your agents can focus on what they do best: making decisions and taking action.</p>",
-      "summary": "Introducing Agent API Gateway: structured web data for AI agents",
-      "date_published": "2024-01-15T00:00:00Z",
-      "date_modified": "2024-01-15T00:00:00Z",
-      "authors": [
-        {
-          "name": "NexusCore"
-        }
-      ],
-      "tags": ["announcement", "launch"]
+      "id": "https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents",
+      "url": "https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents",
+      "title": "Rate limiting strategies for AI agent APIs",
+      "summary": "How to design rate limits that protect your infrastructure without breaking agent workflows. Token buckets, sliding windows, and graceful degradation.",
+      "date_published": "2026-07-23T08:00:00Z",
+      "authors": [{ "name": "NexusCore" }],
+      "tags": ["engineering", "architecture"]
     },
     {
-      "id": "https://agentapigw.dpdns.org/blog/mcp-integration",
-      "url": "https://agentapigw.dpdns.org/blog/mcp-integration",
-      "title": "Model Context Protocol (MCP) Support",
-      "content_html": "<p>Agent API Gateway now supports the Model Context Protocol (MCP), making it easier than ever to integrate structured web data extraction into your AI agents and tools.</p><p>MCP provides a standardized way for AI assistants to interact with external data sources and tools. With our MCP server, your agents can extract product data, article content, and company information using natural language requests.</p>",
-      "summary": "Connect Agent API Gateway to your AI assistant using Model Context Protocol",
-      "date_published": "2024-02-01T00:00:00Z",
-      "date_modified": "2024-02-01T00:00:00Z",
-      "authors": [
-        {
-          "name": "NexusCore"
-        }
-      ],
-      "tags": ["mcp", "integration", "feature"]
+      "id": "https://agentapigw.dpdns.org/blog/agent-api-gateway-gets-premium-ui-code-splitting-and-seo",
+      "url": "https://agentapigw.dpdns.org/blog/agent-api-gateway-gets-premium-ui-code-splitting-and-seo",
+      "title": "Premium UI redesign, 30% faster loads, and better SEO",
+      "summary": "Glassmorphism design system, code-split bundles, lazy-loaded pages, RSS feed, and enhanced meta tags - what we shipped and why.",
+      "date_published": "2026-07-22T00:00:00Z",
+      "authors": [{ "name": "NexusCore" }],
+      "tags": ["engineering", "architecture"]
+    },
+    {
+      "id": "https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents",
+      "url": "https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents",
+      "title": "Why AI agents need structured data, not HTML",
+      "summary": "Raw HTML parsing is brittle and expensive. Here's how structured extraction APIs solve the reliability problem for agent tool-calling.",
+      "date_published": "2026-07-15T00:00:00Z",
+      "authors": [{ "name": "NexusCore" }],
+      "tags": ["agents", "architecture"]
+    },
+    {
+      "id": "https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis",
+      "url": "https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis",
+      "title": "SSRF protection for web extraction APIs",
+      "summary": "How we block private hosts, metadata endpoints, and credentialed URLs at every layer of the extraction pipeline.",
+      "date_published": "2026-07-10T00:00:00Z",
+      "authors": [{ "name": "NexusCore" }],
+      "tags": ["security", "engineering"]
+    },
+    {
+      "id": "https://agentapigw.dpdns.org/blog/choosing-extraction-schema",
+      "url": "https://agentapigw.dpdns.org/blog/choosing-extraction-schema",
+      "title": "Choosing the right extraction schema: product, article, or company",
+      "summary": "A guide to the three built-in schemas and when to use each one for your agent workflows.",
+      "date_published": "2026-07-05T00:00:00Z",
+      "authors": [{ "name": "NexusCore" }],
+      "tags": ["guides", "schema"]
     }
   ]
 }
