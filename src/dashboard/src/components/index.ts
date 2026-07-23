@@ -13,6 +13,7 @@ export { ProgressBar } from './ProgressBar';
 export { EmptyState } from './EmptyState';
 export { NetworkStatus } from './NetworkStatus';
 export { KeyboardShortcuts } from './KeyboardShortcuts';
+export { PerformanceMonitor } from './PerformanceMonitor';
 
 // Forms & Inputs
 export { Button } from './Button';
@@ -36,6 +37,7 @@ export { Tooltip } from './Tooltip';
 // Interactive Components
 export { Accordion } from './Accordion';
 export { Tabs } from './Tabs';
+// export { ShareButton } from './ShareButton';
 
 // Landing Page Components
 export { Hero } from './Hero';
