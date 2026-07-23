@@ -1,4 +1,6 @@
-// Component Library Index
+import os
+
+index_content = """// Component Library Index
 export { Accordion } from './Accordion';
 export { Alert } from './Alert';
 export { BackToTop } from './BackToTop';
@@ -36,3 +38,9 @@ export { Tabs } from './Tabs';
 export { Testimonials, defaultTestimonials } from './Testimonials';
 export { Toast, ToastProvider, useToast } from './Toast';
 export { Tooltip } from './Tooltip';
+"""
+
+with open('src/dashboard/src/components/index.ts', 'w', encoding='utf-8') as f:
+    f.write(index_content)
+
+print('Updated component index')
