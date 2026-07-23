@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+content = '''import React, { type ReactNode } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 
 interface StatCardProps {
@@ -23,9 +23,9 @@ export function StatCard({
 }: StatCardProps) {
   const getTrendIcon = () => {
     if (!trend) return null;
-    if (trend.value > 0) return <TrendingUp className="w-3.5 h-3.5" />;
-    if (trend.value < 0) return <TrendingDown className="w-3.5 h-3.5" />;
-    return <Minus className="w-3.5 h-3.5" />;
+    if (trend.value > 0) return <TrendingUp className=\"w-3.5 h-3.5\" />;
+    if (trend.value < 0) return <TrendingDown className=\"w-3.5 h-3.5\" />;
+    return <Minus className=\"w-3.5 h-3.5\" />;
   };
 
   const getTrendColor = () => {
@@ -38,15 +38,15 @@ export function StatCard({
   if (loading) {
     return (
       <div className={surface-elevated p-6 rounded-lg }>
-        <div className="flex items-center justify-between mb-3">
-          <div className="h-4 w-20 rounded animate-pulse" style={{ background: 'var(--color-border-subtle)' }} />
+        <div className=\"flex items-center justify-between mb-3\">
+          <div className=\"h-4 w-20 rounded animate-pulse\" style={{ background: 'var(--color-border-subtle)' }} />
           {icon && (
-            <div className="h-8 w-8 rounded animate-pulse" style={{ background: 'var(--color-border-subtle)' }} />
+            <div className=\"h-8 w-8 rounded animate-pulse\" style={{ background: 'var(--color-border-subtle)' }} />
           )}
         </div>
-        <div className="h-8 w-24 rounded animate-pulse mb-2" style={{ background: 'var(--color-border-subtle)' }} />
+        <div className=\"h-8 w-24 rounded animate-pulse mb-2\" style={{ background: 'var(--color-border-subtle)' }} />
         {trend && (
-          <div className="h-3 w-16 rounded animate-pulse" style={{ background: 'var(--color-border-subtle)' }} />
+          <div className=\"h-3 w-16 rounded animate-pulse\" style={{ background: 'var(--color-border-subtle)' }} />
         )}
       </div>
     );
@@ -54,13 +54,13 @@ export function StatCard({
 
   return (
     <div className={surface-elevated p-6 rounded-lg hover:surface-hover transition-colors }>
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+      <div className=\"flex items-center justify-between mb-3\">
+        <div className=\"text-sm font-medium\" style={{ color: 'var(--color-text-secondary)' }}>
           {label}
         </div>
         {icon && (
           <div
-            className="flex h-8 w-8 items-center justify-center rounded"
+            className=\"flex h-8 w-8 items-center justify-center rounded\"
             style={{
               background: 'var(--color-accent-subtle)',
               color: 'var(--color-accent-base)',
@@ -71,12 +71,12 @@ export function StatCard({
         )}
       </div>
       
-      <div className="font-display text-3xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>
+      <div className=\"font-display text-3xl font-bold mb-2\" style={{ color: 'var(--color-text-primary)' }}>
         {value}
       </div>
       
       {trend && (
-        <div className="flex items-center gap-1.5 text-xs font-medium" style={{ color: getTrendColor() }}>
+        <div className=\"flex items-center gap-1.5 text-xs font-medium\" style={{ color: getTrendColor() }}>
           {getTrendIcon()}
           <span>{Math.abs(trend.value)}%</span>
           {trend.label && (
@@ -111,3 +111,9 @@ export function StatsGrid({
     </div>
   );
 }
+'''
+
+with open('src/dashboard/src/components/Stats.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('Created Stats component')

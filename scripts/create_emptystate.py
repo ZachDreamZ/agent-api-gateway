@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+content = '''import React, { type ReactNode } from 'react';
 
 interface EmptyStateProps {
   icon?: ReactNode;
@@ -22,7 +22,7 @@ export function EmptyState({
     <div className={	ext-center py-12 px-6 }>
       {icon && (
         <div
-          className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full"
+          className=\"mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full\"
           style={{
             background: 'var(--color-bg-app)',
             color: 'var(--color-text-disabled)',
@@ -33,7 +33,7 @@ export function EmptyState({
       )}
       
       <h3
-        className="font-display text-lg font-semibold mb-2"
+        className=\"font-display text-lg font-semibold mb-2\"
         style={{ color: 'var(--color-text-primary)' }}
       >
         {title}
@@ -41,7 +41,7 @@ export function EmptyState({
       
       {description && (
         <p
-          className="text-sm mb-6 max-w-md mx-auto"
+          className=\"text-sm mb-6 max-w-md mx-auto\"
           style={{ color: 'var(--color-text-secondary)' }}
         >
           {description}
@@ -51,7 +51,7 @@ export function EmptyState({
       {action && (
         <button
           onClick={action.onClick}
-          className="btn btn-primary"
+          className=\"btn btn-primary\"
         >
           {action.label}
         </button>
@@ -59,3 +59,9 @@ export function EmptyState({
     </div>
   );
 }
+'''
+
+with open('src/dashboard/src/components/EmptyState.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('Created EmptyState component')
