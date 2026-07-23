@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Wifi, WifiOff, AlertTriangle } from 'lucide-react';
+import { WifiOff, AlertTriangle } from 'lucide-react';
 
 interface PerformanceMetrics {
   connectionType: string;
@@ -17,7 +17,7 @@ export function PerformanceMonitor() {
     const updateMetrics = () => {
       const nav = navigator as any;
       const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
-      
+
       if (connection) {
         setMetrics({
           connectionType: connection.type || 'unknown',
@@ -54,14 +54,14 @@ export function PerformanceMonitor() {
   if (!isOnline) {
     return (
       <div
-        className="fixed bottom-4 left-4 z-50 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg\"
+        className="fixed bottom-4 left-4 z-50 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg"
         style={{
           background: 'var(--color-error)',
           color: 'white',
         }}
       >
-        <WifiOff className="w-4 h-4\" />
-        <span className="text-sm font-medium\">No internet connection</span>
+        <WifiOff className="w-4 h-4" />
+        <span className="text-sm font-medium">No internet connection</span>
       </div>
     );
   }
@@ -69,14 +69,14 @@ export function PerformanceMonitor() {
   if (metrics?.saveData) {
     return (
       <div
-        className="fixed bottom-4 left-4 z-50 flex items-center gap-2 px-3 py-1.5 rounded-md\"
+        className="fixed bottom-4 left-4 z-50 flex items-center gap-2 px-3 py-1.5 rounded-md"
         style={{
           background: 'var(--color-warning)',
           color: 'var(--color-bg)',
         }}
       >
-        <AlertTriangle className="w-3.5 h-3.5\" />
-        <span className="text-xs font-medium\">Data saver mode</span>
+        <AlertTriangle className="w-3.5 h-3.5" />
+        <span className="text-xs font-medium">Data saver mode</span>
       </div>
     );
   }
