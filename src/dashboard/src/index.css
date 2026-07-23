@@ -1436,3 +1436,25 @@ a.sr-only:focus {
     transform: rotate(360deg);
   }
 }
+
+
+/* Skeleton wave animation */
+@keyframes skeleton-wave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-wave {
+  background: linear-gradient(
+    90deg,
+    oklch(0.95 0.01 264) 0%,
+    oklch(0.97 0.01 264) 50%,
+    oklch(0.95 0.01 264) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.5s ease-in-out infinite;
+}

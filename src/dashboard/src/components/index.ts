@@ -18,6 +18,7 @@ export { Pagination } from './Pagination';
 export { ProgressBar } from './ProgressBar';
 export { SearchBar } from './SearchBar';
 export { SEO, createOrganizationSchema, createWebApplicationSchema, createBreadcrumbSchema, createFAQSchema } from './SEO';
+export { Skeleton, SkeletonCard, SkeletonTable, SkeletonDashboard, SkeletonList } from './Skeleton';
 export { Switch } from './Switch';
 export { Tabs } from './Tabs';
 export { Toast, ToastProvider, useToast } from './Toast';
