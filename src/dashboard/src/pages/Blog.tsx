@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { BrandLockup, AmbientBg, SectionLabel } from '../components/Brand';
@@ -385,6 +386,83 @@ function BlogPost() {
       </div>
     );
   }
+
+  
+  // Inject BlogPosting structured data for SEO
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'blog-post-structured-data';
+    script.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.date,
+      author: {
+        '@type': 'Organization',
+        name: 'NexusCore',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'NexusCore',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://agentapigw.dpdns.org/brand/agent-api-gateway-mark.png',
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `https://agentapigw.dpdns.org/blog/${post.slug}`,
+      },
+      keywords: post.tags.join(', '),
+      articleSection: post.tags[0],
+      timeRequired: post.readTime,
+    });
+    document.head.appendChild(script);
+    return () => {
+      const existing = document.getElementById('blog-post-structured-data');
+      if (existing) existing.remove();
+    };
+  }, [post]);
+
+  // Inject BlogPosting structured data for SEO
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.id = 'blog-post-structured-data';
+    script.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      datePublished: post.date,
+      author: {
+        '@type': 'Organization',
+        name: 'NexusCore',
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'NexusCore',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://agentapigw.dpdns.org/brand/agent-api-gateway-mark.png',
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `https://agentapigw.dpdns.org/blog/${post.slug}`,
+      },
+      keywords: post.tags.join(', '),
+      articleSection: post.tags[0],
+      timeRequired: post.readTime,
+    });
+    document.head.appendChild(script);
+    return () => {
+      const existing = document.getElementById('blog-post-structured-data');
+      if (existing) existing.remove();
+    };
+  }, [post]);
 
   const lines = post.content.split('\n');
   const rendered: React.ReactNode[] = [];
