@@ -21,6 +21,7 @@ import {
   ExternalLink, FileText, Building2, Bot
 } from 'lucide-react';
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
+import { AnimatedNumber } from '../components/AnimatedNumber';
 import { easeOut } from '../lib/motion';
 
 // ═══════════════════════════════════════════════════════════════════════════
