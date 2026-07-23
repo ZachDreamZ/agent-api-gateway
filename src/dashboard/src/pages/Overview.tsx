@@ -24,6 +24,7 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { WhatsNew } from '../components/WhatsNew';
 import { apiKey } from '../lib/auth';
 import { easeOut } from '../lib/motion';
+import { useSEO } from '../hooks/useSEO';
 
 // ─── Types ───
 
@@ -639,6 +640,8 @@ export default function Overview() {
   const [recent, setRecent] = useState<RecentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useSEO({ title: 'Dashboard', description: 'Monitor your API usage, manage keys, and track extraction credits.' });
 
   useEffect(() => {
     let cancelled = false;
