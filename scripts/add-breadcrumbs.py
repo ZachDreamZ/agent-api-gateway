@@ -1,57 +1,43 @@
-import os
+import sys
 
-breadcrumb_code = '''import { Link, useLocation } from 'react-router-dom';
-import { ChevronRight, Home } from 'lucide-react';
+# Read Blog.tsx
+with open('src/dashboard/src/pages/Blog.tsx', 'r', encoding='utf-8') as f:
+    content = f.read()
 
-export function Breadcrumbs() {
-  const location = useLocation();
-  const paths = location.pathname.split('/').filter(Boolean);
-  
-  if (paths.length === 0 || paths[0] === 'dashboard') {
-    return null;
-  }
+# Check if Breadcrumbs is already imported
+if 'Breadcrumbs' in content:
+    print("Breadcrumbs already integrated")
+    sys.exit(0)
 
-  const breadcrumbs = [{ name: 'Home', path: '/dashboard' }];
-  
-  let currentPath = '/dashboard';
-  paths.forEach((segment, index) => {
-    if (segment !== 'dashboard') {
-      currentPath += `/${segment}`;
-      const name = segment
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-      breadcrumbs.push({ name, path: currentPath });
-    }
-  });
+# Add Breadcrumbs import after other component imports
+lines = content.split('\n')
+for i, line in enumerate(lines):
+    if 'from \'../components/' in line and 'import' in line:
+        # Add after the last component import
+        lines.insert(i + 1, "import { Breadcrumbs } from '../components/Breadcrumbs';")
+        print(f"Added Breadcrumbs import at line {i+1}")
+        break
 
-  return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm mb-6">
-      {breadcrumbs.map((crumb, index) => (
-        <div key={crumb.path} className="flex items-center gap-2">
-          {index > 0 && (
-            <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-tertiary)' }} />
-          )}
-          {index === breadcrumbs.length - 1 ? (
-            <span style={{ color: 'var(--color-text-secondary)' }}>{crumb.name}</span>
-          ) : (
-            <Link
-              to={crumb.path}
-              className="interactive hover:underline"
-              style={{ color: 'var(--color-text-tertiary)' }}
-            >
-              {index === 0 && <Home className="w-4 h-4 inline mr-1" />}
-              {crumb.name}
-            </Link>
-          )}
-        </div>
-      ))}
-    </nav>
-  );
-}
-'''
+content = '\n'.join(lines)
 
-with open('src/dashboard/src/components/Breadcrumbs.tsx', 'w', encoding='utf-8') as f:
-    f.write(breadcrumb_code)
+# Add Breadcrumbs to BlogPost component
+# Find the main content div in BlogPost
+blogpost_start = content.find('export function BlogPost()')
+if blogpost_start != -1:
+    # Find the first <div className after the function
+    first_div = content.find('<div className=', blogpost_start)
+    if first_div != -1:
+        # Insert breadcrumbs after this div opens
+        next_newline = content.find('\n', first_div)
+        if next_newline != -1:
+            # Add breadcrumbs with proper indentation
+            indent = '        '
+            breadcrumb_line = f"{indent}<Breadcrumbs />\n"
+            content = content[:next_newline+1] + breadcrumb_line + content[next_newline+1:]
+            print("Added Breadcrumbs to BlogPost component")
 
-print('Created Breadcrumbs.tsx component')
+# Write back
+with open('src/dashboard/src/pages/Blog.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("Breadcrumbs integration completed")

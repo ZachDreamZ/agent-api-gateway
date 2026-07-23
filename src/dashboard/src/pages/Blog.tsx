@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { BrandLockup, AmbientBg, SectionLabel } from '../components/Brand';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 import { BackToTop } from '../components/BackToTop';
 import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkles, Code2 } from 'lucide-react';
 
