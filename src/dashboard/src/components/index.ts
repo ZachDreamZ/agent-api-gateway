@@ -5,10 +5,12 @@
 export { ErrorBoundary } from './ErrorBoundary';
 export { Breadcrumb } from './Breadcrumb';
 export { BackToTop } from './BackToTop';
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './Card';
 
 // Navigation
 export { Tabs } from './Tabs';
 export { Dropdown } from './Dropdown';
+export { Accordion } from './Accordion';
 
 // Feedback
 export { Alert } from './Alert';
@@ -20,8 +22,11 @@ export { ProgressBar, CircularProgress } from './ProgressBar';
 // Data Display
 export { Badge } from './Badge';
 
-// Input
+// Input & Forms
 export { SearchBar } from './SearchBar';
+export { Input } from './Input';
+export { Button } from './Button';
+export { Switch } from './Switch';
 
 // Utilities
 export type { Tab } from './Tabs';
