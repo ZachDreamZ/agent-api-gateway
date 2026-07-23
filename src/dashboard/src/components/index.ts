@@ -3,6 +3,7 @@ export { Accordion } from './Accordion';
 export { Alert } from './Alert';
 export { BackToTop } from './BackToTop';
 export { Badge } from './Badge';
+export { BlogGrid, samplePosts } from './BlogGrid';
 export { Breadcrumb } from './Breadcrumb';
 export { Button } from './Button';
 export { Card } from './Card';
@@ -17,6 +18,7 @@ export { Icon, FeatureIcon, Icons, AppIcons, ActionIcons, NavIcons, StatusIcons 
 export { Input } from './Input';
 export { LoadingStates } from './LoadingStates';
 export { Modal } from './Modal';
+export { Newsletter, NewsletterFooter } from './Newsletter';
 export { Pagination } from './Pagination';
 export { ProgressBar } from './ProgressBar';
 export { SearchBar } from './SearchBar';
