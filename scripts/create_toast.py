@@ -1,17 +1,18 @@
-content = '''import React, { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+content = '''import React, { createContext, useContext, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { CheckCircle, XCircle, AlertCircle, Info, X } from 'lucide-react';
+
+type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 interface Toast {
   id: string;
+  type: ToastType;
   message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
   duration?: number;
 }
 
 interface ToastContextValue {
-  toasts: Toast[];
-  addToast: (message: string, type: Toast['type'], duration?: number) => void;
-  removeToast: (id: string) => void;
+  showToast: (type: ToastType, message: string, duration?: number) => void;
 }
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
@@ -24,104 +25,72 @@ export function useToast() {
   return context;
 }
 
-export function ToastProvider({ children }: { children: ReactNode }) {
+const icons = {
+  success: CheckCircle,
+  error: XCircle,
+  warning: AlertCircle,
+  info: Info,
+};
+
+const colors = {
+  success: '#10b981',
+  error: '#ef4444',
+  warning: '#f59e0b',
+  info: '#3b82f6',
+};
+
+export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const addToast = useCallback((message: string, type: Toast['type'], duration = 5000) => {
-    const id = Math.random().toString(36).substring(2, 9);
-    const newToast: Toast = { id, message, type, duration };
-    
-    setToasts((prev) => [...prev, newToast]);
-    
-    if (duration > 0) {
-      setTimeout(() => {
-        removeToast(id);
-      }, duration);
-    }
+  const showToast = useCallback((type: ToastType, message: string, duration = 5000) => {
+    const id = Math.random().toString(36).substr(2, 9);
+    setToasts(prev => [...prev, { id, type, message, duration }]);
+
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, duration);
   }, []);
 
   const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext.Provider value={{ showToast }}>
       {children}
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <div className=\"fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none\">
+        <AnimatePresence>
+          {toasts.map(toast => {
+            const Icon = icons[toast.type];
+            return (
+              <motion.div
+                key={toast.id}
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 100, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className=\"flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg pointer-events-auto min-w-[320px] max-w-md\"
+                style={{
+                  backgroundColor: 'var(--color-surface-elevated)',
+                  border: \1px solid \20\,
+                }}
+              >
+                <Icon className=\"w-5 h-5 flex-shrink-0\" style={{ color: colors[toast.type] }} />
+                <p className=\"flex-1 text-sm\" style={{ color: 'var(--color-text-primary)' }}>
+                  {toast.message}
+                </p>
+                <button
+                  onClick={() => removeToast(toast.id)}
+                  className=\"p-1 rounded hover:bg-black/10 transition-colors flex-shrink-0\"
+                >
+                  <X className=\"w-4 h-4\" style={{ color: 'var(--color-text-secondary)' }} />
+                </button>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </div>
     </ToastContext.Provider>
-  );
-}
-
-function ToastContainer({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: string) => void }) {
-  if (toasts.length === 0) return null;
-
-  return (
-    <div
-      className=\"fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none\"
-      style={{ maxWidth: '420px' }}
-    >
-      {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onRemove={onRemove} />
-      ))}
-    </div>
-  );
-}
-
-function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) => void }) {
-  const icons = {
-    success: <CheckCircle className=\"w-5 h-5 flex-shrink-0\" />,
-    error: <AlertCircle className=\"w-5 h-5 flex-shrink-0\" />,
-    warning: <AlertTriangle className=\"w-5 h-5 flex-shrink-0\" />,
-    info: <Info className=\"w-5 h-5 flex-shrink-0\" />,
-  };
-
-  const colors = {
-    success: {
-      bg: 'oklch(0.95 0.05 145)',
-      border: 'oklch(0.55 0.15 145)',
-      text: 'oklch(0.35 0.15 145)',
-    },
-    error: {
-      bg: 'oklch(0.95 0.05 25)',
-      border: 'oklch(0.55 0.15 25)',
-      text: 'oklch(0.35 0.15 25)',
-    },
-    warning: {
-      bg: 'oklch(0.95 0.08 85)',
-      border: 'oklch(0.65 0.15 85)',
-      text: 'oklch(0.35 0.12 85)',
-    },
-    info: {
-      bg: 'oklch(0.95 0.05 235)',
-      border: 'oklch(0.55 0.12 235)',
-      text: 'oklch(0.35 0.12 235)',
-    },
-  };
-
-  const color = colors[toast.type];
-
-  return (
-    <div
-      className=\"surface-elevated rounded-lg shadow-lg pointer-events-auto animate-slide-in-right flex items-start gap-3 p-4\"
-      style={{
-        background: color.bg,
-        borderLeft: 4px solid ,
-        maxWidth: '420px',
-      }}
-    >
-      <div style={{ color: color.text }}>{icons[toast.type]}</div>
-      <p className=\"flex-1 text-sm font-medium\" style={{ color: color.text }}>
-        {toast.message}
-      </p>
-      <button
-        onClick={() => onRemove(toast.id)}
-        className=\"flex-shrink-0 hover:opacity-70 transition-opacity\"
-        style={{ color: color.text }}
-        aria-label=\"Dismiss\"
-      >
-        <X className=\"w-4 h-4\" />
-      </button>
-    </div>
   );
 }
 '''
@@ -129,4 +98,4 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
 with open('src/dashboard/src/components/Toast.tsx', 'w', encoding='utf-8') as f:
     f.write(content)
 
-print('Created Toast component')
+print('Created Toast component and provider')

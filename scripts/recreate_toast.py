@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+content = '''import React, { createContext, useContext, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle, XCircle, AlertCircle, Info, X } from 'lucide-react';
 
@@ -58,7 +58,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
+      <div className=\"fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none\">
         <AnimatePresence>
           {toasts.map(toast => {
             const Icon = icons[toast.type];
@@ -70,21 +70,21 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, x: 100, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg pointer-events-auto min-w-[320px] max-w-md"
+                className=\"flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg pointer-events-auto min-w-[320px] max-w-md\"
                 style={{
                   backgroundColor: 'var(--color-surface-elevated)',
                   border: 1px solid ,
                 }}
               >
-                <Icon className="w-5 h-5 flex-shrink-0" style={{ color: colors[toast.type] }} />
-                <p className="flex-1 text-sm" style={{ color: 'var(--color-text-primary)' }}>
+                <Icon className=\"w-5 h-5 flex-shrink-0\" style={{ color: colors[toast.type] }} />
+                <p className=\"flex-1 text-sm\" style={{ color: 'var(--color-text-primary)' }}>
                   {toast.message}
                 </p>
                 <button
                   onClick={() => removeToast(toast.id)}
-                  className="p-1 rounded hover:bg-black/10 transition-colors flex-shrink-0"
+                  className=\"p-1 rounded hover:bg-black/10 transition-colors flex-shrink-0\"
                 >
-                  <X className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
+                  <X className=\"w-4 h-4\" style={{ color: 'var(--color-text-secondary)' }} />
                 </button>
               </motion.div>
             );
@@ -94,3 +94,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     </ToastContext.Provider>
   );
 }
+'''
+
+with open('src/dashboard/src/components/Toast.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print('Recreated Toast component with fixed syntax')
