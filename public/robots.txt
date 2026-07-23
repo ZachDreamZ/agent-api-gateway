@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /signup
+Disallow: /reset-password
+
+Sitemap: https://agentapigw.dpdns.org/sitemap.xml
+
+# Crawl-delay for polite bots
+Crawl-delay: 1
+
+# Allow common SEO bots full access
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /

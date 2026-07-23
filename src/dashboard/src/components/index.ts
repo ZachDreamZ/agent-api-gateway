@@ -17,6 +17,7 @@ export { Modal } from './Modal';
 export { Pagination } from './Pagination';
 export { ProgressBar } from './ProgressBar';
 export { SearchBar } from './SearchBar';
+export { SEO, createOrganizationSchema, createWebApplicationSchema, createBreadcrumbSchema, createFAQSchema } from './SEO';
 export { Switch } from './Switch';
 export { Tabs } from './Tabs';
 export { Toast, ToastProvider, useToast } from './Toast';
