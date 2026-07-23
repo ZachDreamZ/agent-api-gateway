@@ -1,0 +1,48 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Agent API Gateway Blog",
+  "home_page_url": "https://agentapigw.dpdns.org/",
+  "feed_url": "https://agentapigw.dpdns.org/blog/feed.json",
+  "description": "Updates, guides, and insights on building AI agents with structured web data extraction",
+  "icon": "https://agentapigw.dpdns.org/brand/agent-api-gateway-mark-256.png",
+  "favicon": "https://agentapigw.dpdns.org/favicon.svg",
+  "authors": [
+    {
+      "name": "NexusCore",
+      "url": "https://agentapigw.dpdns.org/"
+    }
+  ],
+  "language": "en",
+  "items": [
+    {
+      "id": "https://agentapigw.dpdns.org/blog/welcome",
+      "url": "https://agentapigw.dpdns.org/blog/welcome",
+      "title": "Welcome to Agent API Gateway",
+      "content_html": "<p>Agent API Gateway is a structured data extraction API built specifically for AI agents. Instead of wrestling with HTML parsers, rate limits, and data validation—you send a URL and a schema type, and get back clean, validated JSON.</p><p>We handle the scraping, validation, and caching so your agents can focus on what they do best: making decisions and taking action.</p>",
+      "summary": "Introducing Agent API Gateway: structured web data for AI agents",
+      "date_published": "2024-01-15T00:00:00Z",
+      "date_modified": "2024-01-15T00:00:00Z",
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": ["announcement", "launch"]
+    },
+    {
+      "id": "https://agentapigw.dpdns.org/blog/mcp-integration",
+      "url": "https://agentapigw.dpdns.org/blog/mcp-integration",
+      "title": "Model Context Protocol (MCP) Support",
+      "content_html": "<p>Agent API Gateway now supports the Model Context Protocol (MCP), making it easier than ever to integrate structured web data extraction into your AI agents and tools.</p><p>MCP provides a standardized way for AI assistants to interact with external data sources and tools. With our MCP server, your agents can extract product data, article content, and company information using natural language requests.</p>",
+      "summary": "Connect Agent API Gateway to your AI assistant using Model Context Protocol",
+      "date_published": "2024-02-01T00:00:00Z",
+      "date_modified": "2024-02-01T00:00:00Z",
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": ["mcp", "integration", "feature"]
+    }
+  ]
+}
