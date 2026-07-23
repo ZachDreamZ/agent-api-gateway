@@ -13,6 +13,7 @@ export { Badge } from './Badge';
 export { ProgressBar } from './ProgressBar';
 export { EmptyState } from './EmptyState';
 export { NetworkStatus } from './NetworkStatus';
+export { KeyboardShortcuts } from './KeyboardShortcuts';
 
 // Forms & Inputs
 export { Button } from './Button';
