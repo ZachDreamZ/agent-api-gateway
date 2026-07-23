@@ -28,6 +28,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { CookieConsent } from './components/CookieConsent';
 import { easeOut, pageTransition, fadeUp } from './lib/motion';
 import { useGlobalShortcuts } from './hooks/useKeyboardShortcuts';
 
@@ -288,6 +289,7 @@ export default function App() {
       </Routes>
       </Suspense>
       </ErrorBoundary>
-    </BrowserRouter>
+            <CookieConsent />
+      </BrowserRouter>
   );
 }
