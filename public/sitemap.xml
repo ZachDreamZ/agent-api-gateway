@@ -25,6 +25,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/blog/choosing-extraction-schema</loc>
+    <lastmod>2026-07-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/blog/agent-api-gateway-gets-premium-ui-code-splitting-and-seo</loc>
+    <lastmod>2026-07-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://agentapigw.dpdns.org/for-agents</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
