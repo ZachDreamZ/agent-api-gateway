@@ -81,7 +81,7 @@ export const BlogGrid: React.FC<BlogGridProps> = ({
         
         {/* Other posts */}
         {others.length > 0 && (
-          <div className={grid grid-cols-1  gap-6}>
+          <div className="grid grid-cols-1  gap-6">
             {others.map(post => (
               <BlogCard key={post.id} post={post} />
             ))}
@@ -133,7 +133,7 @@ export const BlogGrid: React.FC<BlogGridProps> = ({
   }
 
   return (
-    <div className={grid grid-cols-1  gap-6}>
+    <div className="grid grid-cols-1  gap-6">
       {posts.map(post => (
         <BlogCard key={post.id} post={post} />
       ))}

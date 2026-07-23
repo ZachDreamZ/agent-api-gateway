@@ -17,12 +17,10 @@ export function CodeBlock({ code, language = 'text', showLineNumbers = false, cl
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const lines = code.split('
-');
+  const lines = code.split('\n');
 
   return (
-    <div className={
-elative group }>
+    <div className="relative group">
       <div
         className="rounded-lg overflow-hidden"
         style={{ backgroundColor: 'oklch(0.15 0.01 240)' }}
@@ -105,7 +103,7 @@ interface InlineCodeProps {
 export function InlineCode({ children, className = '' }: InlineCodeProps) {
   return (
     <code
-      className={px-1.5 py-0.5 rounded text-sm font-mono }
+      className="px-1.5 py-0.5 rounded text-sm font-mono"
       style={{
         backgroundColor: 'oklch(0.15 0.01 240)',
         color: 'oklch(0.85 0.02 240)',

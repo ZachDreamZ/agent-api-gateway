@@ -73,7 +73,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                 className="flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg pointer-events-auto min-w-[320px] max-w-md"
                 style={{
                   backgroundColor: 'var(--color-surface-elevated)',
-                  border: 1px solid ,
+                  border: '1px solid var(--color-border-subtle)',
                 }}
               >
                 <Icon className="w-5 h-5 flex-shrink-0" style={{ color: colors[toast.type] }} />

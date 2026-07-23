@@ -25,7 +25,7 @@ export const Logo: React.FC<LogoProps> = ({
 
   if (variant === 'icon-only') {
     return (
-      <div className={+"inline-flex "+}>
+      <div className="inline-flex">
         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
           <Zap className="text-white" size={currentSize.icon} />
         </div>
@@ -35,12 +35,12 @@ export const Logo: React.FC<LogoProps> = ({
 
   if (variant === 'text-only') {
     return (
-      <div className={+"inline-flex flex-col "+}>
-        <span className={+"ont-serif font-bold "+}>
+      <div className="inline-flex flex-col ">
+        <span className="ont-serif font-bold ">
           Agent API Gateway
         </span>
         {showTagline && (
-          <span className={+"	ext-gray-600 "+}>
+          <span className="	ext-gray-600 ">
             AI-Powered Extraction
           </span>
         )}
@@ -50,9 +50,9 @@ export const Logo: React.FC<LogoProps> = ({
 
   if (variant === 'minimal') {
     return (
-      <div className={+"inline-flex items-center gap-2 "+}>
+      <div className="inline-flex items-center gap-2 ">
         <Zap className="text-blue-600" size={currentSize.icon} />
-        <span className={+"ont-serif font-bold "+}>
+        <span className="ont-serif font-bold ">
           Agent API
         </span>
       </div>
@@ -60,16 +60,16 @@ export const Logo: React.FC<LogoProps> = ({
   }
 
   return (
-    <div className={+"inline-flex items-center gap-3 "+}>
+    <div className="inline-flex items-center gap-3 ">
       <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
         <Zap className="text-white" size={currentSize.icon} />
       </div>
       <div className="flex flex-col">
-        <span className={+"ont-serif font-bold leading-none "+}>
+        <span className="ont-serif font-bold leading-none ">
           Agent API Gateway
         </span>
         {showTagline && (
-          <span className={+"	ext-gray-600  mt-1"+}>
+          <span className="	ext-gray-600  mt-1">
             AI-Powered Extraction
           </span>
         )}

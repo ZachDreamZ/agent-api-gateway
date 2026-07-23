@@ -19,8 +19,7 @@ export function EmptyState({ icon, title, description, action, className = '' }:
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: easeOut }}
-      className={
-ounded-xl p-12 text-center }
+      className="rounded-xl p-12 text-center"
       style={{ backgroundColor: 'var(--color-surface-elevated)' }}
     >
       <motion.div

@@ -3,7 +3,6 @@
 
 // Layout & Navigation
 export { BackToTop } from './BackToTop';
-export { Breadcrumb } from './Breadcrumb';
 
 // Feedback & Status
 export { LoadingStates, Spinner, Skeleton } from './LoadingStates';
@@ -40,7 +39,6 @@ export { Tabs } from './Tabs';
 
 // Landing Page Components
 export { Hero } from './Hero';
-export { FAQAccordion } from './FAQAccordion';
 export { Footer } from './Footer';
 export { Logo } from './Logo';
 export { FeatureCard, FeatureGrid } from './FeatureCard';
@@ -51,3 +49,5 @@ export { ErrorBoundary } from './ErrorBoundary';
 
 // Brand & Branding
 export * from './Brand';
+
+export { StructuredData, OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData } from './StructuredData';

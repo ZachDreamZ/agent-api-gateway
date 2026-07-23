@@ -95,7 +95,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   const hasError = errors && errors.length > 0;
 
   return (
-    <div className={lex flex-col gap-1.5 }>
+    <div className="lex flex-col gap-1.5">
       <label htmlFor={name} className="text-sm font-medium text-gray-700">
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}

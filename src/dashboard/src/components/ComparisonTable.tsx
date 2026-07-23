@@ -64,7 +64,7 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({
           <thead>
             <tr className="border-b border-gray-200">
               <th className="text-left p-4 font-semibold">Feature</th>
-              <th className={	ext-center p-4 font-semibold }>
+              <th className="ext-center p-4 font-semibold">
                 <div className="flex flex-col items-center gap-1">
                   <span>{usLabel}</span>
                   {highlightUs && (
@@ -92,7 +92,7 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({
                     className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                   >
                     <td className="p-4 text-sm">{feature.feature}</td>
-                    <td className={p-4 text-center }>
+                    <td className="p-4 text-center">
                       {renderValue(feature.us)}
                     </td>
                     <td className="p-4 text-center">{renderValue(feature.competitor1)}</td>

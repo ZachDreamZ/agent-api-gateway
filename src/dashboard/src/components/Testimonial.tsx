@@ -12,7 +12,7 @@ interface TestimonialProps {
 
 export function Testimonial({ quote, author, role, company, avatar, className = '' }: TestimonialProps) {
   return (
-    <div className={surface-elevated rounded-xl p-6 hover-lift }>
+    <div className="surface-elevated rounded-xl p-6 hover-lift">
       <div className="mb-4" style={{ color: 'var(--color-accent-base)' }}>
         <Quote className="w-8 h-8" />
       </div>
@@ -44,7 +44,7 @@ export function Testimonial({ quote, author, role, company, avatar, className = 
           </p>
           <p className="text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
             {role}
-            {company &&  · }
+            {company && <> · {company}</>}
           </p>
         </div>
       </div>
@@ -65,7 +65,7 @@ export function TestimonialGrid({ children, columns = 3, className = '' }: Testi
   };
 
   return (
-    <div className={grid  gap-6 }>
+    <div className="grid  gap-6">
       {children}
     </div>
   );

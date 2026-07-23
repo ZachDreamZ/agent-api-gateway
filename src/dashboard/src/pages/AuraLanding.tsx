@@ -23,6 +23,7 @@ import {
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
 import { NewsletterSignup } from '../components/NewsletterSignup';
 import { BackToTop } from '../components/BackToTop';
+import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData } from '../components';
 import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { easeOut } from '../lib/motion';
@@ -1770,6 +1771,9 @@ function Landing() {
 function LandingWithBackToTop() {
   return (
     <>
+      <OrganizationStructuredData />
+      <WebSiteStructuredData />
+      <SoftwareApplicationStructuredData />
       <Landing />
       <BackToTop />
     </>

@@ -138,7 +138,7 @@ export const PricingCalculator: React.FC = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className={	ext-xl font-bold }>
+                    <div className="ext-xl font-bold">
                       {formatCost(cost)}
                     </div>
                     <div className="text-xs text-gray-500">per month</div>

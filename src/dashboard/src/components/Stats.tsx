@@ -27,7 +27,7 @@ export function StatCard({ label, value, icon, trend, suffix, className = '' }: 
   };
 
   return (
-    <div className={surface-elevated rounded-xl p-6 }>
+    <div className="surface-elevated rounded-xl p-6">
       <div className="flex items-start justify-between">
         <div className="space-y-2 flex-1">
           <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
@@ -75,7 +75,7 @@ export function StatsGrid({ children, columns = 3, className = '' }: StatsGridPr
   };
 
   return (
-    <div className={grid  gap-6 }>
+    <div className="grid  gap-6">
       {children}
     </div>
   );

@@ -74,7 +74,7 @@ export const Features: React.FC<FeaturesProps> = ({
           </div>
         )}
         
-        <div className={grid grid-cols-1  gap-8}>
+        <div className="grid grid-cols-1  gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -109,7 +109,7 @@ export const Features: React.FC<FeaturesProps> = ({
         </div>
       )}
       
-      <div className={grid grid-cols-1  gap-8}>
+      <div className="grid grid-cols-1  gap-8">
         {features.map((feature, index) => {
           const Icon = feature.icon;
           return (
@@ -149,7 +149,7 @@ export const FeatureBlock: React.FC<FeatureBlockProps> = ({
   reverse = false,
 }) => {
   return (
-    <div className={grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16 }>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16">
       <div className={reverse ? 'lg:order-2' : ''}>
         <div className="inline-flex w-14 h-14 bg-blue-100 rounded-xl items-center justify-center mb-6">
           <Icon className="text-blue-600" size={28} />

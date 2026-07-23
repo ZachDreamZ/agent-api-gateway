@@ -21,7 +21,7 @@ export function FormField({
   className = '',
 }: FormFieldProps) {
   return (
-    <div className={space-y-2 }>
+    <div className="space-y-2">
       <label
         htmlFor={htmlFor}
         className="block text-sm font-medium"

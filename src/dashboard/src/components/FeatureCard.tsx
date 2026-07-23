@@ -9,7 +9,7 @@ interface FeatureCardProps {
 
 export function FeatureCard({ icon, title, description, className = '' }: FeatureCardProps) {
   return (
-    <div className={surface-elevated rounded-xl p-6 hover-lift interactive-glow }>
+    <div className="surface-elevated rounded-xl p-6 hover-lift interactive-glow">
       <div
         className="inline-flex p-3 rounded-lg mb-4"
         style={{ backgroundColor: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
@@ -43,7 +43,7 @@ export function FeatureGrid({ children, columns = 3, className = '' }: FeatureGr
   };
 
   return (
-    <div className={grid  gap-6 }>
+    <div className="grid  gap-6">
       {children}
     </div>
   );

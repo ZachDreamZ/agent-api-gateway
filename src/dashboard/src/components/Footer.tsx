@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { GithubIcon as GithubIconIcon, TwitterIcon as TwitterIconIcon, LinkedinIcon as LinkedinIconIcon, MailIcon as MailIconIcon } from 'lucide-react';
 
 interface FooterLink {
   label: string;
@@ -16,10 +16,10 @@ interface FooterProps {
   description?: string;
   sections?: FooterSection[];
   socialLinks?: {
-    github?: string;
-    twitter?: string;
-    linkedin?: string;
-    email?: string;
+    GithubIcon?: string;
+    TwitterIcon?: string;
+    LinkedinIcon?: string;
+    eMailIcon?: string;
   };
   bottomLinks?: FooterLink[];
 }
@@ -42,46 +42,46 @@ export const Footer: React.FC<FooterProps> = ({
             <h3 className="font-serif text-2xl font-bold mb-3">{companyName}</h3>
             <p className="text-gray-600 mb-4 max-w-md">{description}</p>
             <div className="flex items-center gap-3">
-              {socialLinks.github && (
+              {socialLinks.GithubIcon && (
                 <a
-                  href={socialLinks.github}
+                  href={socialLinks.GithubIcon}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                  aria-label="GitHub"
+                  aria-label="GithubIcon"
                 >
-                  <Github size={20} className="text-gray-600" />
+                  <GithubIcon size={20} className="text-gray-600" />
                 </a>
               )}
-              {socialLinks.twitter && (
+              {socialLinks.TwitterIcon && (
                 <a
-                  href={socialLinks.twitter}
+                  href={socialLinks.TwitterIcon}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                  aria-label="Twitter"
+                  aria-label="TwitterIcon"
                 >
-                  <Twitter size={20} className="text-gray-600" />
+                  <TwitterIcon size={20} className="text-gray-600" />
                 </a>
               )}
-              {socialLinks.linkedin && (
+              {socialLinks.LinkedinIcon && (
                 <a
-                  href={socialLinks.linkedin}
+                  href={socialLinks.LinkedinIcon}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                  aria-label="LinkedIn"
+                  aria-label="LinkedinIcon"
                 >
-                  <Linkedin size={20} className="text-gray-600" />
+                  <LinkedinIcon size={20} className="text-gray-600" />
                 </a>
               )}
-              {socialLinks.email && (
+              {socialLinks.eMailIcon && (
                 <a
-                  href={mailto:}
+                  href={`MailIconto:${socialLinks.eMailIcon}`}
                   className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
-                  aria-label="Email"
+                  aria-label="EMailIcon"
                 >
-                  <Mail size={20} className="text-gray-600" />
+                  <MailIcon size={20} className="text-gray-600" />
                 </a>
               )}
             </div>
@@ -158,16 +158,16 @@ const defaultSections: FooterSection[] = [
       { label: 'Help Center', href: '/help' },
       { label: 'Status', href: 'https://status.agentapigw.dpdns.org' },
       { label: 'Community', href: '/community' },
-      { label: 'GitHub', href: 'https://github.com/ZachDreamZ/agent-api-gateway' },
+      { label: 'GithubIcon', href: 'https://GithubIcon.com/ZachDreamZ/agent-api-gateway' },
     ],
   },
 ];
 
 const defaultSocialLinks = {
-  github: 'https://github.com/ZachDreamZ/agent-api-gateway',
-  twitter: 'https://twitter.com/agentapi',
-  linkedin: 'https://linkedin.com/company/agentapi',
-  email: 'support@agentapigw.dpdns.org',
+  GithubIcon: 'https://GithubIcon.com/ZachDreamZ/agent-api-gateway',
+  TwitterIcon: 'https://TwitterIcon.com/agentapi',
+  LinkedinIcon: 'https://LinkedinIcon.com/company/agentapi',
+  eMailIcon: 'support@agentapigw.dpdns.org',
 };
 
 const defaultBottomLinks: FooterLink[] = [
