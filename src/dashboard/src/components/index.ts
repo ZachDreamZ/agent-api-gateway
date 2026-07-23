@@ -12,6 +12,7 @@ export { Toast, ToastProvider, useToast } from './Toast';
 export { Badge } from './Badge';
 export { ProgressBar } from './ProgressBar';
 export { EmptyState } from './EmptyState';
+export { NetworkStatus } from './NetworkStatus';
 
 // Forms & Inputs
 export { Button } from './Button';
