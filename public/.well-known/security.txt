@@ -1,0 +1,9 @@
+Contact: mailto:security@agentapigw.dpdns.org
+Expires: 2027-07-23T04:49:38.000Z
+Preferred-Languages: en
+Canonical: https://agentapigw.dpdns.org/.well-known/security.txt
+Policy: https://agentapigw.dpdns.org/legal/security
+Acknowledgments: https://agentapigw.dpdns.org/security/hall-of-fame
+
+# Agent API Gateway Security Policy
+# We take security seriously. If you discover a vulnerability, please report it responsibly.

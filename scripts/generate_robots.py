@@ -1,4 +1,4 @@
-# Agent API Gateway robots.txt
+robots_content = '''# Agent API Gateway robots.txt
 User-agent: *
 Allow: /
 Disallow: /dashboard
@@ -39,3 +39,9 @@ Disallow: /
 
 User-agent: Yandex
 Disallow: /
+'''
+
+with open('public/robots.txt', 'w', encoding='utf-8') as f:
+    f.write(robots_content)
+
+print('Generated robots.txt')
