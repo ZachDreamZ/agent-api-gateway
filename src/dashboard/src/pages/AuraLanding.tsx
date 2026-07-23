@@ -21,6 +21,7 @@ import {
   ExternalLink, FileText, Building2, Bot
 } from 'lucide-react';
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
+import { BackToTop } from '../components/BackToTop';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { easeOut } from '../lib/motion';
 
@@ -1667,7 +1668,7 @@ function Footer() {
   );
 }
 
-export default function Landing() {
+function Landing() {
   return (
     <div
       className="landing-shell relative min-h-screen"
@@ -1696,3 +1697,14 @@ export default function Landing() {
     </div>
   );
 }
+
+function LandingWithBackToTop() {
+  return (
+    <>
+      <Landing />
+      <BackToTop />
+    </>
+  );
+}
+
+export default LandingWithBackToTop;

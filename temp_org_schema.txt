@@ -1,0 +1,21 @@
+import { Helmet } from 'react-helmet-async';
+
+// Add after imports in AuraLanding.tsx component
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Agent API Gateway",
+  "alternateName": "NexusCore",
+  "url": "https://agentapigw.dpdns.org",
+  "logo": "https://agentapigw.dpdns.org/brand/agent-api-gateway-mark.png",
+  "description": "Structured web extraction API for AI agents. Transform any URL into clean JSON with pre-built schemas for products, articles, and companies.",
+  "foundingDate": "2026",
+  "sameAs": [
+    "https://github.com/ZachDreamZ/agent-api-gateway"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Support",
+    "email": "support@agentapigw.dpdns.org"
+  }
+};
