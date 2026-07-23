@@ -88,12 +88,15 @@ export function Tooltip({ content, children, position = 'top', delay = 300 }: To
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{ display: 'inline-block' }}
+        aria-describedby={isVisible ? 'tooltip' : undefined}
       >
         {children}
       </div>
       {isVisible && createPortal(
         <div
           className="tooltip"
+          role="tooltip"
+          id="tooltip"
           style={{
             position: 'fixed',
             left: `${coords.x}px`,
@@ -105,7 +108,8 @@ export function Tooltip({ content, children, position = 'top', delay = 300 }: To
             color: 'oklch(0.98 0.008 195)',
             fontSize: '13px',
             borderRadius: '6px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            border: '1px solid oklch(0.34 0.025 255)',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
             whiteSpace: 'nowrap',
             animation: 'fadeIn 0.15s ease-out',
           }}
