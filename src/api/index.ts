@@ -60,7 +60,7 @@ function serveStatic(c: any, filePath: string) {
     'Content-Type': MIME[ext] || 'application/octet-stream',
   };
   // HTML shell must not be cached long — deploys would otherwise leave users on stale SPA
-  if (ext === '.html' || safeRel === 'index.html') {
+  if (ext === '.html' || safeRel === 'index.html' || safeRel === 'sw.js' || safeRel === 'manifest.json') {
     headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
   } else if (safeRel.startsWith('assets/') || safeRel.startsWith('brand/')) {
     headers['Cache-Control'] = 'public, max-age=31536000, immutable';
@@ -85,6 +85,8 @@ app.use('/*', async (c, next) => {
     path.startsWith('/brand/') ||
     path === '/favicon.ico' ||
     path === '/favicon.svg' ||
+    path === '/sw.js' ||
+    path === '/manifest.json' ||
     path === '/logo-mark.svg'
   ) {
     await next();
@@ -353,6 +355,8 @@ app.get('/logo-mark.svg', (c) => serveStatic(c, 'logo-mark.svg') || c.json({ err
 app.get('/logo-product.svg', (c) => serveStatic(c, 'logo-product.svg') || c.json({ error: 'Not found' }, 404));
 app.get('/brand/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
+app.get('/sw.js', (c) => serveStatic(c, 'sw.js') || c.json({ error: 'Not found' }, 404));
+app.get('/manifest.json', (c) => serveStatic(c, 'manifest.json') || c.json({ error: 'Not found' }, 404));
 
 // Agent / crawler discovery (must be real text/json — not SPA shell)
 app.get('/llms.txt', (c) => serveStatic(c, 'llms.txt') || c.text('Not found', 404));
@@ -463,3 +467,6 @@ if (process.env['NODE_ENV'] !== 'test') {
     process.exit(1);
   });
 }
+
+
+
