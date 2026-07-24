@@ -37,19 +37,20 @@ export function BackToTop() {
       style={{
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        background: '#3C5A78',
-        border: '1px solid #3C5A78',
+        background: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+        color: 'var(--color-text-primary)',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = '#2E4760';
-        e.currentTarget.style.borderColor = '#2E4760';
+        e.currentTarget.style.background = 'var(--color-bg-hover)';
+        e.currentTarget.style.borderColor = 'var(--color-border-default)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = '#3C5A78';
-        e.currentTarget.style.borderColor = '#3C5A78';
+        e.currentTarget.style.background = 'var(--color-surface)';
+        e.currentTarget.style.borderColor = 'var(--color-border)';
       }}
     >
-      <ArrowUp className="w-5 h-5 text-white" />
+      <ArrowUp className="w-5 h-5" style={{ color: 'var(--color-text-primary)' }} />
     </button>
   );
 }
