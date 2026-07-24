@@ -9,6 +9,7 @@ import {
   createPublicCheckout,
   getStarterProductId,
   getPolarProductId,
+  getPolarAnnualProductId,
   listInvoices,
 } from '../../billing/polar';
 import {
@@ -122,7 +123,7 @@ billingPricing.post('/checkout', async (c) => {
     return c.json({ error: 'Too many checkout attempts. Try again in a minute.' }, 429);
   }
 
-  let body: { sku?: string; tier?: string; email?: string } = {};
+  let body: { sku?: string; tier?: string; email?: string; annual?: boolean } = {};
   try {
     body = await c.req.json();
   } catch {
@@ -164,12 +165,13 @@ billingPricing.post('/checkout', async (c) => {
     }
 
     const tier = (body.tier || sku) as Tier;
+    const isAnnual = Boolean(body.annual);
     if (!['hobby', 'pro', 'scale'].includes(tier)) {
       return c.json({
         error: 'Unknown sku. Use credits_1k, credits_5k, credits_25k, starter, hobby, pro, or scale.',
       }, 400);
     }
-    const productId = getPolarProductId(tier);
+    const productId = isAnnual ? (getPolarAnnualProductId(tier) || getPolarProductId(tier)) : getPolarProductId(tier);
     if (!productId) {
       return c.json({ error: `Product for ${tier} not configured` }, 503);
     }
@@ -207,6 +209,7 @@ billingPricing.get('/buy', async (c) => {
     return c.json({ error: 'Too many checkout attempts. Try again in a minute.' }, 429);
   }
   const sku = (c.req.query('sku') || 'starter').toLowerCase();
+  const annual = c.req.query('annual') === '1' || c.req.query('annual') === 'true';
   try {
     let productId: string | null = null;
     let meta: Record<string, string> = {
@@ -224,8 +227,9 @@ billingPricing.get('/buy', async (c) => {
         kind: 'credit_pack',
       };
     } else if (['hobby', 'pro', 'scale'].includes(sku)) {
-      productId = getPolarProductId(sku as Tier);
-      meta = { sku, tier: sku, kind: 'subscription' };
+      const tier = sku as Tier;
+      productId = annual ? (getPolarAnnualProductId(tier) || getPolarProductId(tier)) : getPolarProductId(tier);
+      meta = { sku, tier: sku, kind: 'subscription', billing_interval: annual ? 'year' : 'month' };
     }
     if (!productId) {
       return c.json({ error: 'Product not configured' }, 503);
@@ -285,6 +289,7 @@ billingApp.get('/invoices', async (c) => {
 const checkoutSchema = z
   .object({
     tier: z.enum(['hobby', 'pro', 'scale']).optional(),
+    annual: z.boolean().optional(),
     sku: z.string().optional(),
     email: z.string().email().optional(),
   })
@@ -299,7 +304,7 @@ billingApp.post('/checkout', zValidator('json', checkoutSchema), async (c) => {
   }
 
   try {
-    const { tier, sku, email } = c.req.valid('json');
+    const { tier, sku, email, annual } = c.req.valid('json');
     const user = c.get('user');
     const userEmail = email || user.email;
     const userId = user.id;
@@ -332,7 +337,7 @@ billingApp.post('/checkout', zValidator('json', checkoutSchema), async (c) => {
       }, 400);
     }
 
-    const result = await createCheckoutSession(customerId, tier, userId, userEmail);
+    const result = await createCheckoutSession(customerId, tier, userId, userEmail, Boolean(annual));
 
     return c.json({
       url: result.url,
@@ -382,3 +387,4 @@ billingApp.post('/portal', zValidator('json', portalSchema), async (c) => {
 });
 
 export { billingApp, billingPricing };
+

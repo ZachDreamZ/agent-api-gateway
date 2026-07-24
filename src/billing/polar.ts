@@ -35,6 +35,17 @@ export function getPolarProductId(tier: Tier): string | null {
   }
 }
 
+/** Resolve the Polar product ID for an annual (yearly) tier subscription.
+ *  Products must be created in Polar as recurring yearly products. */
+export function getPolarAnnualProductId(tier: Tier): string | null {
+  switch (tier) {
+    case 'hobby': return process.env.POLAR_PRODUCT_HOBBY_ANNUAL || process.env.POLAR_PRODUCT_HOBBY || null;
+    case 'pro': return process.env.POLAR_PRODUCT_PRO_ANNUAL || process.env.POLAR_PRODUCT_PRO || null;
+    case 'scale': return process.env.POLAR_PRODUCT_SCALE_ANNUAL || process.env.POLAR_PRODUCT_SCALE || null;
+    default: return null;
+  }
+}
+
 /** One-time Starter Pack product ($1) for first-purchase conversion. */
 export function getStarterProductId(): string | null {
   return process.env.POLAR_PRODUCT_STARTER || null;
@@ -69,10 +80,11 @@ export async function createCheckoutSession(
   tier: Tier,
   userId: string,
   userEmail: string,
+  annual = false,
 ): Promise<CheckoutResult> {
   if (!polar) throw new Error('Polar not initialized');
 
-  const productId = getPolarProductId(tier);
+  const productId = annual ? (getPolarAnnualProductId(tier) || getPolarProductId(tier)) : getPolarProductId(tier);
   if (!productId) {
     throw new Error(
       `Tier "${tier}" has no Polar product configured (set POLAR_PRODUCT_${tier.toUpperCase()})`,
@@ -82,7 +94,7 @@ export async function createCheckoutSession(
   const params: Parameters<typeof polar.checkouts.create>[0] = {
     products: [productId],
     successUrl: `${APP_DOMAIN}/dashboard?checkout_id={CHECKOUT_ID}`,
-    metadata: { user_id: userId, tier, kind: 'subscription' },
+    metadata: { user_id: userId, tier, kind: 'subscription', billing_interval: annual ? 'year' : 'month' },
   };
   if (customerId) {
     params.customerId = customerId;

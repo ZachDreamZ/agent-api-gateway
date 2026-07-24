@@ -144,7 +144,7 @@ export default function Pricing() {
           {PACKS.map((p) => (
             <a
               key={p.name}
-              href={p.href}
+              href={annual && p.annualPrice ? `/buy?sku=${p.name.toLowerCase()}&annual=1` : p.href}
               className="glass-card p-4 interactive block"
               style={p.highlighted ? { borderColor: 'oklch(0.74 0.12 195 / 0.4)' } : undefined}
             >
