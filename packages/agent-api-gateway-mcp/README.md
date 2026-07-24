@@ -1,5 +1,9 @@
 # agent-api-gateway-mcp
 
+Registry name: `io.github.ZachDreamZ/agent-api-gateway`
+
+Published on npm as `agent-api-gateway-mcp` and registered with the official MCP Registry (`registry.modelcontextprotocol.io`).
+
 MCP server for [Agent API Gateway](https://agentapigw.dpdns.org) — extract structured JSON from public URLs for AI agents.
 
 ## Install

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ZachDreamZ/agent-api-gateway",
+  "description": "Extract structured web data (product, article, company) for AI agents via Agent API Gateway",
+  "title": "Agent API Gateway",
+  "websiteUrl": "https://agentapigw.dpdns.org/mcp",
+  "repository": {
+    "url": "https://github.com/ZachDreamZ/agent-api-gateway-mcp",
+    "source": "github"
+  },
+  "version": "1.3.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "agent-api-gateway-mcp",
+      "version": "1.3.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "AGENT_API_KEY",
+          "description": "Agent API Gateway API key from the dashboard (sk-...)",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "API_BASE_URL",
+          "description": "Optional API base URL override",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string",
+          "default": "https://agentapigw.dpdns.org/v1"
+        }
+      ]
+    }
+  ]
+}

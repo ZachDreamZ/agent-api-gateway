@@ -58,7 +58,7 @@ async function callGateway(endpoint: string, body?: unknown): Promise<unknown> {
 }
 
 const server = new Server(
-  { name: 'agent-api-gateway', version: '1.3.0' },
+  { name: 'agent-api-gateway', version: '1.3.2' },
   { capabilities: { tools: {} } },
 );
 

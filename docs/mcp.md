@@ -30,6 +30,25 @@ AGENT_API_KEY=sk-your-key npm run verify:mcp
 
 This starts the stdio server, lists tools, and calls `list_schemas` against the live API.
 
+
+## Install (published package)
+
+```bash
+npm i -g agent-api-gateway-mcp
+# or one-shot
+npx -y agent-api-gateway-mcp
+```
+
+- npm: https://www.npmjs.com/package/agent-api-gateway-mcp
+- GitHub: https://github.com/ZachDreamZ/agent-api-gateway-mcp
+- Official MCP Registry name: `io.github.ZachDreamZ/agent-api-gateway`
+
+Search the registry:
+
+```bash
+curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=agent-api-gateway"
+```
+
 ## Client config (placeholder key only)
 
 ```json
@@ -47,7 +66,7 @@ This starts the stdio server, lists tools, and calls `list_schemas` against the 
 }
 ```
 
-Use an absolute path to this repo (or install deps globally) so `tsx` can resolve the entry file.
+The published package is preferred for clients. Local `npm run mcp` remains available for development.
 
 ## Security
 
