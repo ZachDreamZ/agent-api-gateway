@@ -13,10 +13,12 @@ import {
   Shield,
   Terminal,
   Wrench,
+  Play,
 } from 'lucide-react';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 import { useSEO } from '../hooks/useSEO';
 import { easeOut } from '../lib/motion';
+import { LiveExtractDemo } from '../components/LiveExtractDemo';
 
 const NPM_URL = 'https://www.npmjs.com/package/agent-api-gateway-mcp';
 const GITHUB_URL = 'https://github.com/ZachDreamZ/agent-api-gateway-mcp';
@@ -266,6 +268,18 @@ export default function Mcp() {
               lang="bash"
             />
           </div>
+        </section>
+
+        <section className="mb-10 surface-elevated p-5 md:p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Play className="w-4 h-4" style={{ color: 'var(--color-accent-base)' }} />
+            <h2 className="text-title">Try in playground</h2>
+          </div>
+          <p className="text-body mb-4" style={{ color: 'var(--color-text-secondary)' }}>
+            Test extraction instantly — no install needed. Paste a public product URL and hit Extract.
+            Uses your API key if you are signed in, otherwise runs on the free tier (500 queries/month).
+          </p>
+          <LiveExtractDemo schema="product" defaultUrl="https://www.example.com/product/demo" />
         </section>
 
         <section className="mb-10">

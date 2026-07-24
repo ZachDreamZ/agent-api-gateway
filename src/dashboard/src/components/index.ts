@@ -38,6 +38,7 @@ export { Tooltip } from './Tooltip';
 export { Accordion } from './Accordion';
 export { Tabs } from './Tabs';
 export { ShareButton } from './ShareButton';
+export { LiveExtractDemo } from './LiveExtractDemo';
 
 // Landing Page Components
 export { Hero } from './Hero';
