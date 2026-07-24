@@ -3,6 +3,7 @@ import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 import { useSEO } from '../hooks/useSEO';
 import { ArrowRight, Bot, Package, Building2, Newspaper } from 'lucide-react';
 import { LiveExtractDemo } from '../components/LiveExtractDemo';
+import { LiveExtractDemo } from '../components/LiveExtractDemo';
 
 type UseCase = {
   slug: string;
