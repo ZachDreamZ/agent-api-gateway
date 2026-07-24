@@ -809,7 +809,7 @@ export default function Docs() {
   "mcpServers": {
     "agent-api-gateway": {
       "command": "npx",
-      "args": ["tsx", "src/mcp/index.ts"],
+      "args": ["-y", "agent-api-gateway-mcp"],
       "env": {
         "AGENT_API_KEY": "sk-your-api-key",
         "API_BASE_URL": "https://agentapigw.dpdns.org/v1"
@@ -821,7 +821,7 @@ export default function Docs() {
             <Para>
               From a checkout of this repo: run <code className="code-inline">npm install</code>, mint a key in the dashboard,
               then point the config at the repo path (or use absolute paths for <code className="code-inline">tsx</code> / entry).
-              CLI: <code className="code-inline">AGENT_API_KEY=sk-… npm run mcp</code>
+              CLI: <code className="code-inline">AGENT_API_KEY=sk-… npx -y agent-api-gateway-mcp</code>
             </Para>
           </SubSection>
 
