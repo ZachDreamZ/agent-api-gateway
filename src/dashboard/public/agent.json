@@ -74,5 +74,18 @@
       "AGENT_API_KEY": "sk-your-api-key",
       "API_BASE_URL": "https://agentapigw.dpdns.org/v1"
     }
+  },
+  "pricing_page": "https://agentapigw.dpdns.org/pricing",
+  "alternatives": {
+    "index": "https://agentapigw.dpdns.org/alternatives",
+    "firecrawl": "https://agentapigw.dpdns.org/alternatives/firecrawl",
+    "browse_ai": "https://agentapigw.dpdns.org/alternatives/browse-ai",
+    "scrapy": "https://agentapigw.dpdns.org/alternatives/scrapy",
+    "browserless": "https://agentapigw.dpdns.org/alternatives/browserless"
+  },
+  "blog": {
+    "index": "https://agentapigw.dpdns.org/blog",
+    "rss": "https://agentapigw.dpdns.org/blog/rss.xml",
+    "json_feed": "https://agentapigw.dpdns.org/blog/feed.json"
   }
 }

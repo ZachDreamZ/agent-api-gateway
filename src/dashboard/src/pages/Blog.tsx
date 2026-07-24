@@ -239,6 +239,89 @@ Blog post tags now show specific icons per category with color-coded badges for 
 We are working on webhook support for async extractions, batch URL processing, and a custom schema builder for Pro plan users. Stay tuned.`
   },
   {
+    slug: 'install-agent-api-gateway-mcp-in-cursor',
+    title: 'Install Agent API Gateway MCP in Cursor (and Claude Desktop)',
+    excerpt: 'A practical MCP install guide: one-click Cursor deeplink, npm package, registry entry, env vars, and first extract tool call for AI agents.',
+    date: '2026-07-24',
+    readTime: '6 min',
+    tags: ['mcp', 'guides', 'agents'],
+    content: `If you are wiring an AI agent to pull product, article, or company fields from public pages, you do not want a custom scraper farm. You want a tool the agent can call.
+
+Agent API Gateway ships a published MCP package for that path: URL + schema → validated JSON.
+
+## What you get
+
+- **MCP tools** for structured extraction
+- **REST fallback** via \`POST /v1/extract\`
+- **Free tier + credit packs** for bursty agent workloads
+- **SSRF-guarded public URLs only**
+
+Install hub (copy/paste configs): https://agentapigw.dpdns.org/mcp
+
+## Option A — Cursor one-click
+
+Open the MCP install hub and use the Cursor deeplink. It pre-fills the package name and stdio config.
+
+1. Go to \`/mcp\`
+2. Click **Add to Cursor**
+3. Set \`AGENT_API_KEY\` to your dashboard API key
+4. Restart Cursor MCP servers if needed
+
+## Option B — npm / npx
+
+Code (bash):
+    npx -y agent-api-gateway-mcp
+
+Claude Desktop / Cursor style config:
+
+Code (json):
+    {
+      "mcpServers": {
+        "agent-api-gateway": {
+          "command": "npx",
+          "args": ["-y", "agent-api-gateway-mcp"],
+          "env": {
+            "AGENT_API_KEY": "sk-your-api-key",
+            "API_BASE_URL": "https://agentapigw.dpdns.org/v1"
+          }
+        }
+      }
+    }
+
+Package: \`agent-api-gateway-mcp\`  
+Registry: \`io.github.ZachDreamZ/agent-api-gateway\`
+
+## First successful call
+
+Use a public product URL and the built-in \`product\` schema:
+
+Code (json):
+    {
+      "url": "https://example.com/product",
+      "schema": "product"
+    }
+
+You should get validated fields such as name, price, currency, and stock — not raw HTML.
+
+## When MCP is the wrong tool
+
+Choose a crawl platform (or keep Scrapy) when you need:
+
+- multi-page site maps as the primary workflow
+- private network / login-gated targets
+- raw browser session control
+
+For agent-first single-URL extraction, MCP + REST is the short path.
+
+## Related pages
+
+- MCP install hub: \`/mcp\`
+- Pricing: \`/pricing\`
+- Firecrawl alternative comparison: \`/alternatives/firecrawl\`
+- Full docs: \`/docs#mcp\`
+`,
+  },
+  {
     slug: 'rate-limiting-strategies-for-ai-agents',
     title: 'Rate limiting strategies for AI agent APIs',
     excerpt: 'How to design rate limits that protect your infrastructure without breaking agent workflows. Token buckets, sliding windows, and graceful degradation.',

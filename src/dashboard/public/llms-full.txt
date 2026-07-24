@@ -15,6 +15,10 @@ Turn a public product, article, or company URL into validated JSON for AI agents
 - Machine catalog JSON: https://agentapigw.dpdns.org/agent.json
 - Agent onboarding markdown: https://agentapigw.dpdns.org/agent-onboarding.md
 - MCP install hub: https://agentapigw.dpdns.org/mcp
+- Pricing page: https://agentapigw.dpdns.org/pricing
+- Alternatives index: https://agentapigw.dpdns.org/alternatives
+- Firecrawl alternative: https://agentapigw.dpdns.org/alternatives/firecrawl
+- Browse AI alternative: https://agentapigw.dpdns.org/alternatives/browse-ai
 - MCP npm package: https://www.npmjs.com/package/agent-api-gateway-mcp
 - MCP GitHub: https://github.com/ZachDreamZ/agent-api-gateway-mcp
 - MCP registry name: io.github.ZachDreamZ/agent-api-gateway
@@ -68,7 +72,16 @@ Onboarding: https://agentapigw.dpdns.org/agent-onboarding.md
 - Acceptable use: https://agentapigw.dpdns.org/aup
 - Signup requires agreement to Terms + Privacy + AUP
 
+## Comparisons (high-intent SEO)
+- Alternatives index: https://agentapigw.dpdns.org/alternatives
+- Firecrawl alternative: https://agentapigw.dpdns.org/alternatives/firecrawl
+- Browse AI alternative: https://agentapigw.dpdns.org/alternatives/browse-ai
+- Scrapy alternative: https://agentapigw.dpdns.org/alternatives/scrapy
+- Browserless alternative: https://agentapigw.dpdns.org/alternatives/browserless
+- Pricing: https://agentapigw.dpdns.org/pricing
+
 ## Engineering blog
+- Install MCP in Cursor: https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor
 - Rate limiting for AI agents: https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents
 - Structured data vs HTML: https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents
 - SSRF protection: https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis

@@ -15,13 +15,37 @@
   "language": "en",
   "items": [
     {
+      "id": "https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor",
+      "url": "https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor",
+      "title": "Install Agent API Gateway MCP in Cursor (and Claude Desktop)",
+      "summary": "A practical MCP install guide: one-click Cursor deeplink, npm package, registry entry, env vars, and first extract tool call for AI agents.",
+      "date_published": "2026-07-24T08:00:00Z",
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": [
+        "mcp",
+        "guides",
+        "agents"
+      ]
+    },
+    {
       "id": "https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents",
       "url": "https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents",
       "title": "Rate limiting strategies for AI agent APIs",
       "summary": "How to design rate limits that protect your infrastructure without breaking agent workflows. Token buckets, sliding windows, and graceful degradation.",
       "date_published": "2026-07-23T08:00:00Z",
-      "authors": [{ "name": "NexusCore" }],
-      "tags": ["engineering", "architecture"]
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": [
+        "engineering",
+        "architecture"
+      ]
     },
     {
       "id": "https://agentapigw.dpdns.org/blog/agent-api-gateway-gets-premium-ui-code-splitting-and-seo",
@@ -29,8 +53,15 @@
       "title": "Premium UI redesign, 30% faster loads, and better SEO",
       "summary": "Glassmorphism design system, code-split bundles, lazy-loaded pages, RSS feed, and enhanced meta tags - what we shipped and why.",
       "date_published": "2026-07-22T00:00:00Z",
-      "authors": [{ "name": "NexusCore" }],
-      "tags": ["engineering", "architecture"]
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": [
+        "engineering",
+        "architecture"
+      ]
     },
     {
       "id": "https://agentapigw.dpdns.org/blog/structured-data-for-ai-agents",
@@ -38,8 +69,15 @@
       "title": "Why AI agents need structured data, not HTML",
       "summary": "Raw HTML parsing is brittle and expensive. Here's how structured extraction APIs solve the reliability problem for agent tool-calling.",
       "date_published": "2026-07-15T00:00:00Z",
-      "authors": [{ "name": "NexusCore" }],
-      "tags": ["agents", "architecture"]
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": [
+        "agents",
+        "architecture"
+      ]
     },
     {
       "id": "https://agentapigw.dpdns.org/blog/ssrf-protection-for-extraction-apis",
@@ -47,8 +85,15 @@
       "title": "SSRF protection for web extraction APIs",
       "summary": "How we block private hosts, metadata endpoints, and credentialed URLs at every layer of the extraction pipeline.",
       "date_published": "2026-07-10T00:00:00Z",
-      "authors": [{ "name": "NexusCore" }],
-      "tags": ["security", "engineering"]
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": [
+        "security",
+        "engineering"
+      ]
     },
     {
       "id": "https://agentapigw.dpdns.org/blog/choosing-extraction-schema",
@@ -56,8 +101,15 @@
       "title": "Choosing the right extraction schema: product, article, or company",
       "summary": "A guide to the three built-in schemas and when to use each one for your agent workflows.",
       "date_published": "2026-07-05T00:00:00Z",
-      "authors": [{ "name": "NexusCore" }],
-      "tags": ["guides", "schema"]
+      "authors": [
+        {
+          "name": "NexusCore"
+        }
+      ],
+      "tags": [
+        "guides",
+        "schema"
+      ]
     }
   ]
 }

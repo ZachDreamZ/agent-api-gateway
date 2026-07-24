@@ -1,0 +1,13 @@
+Directory,Tier,URL,Category,Positioning Variant,Preferred Landing URL,Status,Notes
+DevHunt,1,https://devhunt.org/submit,Launch,Dev,https://agentapigw.dpdns.org/mcp,Ready,Lead with MCP + REST extract
+SaaSHub,2,https://saashub.com/submit,SaaS,SaaS alternative,https://agentapigw.dpdns.org/alternatives/firecrawl,Ready,Position as Firecrawl alternative for agents
+AlternativeTo,2,https://alternativeto.net/software/_/add/,SaaS,SaaS alternative,https://agentapigw.dpdns.org/alternatives,Ready,"List vs Firecrawl, Browse AI, Scrapy"
+TAAFT,3,https://theresanaiforthat.com/submit/,AI,AI directory,https://agentapigw.dpdns.org/,Ready,AI extraction API framing
+Futurepedia,3,https://www.futurepedia.io/submit-tool,AI,AI directory,https://agentapigw.dpdns.org/pricing,Ready,Pricing page required
+Toolify,3,https://www.toolify.ai/,AI,AI directory,https://agentapigw.dpdns.org/,Ready,Check current submit form
+Glama MCP,4,https://glama.ai/mcp,Agent/MCP,Agent/MCP,https://agentapigw.dpdns.org/mcp,Ready,MCP package listing
+MCP Registry,4,https://registry.modelcontextprotocol.io/,Agent/MCP,Agent/MCP,https://agentapigw.dpdns.org/mcp,Live,io.github.ZachDreamZ/agent-api-gateway
+npm package page,4,https://www.npmjs.com/package/agent-api-gateway-mcp,Agent/MCP,Agent/MCP,https://agentapigw.dpdns.org/mcp,Live,Published package
+Indie Hackers,8,https://www.indiehackers.com/products,Community,Startup,https://agentapigw.dpdns.org/,Ready,Build-in-public + product page
+Product Hunt,1,https://www.producthunt.com/posts/new,Launch,Startup,https://agentapigw.dpdns.org/,Blocked,Need screenshots + demo video first
+Hacker News Show HN,1,https://news.ycombinator.com/submit,Launch,Dev,https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor,Ready,Only with technical MCP/SSRF angle

@@ -137,10 +137,12 @@ const defaultSections: FooterSection[] = [
     title: 'Product',
     links: [
       { label: 'Features', href: '/#features' },
-      { label: 'Pricing', href: '/#pricing' },
+      { label: 'Pricing', href: '/pricing' },
+      { label: 'Alternatives', href: '/alternatives' },
+      { label: 'MCP', href: '/mcp' },
       { label: 'Documentation', href: '/docs' },
       { label: 'API Reference', href: '/docs#api' },
-      { label: 'For Agents', href: '/for-agents' },
+      { label: 'For Agents', href: '/agents' },
     ],
   },
   {
@@ -171,8 +173,8 @@ const defaultSocialLinks = {
 };
 
 const defaultBottomLinks: FooterLink[] = [
-  { label: 'Privacy Policy', href: '/legal#privacy' },
-  { label: 'Terms of Service', href: '/legal#terms' },
+  { label: 'Privacy Policy', href: '/privacy' },
+  { label: 'Terms of Service', href: '/terms' },
   { label: 'Cookie Policy', href: '/legal#cookies' },
 ];
 

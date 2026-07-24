@@ -1,45 +1,77 @@
 User-agent: *
 Allow: /
 
-# Sitemap location
+# Public product + discovery surfaces
+Allow: /docs
+Allow: /blog
+Allow: /agents
+Allow: /for-agents
+Allow: /mcp
+Allow: /pricing
+Allow: /alternatives
+
+# Auth / app surfaces (noindex-friendly but crawlable home is enough)
+Disallow: /dashboard
+Disallow: /login
+Disallow: /auth
+Disallow: /reset-password
+
 Sitemap: https://agentapigw.dpdns.org/sitemap.xml
 
-# AI Crawlers
+# AI crawlers — allow discovery pages
 User-agent: GPTBot
 Allow: /
 Allow: /docs
 Allow: /blog
 Allow: /agents
+Allow: /mcp
+Allow: /pricing
+Allow: /alternatives
 
 User-agent: Claude-Web
 Allow: /
 Allow: /docs
 Allow: /blog
 Allow: /agents
+Allow: /mcp
+Allow: /pricing
+Allow: /alternatives
 
 User-agent: ChatGPT-User
 Allow: /
 Allow: /docs
 Allow: /blog
 Allow: /agents
+Allow: /mcp
+Allow: /pricing
+Allow: /alternatives
 
 User-agent: anthropic-ai
 Allow: /
 Allow: /docs
 Allow: /blog
 Allow: /agents
+Allow: /mcp
+Allow: /pricing
+Allow: /alternatives
 
 User-agent: cohere-ai
 Allow: /
 Allow: /docs
 Allow: /blog
 Allow: /agents
+Allow: /mcp
+Allow: /pricing
+Allow: /alternatives
 
 User-agent: Perplexitybot
 Allow: /
 Allow: /docs
 Allow: /blog
 Allow: /agents
+Allow: /mcp
+Allow: /pricing
+Allow: /alternatives
 
 # Block aggressive scrapers
 User-agent: SemrushBot
@@ -51,5 +83,4 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# Rate limiting recommendations
 Crawl-delay: 1

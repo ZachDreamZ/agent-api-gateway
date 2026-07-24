@@ -5,8 +5,16 @@
 <link>https://agentapigw.dpdns.org/blog</link>
 <description>Building structured data extraction for AI agents</description>
 <language>en-us</language>
-<lastBuildDate>Wed, 23 Jul 2026 08:00:00 +0000</lastBuildDate>
+<lastBuildDate>Thu, 24 Jul 2026 08:00:00 +0000</lastBuildDate>
 <atom:link href="https://agentapigw.dpdns.org/blog/rss.xml" rel="self" type="application/rss+xml"/>
+<item>
+<title>Install Agent API Gateway MCP in Cursor (and Claude Desktop)</title>
+<link>https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor</link>
+<guid isPermaLink="true">https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor</guid>
+<pubDate>Thu, 24 Jul 2026 08:00:00 +0000</pubDate>
+<description>A practical MCP install guide: one-click Cursor deeplink, npm package, registry entry, env vars, and first extract tool call for AI agents.</description>
+<category>mcp</category><category>guides</category><category>agents</category>
+</item>
 <item>
 <title>Rate limiting strategies for AI agent APIs</title>
 <link>https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents</link>

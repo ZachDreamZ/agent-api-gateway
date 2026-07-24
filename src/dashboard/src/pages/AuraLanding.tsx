@@ -70,8 +70,10 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-4 lg:gap-5">
           <StatusChip />
           <a href="#how" className="link text-sm">How it works</a>
-          <a href="#pricing" className="link text-sm">Pricing</a>
+          <Link to="/pricing" className="link text-sm">Pricing</Link>
           <Link to="/docs" className="link text-sm">Docs</Link>
+          <Link to="/mcp" className="link text-sm">MCP</Link>
+          <Link to="/alternatives" className="link text-sm">Alternatives</Link>
           <Link to="/blog" className="link text-sm">Blog</Link>
           <Link to="/agents" className="link text-sm">For agents</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
@@ -135,8 +137,17 @@ function Navbar() {
                     {item.label}
                   </a>
                 ))}
+                <Link to="/pricing" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+                  Pricing
+                </Link>
                 <Link to="/docs" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Docs
+                </Link>
+                <Link to="/mcp" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+                  MCP
+                </Link>
+                <Link to="/alternatives" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+                  Alternatives
                 </Link>
                 <Link to="/blog" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Blog
@@ -1643,7 +1654,8 @@ function Footer() {
           <a href="/llms.txt" className="link">llms.txt</a>
           <a href="/agent.json" className="link">agent.json</a>
           <Link to="/dashboard" className="link">Dashboard</Link>
-          <a href="#pricing" className="link">Pricing</a>
+          <Link to="/pricing" className="link">Pricing</Link>
+          <Link to="/alternatives" className="link">Alternatives</Link>
           <a href="/health" className="link">Status</a>
           <Link to="/privacy" className="link">Privacy</Link>
           <Link to="/terms" className="link">Terms</Link>
