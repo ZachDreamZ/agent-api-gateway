@@ -474,23 +474,26 @@ export default function ApiKeys() {
       )}
 
       <div className="surface surface-glow p-4 mb-6">
-        <p className="mb-3 text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+        <label htmlFor="new-api-key-name" className="mb-2 block text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
           Create new key
-        </p>
-        <div className="flex flex-col gap-2 sm:flex-row">
+        </label>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           <input
+            id="new-api-key-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
             placeholder="e.g. Production, Development, Testing"
-            className="input"
+            className="input min-w-0 flex-1"
+            autoComplete="off"
+            aria-label="API key name"
           />
           <button
             type="button"
             onClick={handleCreate}
             disabled={creating || !name.trim()}
-            className="btn btn-primary shrink-0"
+            className="btn btn-primary shrink-0 sm:w-auto"
           >
             {creating ? <Spinner /> : <Plus className="w-4 h-4" />}
             Create
