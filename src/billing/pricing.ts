@@ -23,27 +23,27 @@ export const TIER_PRICING: Record<Tier, TierPricing> = {
   free: {
     id: 'free',
     name: 'Free',
-    description: 'Evaluate the API with basic access',
+    description: 'Try the API with room to integrate a real agent loop',
     price_monthly: 0,
-    queries_per_month: 100,
+    queries_per_month: 500,
     rate_limit_rpm: 10,
     concurrent_requests: 1,
     features: [
-      { text: '100 queries / month', included: true },
+      { text: '500 queries / month', included: true },
       { text: 'Product extraction', included: true },
       { text: '1 concurrent request', included: true },
       { text: '10 RPM rate limit', included: true },
       { text: 'API key management', included: true },
       { text: 'No caching', included: false },
-      { text: 'Priority support', included: false },
-      { text: 'Team members', included: false },
+      { text: 'Higher RPM than free (60 vs 10)', included: true },
+      { text: 'Credit packs for bursts', included: true },
     ],
     highlighted: false,
   },
   hobby: {
     id: 'hobby',
     name: 'Hobby',
-    description: 'For solo devs and indie hackers',
+    description: 'Always-on allowance + higher RPM for solo builders',
     price_monthly: 2900, // $29
     queries_per_month: 5000,
     rate_limit_rpm: 60,
@@ -55,15 +55,15 @@ export const TIER_PRICING: Record<Tier, TierPricing> = {
       { text: '60 RPM rate limit', included: true },
       { text: 'API key management', included: true },
       { text: 'Response caching', included: true },
-      { text: 'Priority support', included: false },
-      { text: 'Team members', included: false },
+      { text: 'Higher RPM than free (60 vs 10)', included: true },
+      { text: 'Credit packs for bursts', included: true },
     ],
     highlighted: false,
   },
   pro: {
     id: 'pro',
     name: 'Pro',
-    description: 'For teams and agent builders',
+    description: 'Production agent workloads with higher concurrency',
     price_monthly: 9900, // $99
     queries_per_month: 25000,
     rate_limit_rpm: 300,
@@ -132,7 +132,7 @@ export const CREDIT_PACKS: CreditPack[] = [
   {
     id: 'credits_1k',
     name: '1,000 credits',
-    description: 'Top-up pack — works with free or any subscription',
+    description: 'Best first purchase — unlock 1,000 more extracts for $1',
     credits: 1000,
     price_cents: 100,
     envKey: 'POLAR_PRODUCT_STARTER',
@@ -188,3 +188,4 @@ export function formatOneTimePrice(cents: number): string {
   const dollars = cents / 100;
   return Number.isInteger(dollars) ? `$${dollars}` : `$${dollars.toFixed(2)}`;
 }
+

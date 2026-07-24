@@ -571,7 +571,7 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
           Create an API key, then call /v1/extract
         </h3>
         <p className="mt-1.5 text-caption leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
-          Free tier includes 100 queries/month. Keys are shown once — copy them immediately.
+          Free tier includes 500 queries/month. Need more? Buy 1,000 credits for $1. Keys are shown once — copy them immediately.
         </p>
       </div>
 
@@ -840,3 +840,4 @@ export default function Overview() {
     </div>
   );
 }
+

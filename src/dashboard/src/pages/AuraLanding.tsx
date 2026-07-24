@@ -595,27 +595,27 @@ function Hero() {
 
             <SocialProof />
 
-            <motion.div
+                        <motion.div
               className="mt-8 flex flex-col sm:flex-row gap-3"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.18, ease: easeOut }}
             >
-              <Link
-                to="/login"
+              <a
+                href="/buy?sku=credits_1k"
                 className="btn btn-primary btn-shine"
                 style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
               >
-                Create free account
+                Buy 1,000 credits for $1
                 <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a
-                href="/buy?sku=credits_1k"
+              </a>
+              <Link
+                to="/login"
                 className="btn btn-secondary"
                 style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
               >
-                Buy credits from $1
-              </a>
+                Start free (500 queries)
+              </Link>
             </motion.div>
           </div>
 
@@ -696,7 +696,7 @@ function Quickstart() {
       <Reveal delay={0.06}>
         <ol className="grid md:grid-cols-3 gap-4 mb-8">
           {[
-            { n: '1', t: 'Create account', d: 'GitHub, Google, or email. Free tier starts with 100 queries/month.' },
+            { n: '1', t: 'Create account', d: 'GitHub, Google, or email. Free tier starts with 500 queries/month.' },
             { n: '2', t: 'Mint an API key', d: 'Dashboard → API Keys. Secrets are shown once; store them safely.' },
             { n: '3', t: 'Call /v1/extract', d: 'Pass a public URL and schema. Credits only move on success paths you use.' },
           ].map((s) => (
@@ -1010,7 +1010,7 @@ const COMPARISON_ROWS = [
   { feature: 'SSRF protection', us: true, generic: 'Partial', custom: false },
   { feature: 'MCP server for agent tool-calling', us: true, generic: false, custom: false },
   { feature: 'Credit packs (no subscription required)', us: true, generic: false, custom: false },
-  { feature: 'Free tier (100 queries/mo)', us: true, generic: false, custom: false },
+  { feature: 'Free tier (500 queries/mo)', us: true, generic: false, custom: false },
   { feature: 'Cache with TTL', us: true, generic: true, custom: 'Build yourself' },
   { feature: '24/7 managed infrastructure', us: true, generic: true, custom: false },
 ] as const;
@@ -1165,10 +1165,10 @@ const creditPacks = [
     name: '1,000 credits',
     price: '$1',
     period: ' once',
-    desc: 'Best first top-up — works on free or any plan.',
+    desc: 'Best first purchase — stacks on free or any plan.',
     features: ['1,000 extraction credits', 'Never expires until used', 'Stacks on your plan', 'No subscription required'],
     highlighted: true,
-    cta: 'Buy $1',
+    cta: 'Buy $1 credits',
     href: '/buy?sku=credits_1k',
   },
   {
@@ -1200,8 +1200,8 @@ const subscriptions = [
     tier: 'Free',
     price: '$0',
     period: '',
-    desc: 'Try the API and ship a prototype.',
-    features: ['100 queries / month', 'Product & article schemas', '1-hour cache TTL', '1 API key', 'REST + MCP', 'Buy credit packs anytime'],
+    desc: 'Integrate a real agent loop without paying yet.',
+    features: ['500 queries / month', 'All schemas', '1-hour cache TTL', '1 API key', 'REST + MCP', 'Buy credit packs anytime'],
     highlighted: false,
     cta: 'Create free account',
     href: '/login',
@@ -1212,7 +1212,7 @@ const subscriptions = [
     price: '$29',
     period: '/mo',
     desc: 'Solo builders and side projects.',
-    features: ['5,000 queries / month', 'All schemas', '24h cache TTL', 'Usage analytics', 'Email support', 'Credit packs for bursts'],
+    features: ['5,000 queries / month', '60 RPM + 5 concurrent', 'Response caching', 'Usage analytics', 'Email support', 'Credit packs for bursts'],
     highlighted: true,
     cta: 'Subscribe Hobby',
     href: '/buy?sku=hobby',
@@ -1223,7 +1223,7 @@ const subscriptions = [
     price: '$99',
     period: '/mo',
     desc: 'Production agent workloads.',
-    features: ['25,000 queries / month', 'Custom schema path*', '72h cache TTL', 'Team keys', 'Priority support', 'Credit packs for bursts'],
+    features: ['25,000 queries / month', '300 RPM + 20 concurrent', 'Response caching', 'Priority support', 'Early schema access', 'Credit packs for bursts'],
     highlighted: false,
     cta: 'Go Pro',
     href: '/buy?sku=pro',
@@ -1491,7 +1491,7 @@ function Pricing() {
       <Reveal>
         <SectionLabel>Pricing</SectionLabel>
         <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
-          Start free. Subscribe or buy credits when you need them.
+          Start free (500 queries). Buy $1 credits for bursts. Subscribe for higher RPM.
         </h2>
         <p className="text-sm mb-10 max-w-xl" style={{ color: 'var(--color-text-secondary)' }}>
           Monthly plans set a steady allowance. Credit packs are one-time top-ups that stack on any plan and do not expire until used.
@@ -1565,7 +1565,7 @@ function Pricing() {
               Subscriptions
             </h3>
             <p className="mt-1 text-body" style={{ color: 'var(--color-text-tertiary)' }}>
-              Monthly plans for a steady allowance and higher rate limits. Buy credit packs anytime for bursts.
+              Plans = monthly allowance + higher RPM/concurrency. Packs = one-time bursts that stack on any plan.
             </p>
           </div>
         </Reveal>
@@ -1612,23 +1612,30 @@ function FinalCTA() {
             </h2>
             <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
               Create an account, mint a key, and call <span className="text-mono text-xs">/v1/extract</span>.
-              Need more later? Subscribe or buy credit packs anytime.
+              Most people buy a $1 pack first, then subscribe when they need higher RPM.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                to="/login"
+                        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="/buy?sku=credits_1k"
                 className="btn btn-primary btn-shine"
                 style={{ padding: '0.85rem 1.75rem', borderRadius: '6px' }}
               >
-                Start free
+                Buy $1 credits
                 <ArrowRight className="w-4 h-4" />
-              </Link>
-              <a
-                href="#pricing"
+              </a>
+              <Link
+                to="/login"
                 className="btn btn-secondary"
                 style={{ padding: '0.85rem 1.75rem', borderRadius: '6px' }}
               >
-                View plans & credits
+                Start free
+              </Link>
+              <a
+                href="#pricing"
+                className="btn btn-ghost"
+                style={{ padding: '0.85rem 1.75rem', borderRadius: '6px' }}
+              >
+                Compare packs vs plans
                 <ChevronRight className="w-4 h-4" />
               </a>
             </div>
@@ -1792,7 +1799,7 @@ function Landing() {
               '@type': 'Offer',
               price: '0',
               priceCurrency: 'USD',
-              description: 'Free tier with 100 queries/month'
+              description: 'Free tier with 500 queries/month'
             },
             featureList: [
               'Schema-validated JSON extraction',
@@ -1842,3 +1849,6 @@ function LandingWithBackToTop() {
 }
 
 export default LandingWithBackToTop;
+
+
+

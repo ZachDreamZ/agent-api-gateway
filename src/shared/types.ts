@@ -95,7 +95,7 @@ export interface DbUsageLog {
 // ─── Tier Limits ───
 
 export const TIER_LIMITS: Record<Tier, { queries_per_month: number; rate_limit_rpm: number; concurrent_requests: number }> = {
-  free:  { queries_per_month: 100,  rate_limit_rpm: 10,  concurrent_requests: 1 },
+  free:  { queries_per_month: 500,  rate_limit_rpm: 10,  concurrent_requests: 1 },
   hobby: { queries_per_month: 5000, rate_limit_rpm: 60,  concurrent_requests: 5 },
   pro:   { queries_per_month: 25000,rate_limit_rpm: 300, concurrent_requests: 20 },
   scale: { queries_per_month: 100000, rate_limit_rpm: 1000, concurrent_requests: 100 },
@@ -113,3 +113,4 @@ declare module 'hono' {
     apiKey: { id: string };
   }
 }
+

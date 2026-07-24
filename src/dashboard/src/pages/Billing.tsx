@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Check, X, Star, ExternalLink, Zap } from 'lucide-react';
+import { Check, X, Star, ExternalLink, Zap, BadgeCheck } from 'lucide-react';
 import { PageHeader, Stagger, StaggerItem } from '../components/Brand';
 import { easeOut } from '../lib/motion';
 import { useSEO } from '../hooks/useSEO';

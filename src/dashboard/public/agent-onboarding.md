@@ -39,7 +39,7 @@ Install from https://agentapigw.dpdns.org/mcp — Cursor one-click, npm (`agent-
 
 ## Rate limits
 
-- Free: 10 RPM, 1 concurrent, 100 queries/month
+- Free: 10 RPM, 1 concurrent, 500 queries/month
 - Hobby: 60 RPM, 5 concurrent, 5,000 queries/month
 - Pro: 300 RPM, 20 concurrent, 25,000 queries/month
 - Always check `X-RateLimit-Remaining` header before next request
@@ -65,3 +65,4 @@ Install from https://agentapigw.dpdns.org/mcp — Cursor one-click, npm (`agent-
 ## Support
 
 support@agentapigw.dpdns.org · NexusCore
+
