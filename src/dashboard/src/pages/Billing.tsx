@@ -131,7 +131,7 @@ function PlanCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: easeOut }}
-      className="surface-elevated surface-hover surface-glow flex flex-col overflow-hidden h-full"
+      className="glass-card flex flex-col overflow-hidden h-full hover-lift"
       style={{
         borderColor: tier.highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : undefined,
         boxShadow: tier.highlighted ? 'var(--shadow-glow)' : undefined,
@@ -218,7 +218,7 @@ function CreditPackCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: easeOut }}
-      className="surface-elevated surface-hover flex flex-col overflow-hidden h-full"
+      className="glass-card flex flex-col overflow-hidden h-full hover-lift"
       style={{
         borderColor: pack.highlighted ? 'oklch(0.74 0.12 195 / 0.45)' : undefined,
         boxShadow: pack.highlighted ? 'var(--shadow-glow)' : undefined,
@@ -518,7 +518,7 @@ export default function Billing() {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="surface surface-glow p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+          className="glass-card p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: "oklch(0.74 0.12 195 / 0.2)" }}
         >
           <div className="flex items-center gap-3 flex-wrap">
             <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Current plan</span>

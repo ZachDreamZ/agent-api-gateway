@@ -96,7 +96,7 @@ function KeyRow({
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: easeOut }}
-      className="surface surface-hover surface-glow p-4"
+      className="surface surface-hover surface-glow p-4 hover-lift"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0 flex-1">
@@ -473,7 +473,7 @@ export default function ApiKeys() {
         </motion.div>
       )}
 
-      <div className="surface surface-glow p-4 mb-6">
+      <div className="glass-card p-4 mb-6">
         <label htmlFor="new-api-key-name" className="mb-2 block text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
           Create new key
         </label>
@@ -504,7 +504,7 @@ export default function ApiKeys() {
       {keys.length === 0 ? (
         <div
           className="rounded-lg p-12 text-center"
-          style={{ border: '1px dashed var(--color-border-default)' }}
+          style={{ border: '1px dashed var(--color-border-default)', background: 'var(--color-bg-surface)' }}
         >
           <KeyRound className="mx-auto mb-4 w-10 h-10" style={{ color: 'var(--color-text-disabled)' }} />
           <p className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>No API keys yet</p>

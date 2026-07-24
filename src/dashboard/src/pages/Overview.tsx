@@ -154,7 +154,7 @@ function StatCard({
 
   return (
     <motion.div
-      className="stat-card surface-hover surface-glow"
+      className="stat-card surface-hover surface-glow hover-lift"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: easeOut }}
@@ -242,7 +242,7 @@ function RecentRequests({ items }: { items: RecentItem[] }) {
   }
 
   return (
-    <div className="surface surface-hover surface-glow p-5">
+    <div className="surface surface-hover surface-glow p-5 interactive-glow">
       <div className="flex items-center justify-between mb-3 gap-2">
         <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
           Recent requests
@@ -472,7 +472,7 @@ Available schemas:
   - company (returns name, description, location, founded)`;
 
   return (
-    <div className="surface surface-hover surface-glow p-5 space-y-4">
+    <div className="surface surface-hover surface-glow p-5 space-y-4 interactive-glow">
       <div>
         <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
           Agent integration

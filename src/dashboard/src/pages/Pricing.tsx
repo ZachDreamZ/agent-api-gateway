@@ -128,7 +128,7 @@ export default function Pricing() {
                 Works on free or any plan. Credits never expire until used.
               </p>
             </div>
-            <a href="/buy?sku=credits_1k" className="btn btn-primary shrink-0">
+            <a href="/buy?sku=credits_1k" className="btn btn-primary shrink-0 interactive-glow" style={{ position: "relative", overflow: "hidden" }}>
               <Zap className="w-4 h-4" />
               Buy $1 credits
               <ArrowRight className="w-4 h-4" />
@@ -145,7 +145,7 @@ export default function Pricing() {
             <a
               key={p.name}
               href={p.href}
-              className="surface p-4 interactive block"
+              className="glass-card p-4 interactive block"
               style={p.highlighted ? { borderColor: 'oklch(0.74 0.12 195 / 0.4)' } : undefined}
             >
               <p className="text-sm font-medium">{p.name}</p>
@@ -176,7 +176,7 @@ export default function Pricing() {
         </p>
         <div className="grid gap-3 sm:grid-cols-3 mb-10">
           {PLANS.map((p) => (
-            <div key={p.name} className="surface p-4">
+            <div key={p.name} className="glass-card p-4">
               <p className="text-sm font-medium">{p.name}</p>
               <p className="text-title mt-2">{annual && p.annualPrice ? p.annualPrice : p.price}</p>
               {annual && p.annualPrice && p.annualPrice !== p.price && (
@@ -203,7 +203,7 @@ export default function Pricing() {
           ))}
         </div>
 
-        <div className="surface p-5 mb-10">
+        <div className="glass-card p-5 mb-10">
           <h2 className="text-heading mb-3">Packs vs plans</h2>
           <ul className="space-y-2 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
             <li>
@@ -219,7 +219,7 @@ export default function Pricing() {
         </div>
 
         
-        <div className="surface p-5 mb-10">
+        <div className="glass-card p-5 mb-10">
           <h2 className="text-heading mb-3">How we compare</h2>
           <p className="text-sm mb-4" style={{ color: 'var(--color-text-tertiary)' }}>
             See how Agent API Gateway stacks up against popular alternatives.
