@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 import { useSEO } from '../hooks/useSEO';
+import { PricingPageStructuredData } from '../components/StructuredData';
 import { ArrowRight, Zap } from 'lucide-react';
 
 const PACKS = [

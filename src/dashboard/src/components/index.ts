@@ -53,4 +53,4 @@ export { ErrorBoundary } from './ErrorBoundary';
 // Brand & Branding
 export * from './Brand';
 
-export { StructuredData, OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData } from './StructuredData';
+export { StructuredData, OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData, PricingPageStructuredData, McpPageStructuredData, PageStructuredData, FAQStructuredData } from './StructuredData';

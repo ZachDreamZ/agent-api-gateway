@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 import { useSEO } from '../hooks/useSEO';
+import { McpPageStructuredData } from '../components/StructuredData';
 import { easeOut } from '../lib/motion';
 import { LiveExtractDemo } from '../components/LiveExtractDemo';
 
@@ -156,7 +157,8 @@ export default function Mcp() {
 
       <div className="relative z-10 mx-auto max-w-4xl px-5 py-12 md:py-16">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-          <BrandLockup variant="product" showOrgSubline to="/" />
+          <McpPageStructuredData />
+      <BrandLockup variant="product" showOrgSubline to="/" />
           <div className="flex flex-wrap gap-2">
             <Link to="/docs#mcp" className="btn btn-ghost text-xs">
               Docs
