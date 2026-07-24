@@ -28,6 +28,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const Mcp = lazy(() => import('./pages/Mcp'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Alternatives = lazy(() => import('./pages/Alternatives'));
+const UseCases = lazy(() => import('./pages/UseCases'));
 import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -274,6 +275,8 @@ export default function App() {
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/alternatives" element={<Alternatives />} />
         <Route path="/alternatives/:slug" element={<Alternatives />} />
+        <Route path="/use-cases" element={<UseCases />} />
+        <Route path="/use-cases/:slug" element={<UseCases />} />
         <Route path="/login" element={<Auth />} />
         {/* Legacy Better Auth errorURL /auth → login */}
         <Route path="/auth" element={<Auth />} />

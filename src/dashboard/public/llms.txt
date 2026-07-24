@@ -14,6 +14,7 @@ Agent API Gateway lets AI agents and backends extract structured product, articl
 - MCP install hub: https://agentapigw.dpdns.org/mcp
 - Pricing page: https://agentapigw.dpdns.org/pricing
 - Alternatives: https://agentapigw.dpdns.org/alternatives
+- Use cases: https://agentapigw.dpdns.org/use-cases
 - Firecrawl alternative: https://agentapigw.dpdns.org/alternatives/firecrawl
 - MCP npm: https://www.npmjs.com/package/agent-api-gateway-mcp
 - MCP registry: io.github.ZachDreamZ/agent-api-gateway

@@ -126,4 +126,34 @@
     <priority>0.3</priority>
     <lastmod>2026-01-15</lastmod>
   </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/use-cases</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <lastmod>2026-07-24</lastmod>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/use-cases/price-intelligence</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-24</lastmod>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/use-cases/content-research</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-24</lastmod>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/use-cases/company-enrichment</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-24</lastmod>
+  </url>
+  <url>
+    <loc>https://agentapigw.dpdns.org/use-cases/mcp-agents</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <lastmod>2026-07-24</lastmod>
+  </url>
 </urlset>

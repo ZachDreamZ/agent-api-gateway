@@ -74,6 +74,7 @@ function Navbar() {
           <Link to="/docs" className="link text-sm">Docs</Link>
           <Link to="/mcp" className="link text-sm">MCP</Link>
           <Link to="/alternatives" className="link text-sm">Alternatives</Link>
+          <Link to="/use-cases" className="link text-sm">Use cases</Link>
           <Link to="/blog" className="link text-sm">Blog</Link>
           <Link to="/agents" className="link text-sm">For agents</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
@@ -148,6 +149,9 @@ function Navbar() {
                 </Link>
                 <Link to="/alternatives" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Alternatives
+                </Link>
+                <Link to="/use-cases" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
+                  Use cases
                 </Link>
                 <Link to="/blog" onClick={() => setMobileOpen(false)} className="rounded-md px-3 py-2.5 text-sm link" style={{ color: 'var(--color-text-secondary)' }}>
                   Blog
@@ -1656,6 +1660,7 @@ function Footer() {
           <Link to="/dashboard" className="link">Dashboard</Link>
           <Link to="/pricing" className="link">Pricing</Link>
           <Link to="/alternatives" className="link">Alternatives</Link>
+          <Link to="/use-cases" className="link">Use cases</Link>
           <a href="/health" className="link">Status</a>
           <Link to="/privacy" className="link">Privacy</Link>
           <Link to="/terms" className="link">Terms</Link>
@@ -1710,6 +1715,50 @@ function Landing() {
               contactType: 'Customer Support'
             }
           })
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'What is Agent API Gateway?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Agent API Gateway turns public product, article, and company pages into validated JSON for AI agents via REST or MCP.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Does it support MCP?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. Install the published package agent-api-gateway-mcp from the /mcp hub for Cursor and Claude Desktop.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How does pricing work?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'There is a free tier, subscriptions for higher monthly limits, and one-time credit packs starting at $1.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Is it a Firecrawl alternative?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'For agent-first single-URL structured extraction, yes. For full-site crawl orchestration, Firecrawl may still be a better fit. See /alternatives/firecrawl.',
+                },
+              },
+            ],
+          }),
         }}
       />
       <script

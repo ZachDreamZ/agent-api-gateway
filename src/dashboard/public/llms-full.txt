@@ -73,6 +73,7 @@ Onboarding: https://agentapigw.dpdns.org/agent-onboarding.md
 - Signup requires agreement to Terms + Privacy + AUP
 
 ## Comparisons (high-intent SEO)
+- Use cases: https://agentapigw.dpdns.org/use-cases
 - Alternatives index: https://agentapigw.dpdns.org/alternatives
 - Firecrawl alternative: https://agentapigw.dpdns.org/alternatives/firecrawl
 - Browse AI alternative: https://agentapigw.dpdns.org/alternatives/browse-ai

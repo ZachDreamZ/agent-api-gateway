@@ -87,5 +87,12 @@
     "index": "https://agentapigw.dpdns.org/blog",
     "rss": "https://agentapigw.dpdns.org/blog/rss.xml",
     "json_feed": "https://agentapigw.dpdns.org/blog/feed.json"
+  },
+  "use_cases": {
+    "index": "https://agentapigw.dpdns.org/use-cases",
+    "price_intelligence": "https://agentapigw.dpdns.org/use-cases/price-intelligence",
+    "content_research": "https://agentapigw.dpdns.org/use-cases/content-research",
+    "company_enrichment": "https://agentapigw.dpdns.org/use-cases/company-enrichment",
+    "mcp_agents": "https://agentapigw.dpdns.org/use-cases/mcp-agents"
   }
 }
