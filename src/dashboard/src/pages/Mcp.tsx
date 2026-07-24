@@ -276,10 +276,9 @@ export default function Mcp() {
             <h2 className="text-title">Try in playground</h2>
           </div>
           <p className="text-body mb-4" style={{ color: 'var(--color-text-secondary)' }}>
-            Test extraction instantly — no install needed. Paste a public product URL and hit Extract.
-            Uses your API key if you are signed in, otherwise runs on the free tier (500 queries/month).
+            Test extraction instantly â€” no install needed. Paste a public product URL and hit Extract. Uses your API key if you are signed in, otherwise runs on the free tier (500 queries/month).
           </p>
-          <LiveExtractDemo schema="product" defaultUrl="https://www.example.com/product/demo" />
+          <LiveExtractDemo schema="product" defaultUrl="https://www.amazon.com/dp/B09V3KXJPB" />
         </section>
 
         <section className="mb-10">
@@ -415,3 +414,4 @@ export default function Mcp() {
     </div>
   );
 }
+

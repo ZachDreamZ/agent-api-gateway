@@ -3,7 +3,6 @@ import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 import { useSEO } from '../hooks/useSEO';
 import { ArrowRight, Bot, Package, Building2, Newspaper } from 'lucide-react';
 import { LiveExtractDemo } from '../components/LiveExtractDemo';
-import { LiveExtractDemo } from '../components/LiveExtractDemo';
 
 type UseCase = {
   slug: string;
@@ -158,6 +157,64 @@ function UseCaseDetail({ item }: { item: UseCase }) {
           </ul>
         </div>
 
+        {item.slug === 'price-intelligence' && (
+          <>
+            <section className="surface p-5 mb-8" aria-labelledby="live-demo-heading">
+              <h2 id="live-demo-heading" className="text-heading mb-4">Live demo — extract a product</h2>
+              <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>
+                Paste any public product URL and hit Extract. The API returns validated JSON in ~1–2s.
+              </p>
+              <LiveExtractDemo schema="product" />
+            </section>
+
+            <section className="surface p-5 mb-8" aria-labelledby="example-output-heading">
+              <h2 id="example-output-heading" className="text-heading mb-3">Example output</h2>
+              <p className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
+                Request: <code>POST /v1/extract</code> with <code>{`{"url": "https://example.com/product", "schema": "product"}`}</code>
+              </p>
+              <pre className="code-block rounded-lg p-4 text-xs leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
+{`{
+  "name": "Wireless Noise-Cancelling Headphones Pro",
+  "brand": "Sony",
+  "price": 349.99,
+  "currency": "USD",
+  "in_stock": true,
+  "rating": 4.7,
+  "review_count": 2847,
+  "description": "Industry-leading noise cancellation with 30-hour battery life...",
+  "image": "https://example.com/images/headphones-pro.jpg",
+  "specs": { "driver": "30mm", "battery": "30h", "weight": "254g" },
+  "availability": "in_stock"
+}`}
+              </pre>
+            </section>
+
+            <section className="surface p-5 mb-8" aria-labelledby="agent-prompt-heading">
+              <h2 id="agent-prompt-heading" className="text-heading mb-3">Agent prompt template</h2>
+              <p className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
+                Drop this into your agent system prompt to give it price-extraction capability:
+              </p>
+              <pre className="code-block rounded-lg p-4 text-xs leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
+{`You have access to a structured extraction tool. When the user asks for product details from a URL:
+1. Call the \`extract_product\` tool with the product URL
+2. The tool returns validated JSON with: name, brand, price, currency, in_stock, rating, review_count, description, image, specs, availability
+3. Present the key fields to the user in a clean summary
+4. If the user wants to track price changes, suggest setting up a scheduled job with credit packs`}
+              </pre>
+            </section>
+
+            <section className="surface p-5 mb-8" aria-labelledby="quick-start-heading">
+              <h2 id="quick-start-heading" className="text-heading mb-3">Quick start</h2>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/login" className="btn btn-primary text-sm">Create free account (500 queries/mo)</Link>
+                <Link to="/pricing#credit-packs" className="btn btn-secondary text-sm">Buy 1,000 credits for $1</Link>
+                <Link to="/mcp" className="btn btn-ghost text-sm">Install MCP for Cursor/Claude</Link>
+                <Link to="/docs#extraction-api" className="btn btn-ghost text-sm">Read API docs</Link>
+              </div>
+            </section>
+          </>
+        )}
+
         <div className="flex flex-wrap gap-3 mb-8">
           <Link to="/login" className="btn btn-primary text-sm">Start free</Link>
           <Link to="/mcp" className="btn btn-secondary text-sm">Install MCP</Link>
@@ -217,11 +274,12 @@ export default function UseCases() {
         <p className="text-body mb-8" style={{ color: 'var(--color-text-secondary)' }}>
           High-intent workflows where URL + schema → validated JSON beats raw HTML parsing.
         </p>
-        <ul className="space-y-3 mb-10">
+        <ul className="space-y-3 mb-6">
           {USE_CASES.map((uc) => {
             const Icon = ICONS[uc.icon];
+            const highlighted = uc.slug === 'price-intelligence';
             return (
-              <li key={uc.slug} className="surface p-4 flex gap-3 items-start">
+              <li key={uc.slug} className={`surface p-4 flex gap-3 items-start ${highlighted ? 'border-l-3' : ''}`} style={{ borderLeftColor: highlighted ? 'var(--color-accent-base)' : 'transparent' }}>
                 <Icon className="w-5 h-5 mt-0.5 shrink-0" style={{ color: 'var(--color-accent-base)' }} />
                 <div className="min-w-0 flex-1">
                   <Link to={`/use-cases/${uc.slug}`} className="link-accent text-sm font-medium">{uc.name}</Link>
@@ -232,6 +290,7 @@ export default function UseCases() {
             );
           })}
         </ul>
+        <p className="text-caption mb-6" style={{ color: 'var(--color-text-tertiary)' }}>⚡ Price intelligence is our highest-converting use case — start there.</p>
         <div className="flex flex-wrap gap-3">
           <Link to="/login" className="btn btn-primary text-sm">Start free</Link>
           <Link to="/alternatives" className="btn btn-secondary text-sm">Compare alternatives</Link>
@@ -241,3 +300,4 @@ export default function UseCases() {
     </div>
   );
 }
+
