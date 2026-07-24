@@ -31,7 +31,7 @@ describe('conversion path structure', () => {
     assert.match(src, /id:\s*'credits_25k'/);
     assert.match(src, /Credit packs/);
     assert.match(src, /Subscriptions/);
-    assert.match(src, /Buy credits from \$1/);
+    assert.match(src, /Buy 1,000 credits for \$1/);
   });
 
   it('billing page surfaces credit packs alongside subscriptions', () => {

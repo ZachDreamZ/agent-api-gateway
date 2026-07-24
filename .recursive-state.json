@@ -2,10 +2,10 @@
   "version": 1,
   "loop": {
     "currentPhase": "verify",
-    "iteration": 38,
+    "iteration": 39,
     "startedAt": "2026-07-23T06:00:00Z",
     "lastAudit": "2026-07-24T03:31:50.1936115Z",
-    "lastDeployVerification": "2026-07-24T03:31:50.2031008Z"
+    "lastDeployVerification": "2026-07-24T13:50:58Z"
   },
   "improvements": {
     "completed": [
@@ -122,6 +122,18 @@
         "description": "Fixed AuraLanding dynamic import crash: SW no longer cache-first HTML; /sw.js served as JS; chunk-load hard reload recovery",
         "commit": "05087da",
         "timestamp": "2026-07-24T03:31:50.2077992Z"
+      },
+      {
+        "id": "use-cases-price-intelligence-enhancement",
+        "commit": "d5c03d2",
+        "timestamp": "2026-07-24T13:50:58Z",
+        "description": "Enhanced UseCases price-intelligence with live demo, example output, agent prompt template, quick-start links"
+      },
+      {
+        "id": "mcp-quick-test-widget",
+        "commit": "d5c03d2",
+        "timestamp": "2026-07-24T13:50:58Z",
+        "description": "Added MCP quick-test widget with LiveExtractDemo and Amazon product URL example"
       }
     ],
     "pending": [
@@ -142,6 +154,6 @@
     "testsPasssing": 27,
     "typescriptErrors": 0,
     "deployStatus": "live",
-    "commitsThisSession": 34
+    "commitsThisSession": 35
   }
 }
