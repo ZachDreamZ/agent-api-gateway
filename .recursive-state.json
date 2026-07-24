@@ -2,9 +2,9 @@
   "version": 1,
   "loop": {
     "currentPhase": "execute",
-    "iteration": 36,
+    "iteration": 37,
     "startedAt": "2026-07-23T06:00:00Z",
-    "lastAudit": "2026-07-24T02:28:19Z",
+    "lastAudit": "2026-07-24T03:09:48.6981666Z",
     "lastDeployVerification": "2026-07-24T02:30:27Z"
   },
   "improvements": {
@@ -110,6 +110,12 @@
         "description": "Wired /pricing + /alternatives, fixed sitemap/robots, MCP install blog, discovery files, directory kit",
         "commit": "718e697",
         "timestamp": "2026-07-24T02:28:19Z"
+      },
+      {
+        "id": "directory-submission-browser-pass",
+        "description": "Browser directory pass: Glama MCP submitted; DevHunt/Toolify forms prefilled; paid blockers documented",
+        "commit": "pending",
+        "timestamp": "2026-07-24T03:09:48.7123571Z"
       }
     ],
     "pending": [
@@ -117,8 +123,9 @@
       "Interactive API playground on landing page",
       "Analytics integration for traffic measurement",
       "Dark/light mode toggle",
-      "Submit first directory batch (DevHunt/SaaSHub/TAAFT)",
-      "Product Hunt assets (screenshots + demo video)"
+      "Paid launches decision (DevHunt  / Toolify )",
+      "Free community submits after login (IH/AlternativeTo/Uneed)",
+      "Product Hunt assets (demo video)"
     ],
     "knownIssues": []
   },

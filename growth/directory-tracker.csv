@@ -1,13 +1,14 @@
 Directory,Tier,URL,Category,Positioning Variant,Preferred Landing URL,Status,Notes,Action Needed
-DevHunt,1,https://devhunt.org/,Launch,Dev,https://agentapigw.dpdns.org/mcp,Needs login,"/submit 404; use ""Submit your Dev Tool"" + Sign In",Sign in then submit
-SaaSHub,2,https://www.saashub.com/submit,SaaS,SaaS alternative,https://agentapigw.dpdns.org/alternatives/firecrawl,Needs login,Submit Product requires Login/Register,Create account + submit
-AlternativeTo,2,https://alternativeto.net/software/_/add/,SaaS,SaaS alternative,https://agentapigw.dpdns.org/alternatives,Needs login,Account required for software add,Login + claim alternatives
-TAAFT,3,https://theresanaiforthat.com/submit/,AI,AI directory,https://agentapigw.dpdns.org/,Ready to paste,Use AI directory copy variant,Submit form
-Futurepedia,3,https://www.futurepedia.io/submit-tool,AI,AI directory,https://agentapigw.dpdns.org/pricing,Ready to paste,Pricing page live,Submit form
-Toolify,3,https://www.toolify.ai/,AI,AI directory,https://agentapigw.dpdns.org/,Ready to paste,Find submit tool form,Submit form
-Glama MCP,4,https://glama.ai/mcp,Agent/MCP,Agent/MCP,https://agentapigw.dpdns.org/mcp,Ready to paste,Package agent-api-gateway-mcp,List MCP server
+DevHunt,1,https://devhunt.org/account/tools/new,Launch,Dev,https://agentapigw.dpdns.org/mcp,Form filled / payment blocked,"Signed in as NexusCore_dd1. Form prefilled with logo + 3 screenshots + copy. Launch weeks are $49 only (no free path).",Approve $49 checkout or abandon paid launch
+SaaSHub,2,https://www.saashub.com/register,SaaS,SaaS alternative,https://agentapigw.dpdns.org/alternatives/firecrawl,Needs email account,"No Google/GitHub OAuth. Email+password register only.",Create SaaSHub account then submit product
+AlternativeTo,2,https://alternativeto.net/,SaaS,SaaS alternative,https://agentapigw.dpdns.org/alternatives,Needs login,"Old /software/_/add/ is 404. Need Sign In then current add-app flow.",Sign in + find current add software path
+TAAFT,3,https://theresanaiforthat.com/submit/,AI,AI directory,https://agentapigw.dpdns.org/,Blocked by browser policy,In-app Browser security policy blocks automation on this origin,Submit manually outside automation or request exception
+Futurepedia,3,https://www.futurepedia.io/submit-tool,AI,AI directory,https://agentapigw.dpdns.org/pricing,Paid only,"Basic listing $247 sold out; Verified listing $497. No free listing.",Skip unless paid placement approved
+Toolify,3,https://www.toolify.ai/submit,AI,AI directory,https://agentapigw.dpdns.org/,Form prefilled / payment blocked,"Logged in (Dashboard visible). Name+URL prefilled. Submit is Pay $99 only.",Approve $99 payment or skip
+Glama MCP,4,https://glama.ai/mcp/servers,Agent/MCP,Agent/MCP,https://agentapigw.dpdns.org/mcp,Submitted for review,"Submitted open-source server agent-api-gateway-mcp -> https://github.com/ZachDreamZ/agent-api-gateway. Toast: Your server has been submitted for review",Monitor Glama review / claim listing when live
 MCP Registry,4,https://registry.modelcontextprotocol.io/,Agent/MCP,Agent/MCP,https://agentapigw.dpdns.org/mcp,Live,io.github.ZachDreamZ/agent-api-gateway,Already published
 npm package page,4,https://www.npmjs.com/package/agent-api-gateway-mcp,Agent/MCP,Agent/MCP,https://agentapigw.dpdns.org/mcp,Live,Published package,Keep README current
-Indie Hackers,8,https://www.indiehackers.com/products,Community,Startup,https://agentapigw.dpdns.org/,Needs login,Product page after auth,Create product
+Indie Hackers,8,https://www.indiehackers.com/products,Community,Startup,https://agentapigw.dpdns.org/,Needs login,Cookie wall + auth required before product create,Sign in then create product page
 Product Hunt,1,https://www.producthunt.com/posts/new,Launch,Startup,https://agentapigw.dpdns.org/,Assets ready / launch blocked,Screenshots captured; need demo video + warm-up,See product-hunt-pack.md
 Hacker News Show HN,1,https://news.ycombinator.com/submit,Launch,Dev,https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor,Draft ready,Use show-hn-draft.md technical angle only,Post when ready
+Uneed,3,https://www.uneed.best/submit-a-tool,Launch,Startup,https://agentapigw.dpdns.org/,Needs login,Submit path found; account required,Register/login then submit
