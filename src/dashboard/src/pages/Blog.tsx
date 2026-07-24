@@ -4,7 +4,8 @@ import { motion } from 'motion/react';
 import { useSEO } from '../hooks/useSEO';
 import { BrandLockup, AmbientBg, SectionLabel } from '../components/Brand';
 import { Breadcrumbs } from '../components/Breadcrumbs';
-import { BackToTop, ShareButton } from '../components';
+import { BackToTop } from '../components/BackToTop';
+import { ShareButton } from '../components/ShareButton';
 import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkles, Code2 } from 'lucide-react';
 
 const POSTS = [
@@ -629,7 +630,7 @@ function BlogPost() {
 
 
             <div className="mt-6 flex justify-center">
-              <ShareButton url={post.slug} title={post.title} />
+              <ShareButton url={`/blog/${post.slug}`} title={post.title} />
             </div>
 
           <div className="prose-container">

@@ -1,0 +1,9 @@
+{
+  "name": "agent-api-gateway-mcp",
+  "description": "Extract structured web data for AI agents via Agent API Gateway",
+  "version": "1.3.0",
+  "transport": ["stdio"],
+  "tools": ["extract", "extract_product", "extract_article", "extract_company", "list_schemas", "get_usage"],
+  "homepage": "https://agentapigw.dpdns.org/mcp",
+  "repository": "https://github.com/ZachDreamZ/agent-api-gateway-mcp"
+}

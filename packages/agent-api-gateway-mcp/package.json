@@ -1,0 +1,53 @@
+{
+  "name": "agent-api-gateway-mcp",
+  "version": "1.3.0",
+  "description": "MCP server for Agent API Gateway — extract structured web data (product, article, company) for AI agents",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "agent-api-gateway-mcp": "bin/agent-api-gateway-mcp.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE",
+    "smithery.yaml",
+    ".well-known"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "web-scraping",
+    "structured-data",
+    "extraction",
+    "agent-api-gateway"
+  ],
+  "author": "NexusCore",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZachDreamZ/agent-api-gateway-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ZachDreamZ/agent-api-gateway-mcp/issues"
+  },
+  "homepage": "https://agentapigw.dpdns.org/mcp",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  }
+}

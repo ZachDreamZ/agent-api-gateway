@@ -27,3 +27,8 @@ pooltest.mjs
 /limitbreak/
 
 dashboard-overview-final.png
+
+# Local package deps
+packages/**/node_modules/
+packages/**/.npmrc
+

@@ -12,7 +12,9 @@ export function ShareButton({ url, title, description }: ShareButtonProps) {
   const [showMenu, setShowMenu] = useState(false);
 
   const getFullUrl = () => {
-    return window.location.origin + url;
+    if (/^https?:\/\//i.test(url)) return url;
+    const path = url.startsWith('/') ? url : `/${url}`;
+    return `${window.location.origin}${path}`;
   };
 
   const handleCopyLink = async () => {

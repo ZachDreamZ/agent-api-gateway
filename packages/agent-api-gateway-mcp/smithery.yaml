@@ -1,0 +1,22 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      agentApiKey:
+        type: string
+        description: Agent API Gateway API key (sk-...)
+      apiBaseUrl:
+        type: string
+        default: https://agentapigw.dpdns.org/v1
+    required:
+      - agentApiKey
+  commandFunction: |-
+    (config) => ({
+      command: 'node',
+      args: ['dist/index.js'],
+      env: {
+        AGENT_API_KEY: config.agentApiKey,
+        API_BASE_URL: config.apiBaseUrl || 'https://agentapigw.dpdns.org/v1'
+      }
+    })

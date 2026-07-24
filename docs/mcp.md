@@ -37,7 +37,7 @@ This starts the stdio server, lists tools, and calls `list_schemas` against the 
   "mcpServers": {
     "agent-api-gateway": {
       "command": "npx",
-      "args": ["tsx", "src/mcp/index.ts"],
+      "args": ["-y", "agent-api-gateway-mcp"],
       "env": {
         "AGENT_API_KEY": "sk-your-api-key",
         "API_BASE_URL": "https://agentapigw.dpdns.org/v1"

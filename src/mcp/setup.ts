@@ -16,7 +16,7 @@ export function getMcpStdioConfig(config: McpGatewayConfig = {}): object {
     mcpServers: {
       'agent-api-gateway': {
         command: 'npx',
-        args: ['tsx', 'src/mcp/index.ts'],
+        args: ['-y', 'agent-api-gateway-mcp'],
         env: {
           AGENT_API_KEY: key,
           API_BASE_URL: config.apiBaseUrl || 'https://agentapigw.dpdns.org/v1',
@@ -39,7 +39,7 @@ export function getVscodeMcpConfig(config: McpGatewayConfig = {}): object {
       'agent-api-gateway': {
         type: 'stdio',
         command: 'npx',
-        args: ['tsx', 'src/mcp/index.ts'],
+        args: ['-y', 'agent-api-gateway-mcp'],
         env: {
           AGENT_API_KEY: key,
           API_BASE_URL: config.apiBaseUrl || 'https://agentapigw.dpdns.org/v1',
