@@ -46,7 +46,7 @@ export default function NotFound() {
         </div>
 
         <h1 className="text-display-sm mb-2">Page not found</h1>
-        <p className="text-sm max-w-sm mb-6" style={{ color: 'var(--color-text-secondary)' }}>
+        <p className="text-body max-w-sm mb-6" style={{ color: 'var(--color-text-secondary)' }}>
           The page you’re looking for doesn’t exist or may have moved.
         </p>
         <div className="flex gap-3 flex-wrap justify-center">

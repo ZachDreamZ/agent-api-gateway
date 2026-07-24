@@ -234,7 +234,7 @@ function NewKeyModal({
                 <KeyRound className="w-5 h-5" style={{ color: 'var(--color-accent-base)' }} />
               </div>
               <div>
-                <h2 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>Key Created</h2>
+                <h2 className="text-title" style={{ color: 'var(--color-text-primary)' }}>Key Created</h2>
                 <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>Copy this key now. You won&apos;t see it again.</p>
               </div>
             </div>
@@ -310,7 +310,7 @@ function ConfirmDialog({
           className="dialog-panel p-6"
           onClick={(e) => e.stopPropagation()}
         >
-          <h3 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>{title}</h3>
+          <h3 className="text-title" style={{ color: 'var(--color-text-primary)' }}>{title}</h3>
           <p className="mt-2 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{message}</p>
           <div className="mt-6 flex gap-3">
             <button

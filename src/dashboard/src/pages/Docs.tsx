@@ -78,7 +78,7 @@ function Section({ id, title, children }: { id?: string; title: string; children
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.4, ease: easeOut }}
     >
-      <h2 className="font-display mb-4 text-xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+      <h2 className="text-title mb-4" style={{ color: 'var(--color-text-primary)' }}>
         {title}
       </h2>
       {children}
@@ -89,14 +89,14 @@ function Section({ id, title, children }: { id?: string; title: string; children
 function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-6">
-      <h3 className="mb-2 text-base font-semibold" style={{ color: 'var(--color-text-secondary)' }}>{title}</h3>
+      <h3 className="mb-2 text-heading" style={{ color: 'var(--color-text-secondary)' }}>{title}</h3>
       {children}
     </div>
   );
 }
 
 function Para({ children }: { children: React.ReactNode }) {
-  return <p className="mb-3 leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>{children}</p>;
+  return <p className="mb-3 text-body" style={{ color: 'var(--color-text-secondary)' }}>{children}</p>;
 }
 
 // ─── Sidebar ───
@@ -512,8 +512,8 @@ export default function Docs() {
         >
           <div>
             <SectionLabel>Reference</SectionLabel>
-            <h1 className="font-display mb-2 text-3xl font-bold tracking-tight">API Reference</h1>
-            <p className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+            <h1 className="text-display-sm mb-2" style={{ color: 'var(--color-text-primary)' }}>API Reference</h1>
+            <p className="text-body" style={{ color: 'var(--color-text-tertiary)' }}>
               Extract structured web data with one API call.
             </p>
           </div>

@@ -166,8 +166,8 @@ export default function Legal({ kind }: { kind: LegalKind }) {
           <BrandLockup variant="product" showOrgSubline to="/" />
         </Link>
         <SectionLabel>Legal</SectionLabel>
-        <h1 className="font-display text-3xl font-bold tracking-tight mb-2">{doc.title}</h1>
-        <p className="text-xs mb-6" style={{ color: 'var(--color-text-disabled)' }}>
+        <h1 className="text-display-sm mb-2" style={{ color: 'var(--color-text-primary)' }}>{doc.title}</h1>
+        <p className="text-caption mb-6" style={{ color: 'var(--color-text-disabled)' }}>
           Last updated {doc.updated}
         </p>
 
@@ -191,10 +191,10 @@ export default function Legal({ kind }: { kind: LegalKind }) {
         <div className="space-y-8">
           {doc.sections.map((s) => (
             <section key={s.h}>
-              <h2 className="text-base font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>
+              <h2 className="text-heading mb-2" style={{ color: 'var(--color-text-primary)' }}>
                 {s.h}
               </h2>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+              <p className="text-body" style={{ color: 'var(--color-text-secondary)' }}>
                 {s.p}
               </p>
             </section>

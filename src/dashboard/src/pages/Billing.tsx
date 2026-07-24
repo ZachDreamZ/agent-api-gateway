@@ -149,13 +149,13 @@ function PlanCard({
 
       <div className="flex flex-1 flex-col p-6">
         <div className="mb-4">
-          <h3 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>{tier.name}</h3>
+          <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>{tier.name}</h3>
           <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{tier.description}</p>
         </div>
 
         <div className="mb-6">
           <div className="flex items-baseline gap-1">
-            <span className="font-display text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{tier.price}</span>
+            <span className="text-title tabular-nums" style={{ color: 'var(--color-text-primary)' }}>{tier.price}</span>
           </div>
           {tier.price_monthly > 0 && (
             <p className="mt-1 text-xs" style={{ color: 'var(--color-text-disabled)' }}>
@@ -236,13 +236,13 @@ function CreditPackCard({
 
       <div className="flex flex-1 flex-col p-6">
         <div className="mb-4">
-          <h3 className="text-lg font-bold" style={{ color: 'var(--color-text-primary)' }}>{pack.name}</h3>
+          <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>{pack.name}</h3>
           <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{pack.description}</p>
         </div>
 
         <div className="mb-6">
           <div className="flex items-baseline gap-1">
-            <span className="font-display text-4xl font-bold tracking-tight tabular-nums" style={{ color: 'var(--color-text-primary)' }}>
+            <span className="text-title tabular-nums" style={{ color: 'var(--color-text-primary)' }}>
               {pack.price}
             </span>
             <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>one-time</span>
@@ -557,7 +557,7 @@ export default function Billing() {
       />
 
       <section className="space-y-3">
-        <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+        <h2 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
           Billing history
         </h2>
         {invoices.length === 0 ? (
@@ -602,7 +602,7 @@ export default function Billing() {
 
       <section id="credit-packs" className="space-y-4 scroll-mt-24">
         <div>
-          <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          <h2 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
             Credit packs
           </h2>
           <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
@@ -624,7 +624,7 @@ export default function Billing() {
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          <h2 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
             Subscriptions
           </h2>
           <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>

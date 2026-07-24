@@ -361,7 +361,7 @@ function SchemaPlayground() {
         >
           <div className="p-4 md:border-r" style={{ borderColor: 'var(--color-border-subtle)' }}>
             <p className="text-eyebrow mb-3">Request</p>
-            <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+            <pre className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
               <code>{result ? JSON.stringify({ url: url || sample.request.match(/"url": "([^"]+)"/)?.[1] || 'https://example.com', schema }, null, 2) : sample.request}</code>
             </pre>
           </div>
@@ -369,7 +369,7 @@ function SchemaPlayground() {
             <div className="flex items-center justify-between mb-3">
               <p className="text-eyebrow">Response</p>
               {latency !== null && (
-                <span className="text-[10px]" style={{ color: 'var(--color-text-tertiary)' }}>
+                <span className="text-caption" style={{ color: 'var(--color-text-tertiary)' }}>
                   {latency}ms
                 </span>
               )}
@@ -380,11 +380,11 @@ function SchemaPlayground() {
                 Extracting structured data…
               </div>
             ) : result ? (
-              <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              <pre className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
                 <code>{JSON.stringify(result, null, 2)}</code>
               </pre>
             ) : (
-              <pre className="text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              <pre className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
                 <code>{sample.response}</code>
               </pre>
             )}
@@ -568,7 +568,7 @@ function Hero() {
             </motion.h1>
 
             <motion.p
-              className="mt-5 max-w-md text-[0.95rem] leading-relaxed"
+              className="mt-5 max-w-md text-body"
               style={{ color: 'var(--color-text-secondary)' }}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -687,8 +687,8 @@ function Quickstart() {
           ].map((s) => (
             <li key={s.n} className="glass-card p-5 list-none transition-all duration-300 hover:-translate-y-0.5">
               <span className="text-mono text-xs" style={{ color: 'var(--color-accent-base)' }}>{s.n}</span>
-              <h3 className="mt-2 text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{s.t}</h3>
-              <p className="mt-1.5 text-xs leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>{s.d}</p>
+              <h3 className="mt-2 text-heading" style={{ color: 'var(--color-text-primary)' }}>{s.t}</h3>
+              <p className="mt-1.5 text-caption leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>{s.d}</p>
             </li>
           ))}
         </ol>
@@ -714,7 +714,7 @@ function Quickstart() {
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
-          <pre className="p-4 text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+          <pre className="p-4 text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
             <code>{CURL_SNIPPET}</code>
           </pre>
         </div>
@@ -762,19 +762,19 @@ function TrustStrip() {
                   strokeWidth={1.75}
                 />
                 <h3
-                  className={large ? 'text-base font-semibold' : 'text-xs font-semibold'}
+                  className='text-heading'
                   style={{ color: 'var(--color-text-primary)' }}
                 >
                   {item.title}
                 </h3>
                 <p
-                  className={`mt-2 leading-relaxed ${large ? 'text-sm max-w-sm' : 'text-[11px]'}`}
+                  className={`mt-2 leading-relaxed text-body ${large ? 'max-w-sm' : ''}`}
                   style={{ color: 'var(--color-text-tertiary)' }}
                 >
                   {item.body}
                 </p>
                 {large && (
-                  <p className="mt-6 text-mono text-[10px]" style={{ color: 'var(--color-accent-base)' }}>
+                  <p className="mt-6 text-mono text-caption" style={{ color: 'var(--color-accent-base)' }}>
                     private hosts · metadata IPs · credentialed URLs blocked
                   </p>
                 )}
@@ -811,10 +811,10 @@ function HowItWorks() {
               <span className="text-mono text-xs font-medium tabular-nums" style={{ color: 'var(--color-accent-base)' }}>
                 {s.n}
               </span>
-              <h3 className="mt-3 text-base font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+              <h3 className="mt-3 text-heading" style={{ color: 'var(--color-text-primary)' }}>
                 {s.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+              <p className="mt-2 text-body" style={{ color: 'var(--color-text-secondary)' }}>
                 {s.body}
               </p>
             </li>
@@ -853,8 +853,8 @@ function UseCases() {
                 <div className="rounded-lg p-2 w-fit mb-3" style={{ background: uc.color + '15' }}>
                   <Icon className="w-4 h-4" strokeWidth={1.75} style={{ color: uc.color }} />
                 </div>
-                <h3 className="text-sm font-semibold mb-1.5" style={{ color: 'var(--color-text-primary)' }}>{uc.title}</h3>
-                <p className="text-xs leading-relaxed flex-1" style={{ color: 'var(--color-text-secondary)' }}>{uc.body}</p>
+                <h3 className="text-heading mb-1.5" style={{ color: 'var(--color-text-primary)' }}>{uc.title}</h3>
+                <p className="text-caption leading-relaxed flex-1" style={{ color: 'var(--color-text-secondary)' }}>{uc.body}</p>
               </div>
             </Reveal>
           );
@@ -920,10 +920,10 @@ function Features() {
                 >
                   <Icon className="w-4 h-4" strokeWidth={1.75} />
                 </div>
-                <h3 className="text-sm font-semibold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+                <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
                   {f.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+                <p className="mt-2 text-body" style={{ color: 'var(--color-text-secondary)' }}>
                   {f.body}
                 </p>
               </div>
@@ -1101,7 +1101,7 @@ function SDKSection() {
             );
           }))}
           <span className="ml-auto flex items-center gap-2">
-            <span className="text-[10px]" style={{ color: 'var(--color-text-tertiary)' }}>
+            <span className="text-caption" style={{ color: 'var(--color-text-tertiary)' }}>
               {active.install}
             </span>
             <button
@@ -1123,7 +1123,7 @@ function SDKSection() {
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22, ease: easeOut }}
           >
-            <pre className="p-4 text-[11px] sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+            <pre className="p-4 text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
               <code>{active.code}</code>
             </pre>
           </motion.div>
@@ -1253,17 +1253,17 @@ function PricingCard({
       >
         {badge && (
           <div
-            className="px-4 py-2 text-center text-[11px] font-semibold tracking-wide uppercase"
+            className="px-4 py-2 text-center text-caption font-semibold tracking-wide uppercase"
             style={{ background: 'var(--color-accent-subtle)', color: 'var(--color-accent-base)' }}
           >
             {badge}
           </div>
         )}
         <div className="flex flex-1 flex-col p-5">
-          <h3 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{name}</h3>
+          <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>{name}</h3>
           <div className="mt-3 flex items-baseline gap-1">
             <span
-              className="font-display text-3xl font-bold tracking-tight tabular-nums"
+              className="text-title tabular-nums"
               style={{ color: 'var(--color-text-primary)' }}
             >
               {price}
@@ -1272,10 +1272,10 @@ function PricingCard({
               <span className="text-sm" style={{ color: 'var(--color-text-tertiary)' }}>{period}</span>
             )}
           </div>
-          <p className="mt-2 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>{desc}</p>
+          <p className="mt-2 text-caption leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>{desc}</p>
           <ul className="mt-5 flex-1 space-y-2">
             {features.map((f) => (
-              <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+              <li key={f} className="flex items-start gap-2 text-caption" style={{ color: 'var(--color-text-secondary)' }}>
                 <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'var(--color-accent-base)' }} strokeWidth={2.5} />
                 {f}
               </li>
@@ -1510,10 +1510,10 @@ function Pricing() {
         <Reveal>
           <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
             <div>
-              <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+              <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
                 Credit packs
               </h3>
-              <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+              <p className="mt-1 text-body" style={{ color: 'var(--color-text-tertiary)' }}>
                 One-time top-ups — no plan change required.
               </p>
             </div>
@@ -1546,10 +1546,10 @@ function Pricing() {
       <div>
         <Reveal>
           <div className="mb-4">
-            <h3 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+            <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
               Subscriptions
             </h3>
-            <p className="mt-1 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+            <p className="mt-1 text-body" style={{ color: 'var(--color-text-tertiary)' }}>
               Monthly plans for a steady allowance and higher rate limits. Buy credit packs anytime for bursts.
             </p>
           </div>
@@ -1574,7 +1574,7 @@ function Pricing() {
         </div>
       </div>
 
-      <p className="mt-6 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
+      <p className="mt-6 text-caption" style={{ color: 'var(--color-text-disabled)' }}>
         * Custom schemas available on Pro; contact support for schema review. Scale / custom volume: support@agentapigw.dpdns.org
       </p>
     </section>
@@ -1665,7 +1665,7 @@ function Footer() {
             <ApiHealthBadge />
           </div>
 <div
-        className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-center text-[11px]"
+        className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-center text-caption"
         style={{ color: 'var(--color-text-disabled)' }}
       >
         © {new Date().getFullYear()} NexusCore · Agent API Gateway · agentapigw.dpdns.org

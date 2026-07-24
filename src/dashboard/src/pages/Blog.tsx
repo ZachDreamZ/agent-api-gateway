@@ -351,7 +351,7 @@ function BlogListing() {
           <h1 className="text-display mt-4 mb-2" style={{ color: 'var(--color-text-primary)' }}>
             Engineering & updates
           </h1>
-          <p className="text-sm mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
+          <p className="text-body mb-12 max-w-lg" style={{ color: 'var(--color-text-secondary)' }}>
             Building structured data extraction for AI agents — architecture, security, and product updates.
           </p>
 
@@ -379,10 +379,10 @@ function BlogListing() {
                   }}
                 />
                 <Link to={`/blog/${post.slug}`} className="block">
-                  <h2 className="text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+                  <h2 className="text-title" style={{ color: 'var(--color-text-primary)' }}>
                     {post.title}
                   </h2>
-                  <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+                  <p className="mt-2 text-body" style={{ color: 'var(--color-text-secondary)' }}>
                     {post.excerpt}
                   </p>
                   <div className="mt-4 flex flex-wrap items-center gap-4 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
@@ -411,7 +411,7 @@ function BlogListing() {
                         return (
                           <span
                             key={tag}
-                            className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium"
+                            className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-caption font-medium"
                             style={{
                               background: tagBg,
                               color: tagColor,
@@ -550,9 +550,9 @@ function BlogPost() {
       continue;
     }
     if (line.startsWith('## ')) {
-      rendered.push(<h2 key={rendered.length} className="text-lg font-semibold mt-8 mb-3" style={{ color: 'var(--color-text-primary)' }}>{line.slice(3)}</h2>);
+      rendered.push(<h2 key={rendered.length} className="text-title mt-8 mb-3" style={{ color: 'var(--color-text-primary)' }}>{line.slice(3)}</h2>);
     } else if (line.startsWith('### ')) {
-      rendered.push(<h3 key={rendered.length} className="text-base font-semibold mt-6 mb-2" style={{ color: 'var(--color-text-primary)' }}>{line.slice(4)}</h3>);
+      rendered.push(<h3 key={rendered.length} className="text-heading mt-6 mb-2" style={{ color: 'var(--color-text-primary)' }}>{line.slice(4)}</h3>);
     } else if (line.startsWith('| ')) {
       if (line.includes('---')) continue;
       const cells = line.split('|').filter(Boolean).map((c) => c.trim());
@@ -574,17 +574,17 @@ function BlogPost() {
     } else if (line.startsWith('- **')) {
       const match = line.match(/- \*\*(.+?)\*\*(.+)/);
       if (match) {
-        rendered.push(<li key={rendered.length} className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}><strong style={{ color: 'var(--color-text-primary)' }}>{match[1]}</strong>{match[2]}</li>);
+        rendered.push(<li key={rendered.length} className="text-body" style={{ color: 'var(--color-text-secondary)' }}><strong style={{ color: 'var(--color-text-primary)' }}>{match[1]}</strong>{match[2]}</li>);
       }
     } else if (line.startsWith('- ')) {
-      rendered.push(<li key={rendered.length} className="text-sm leading-relaxed ml-4" style={{ color: 'var(--color-text-secondary)' }}>{line.slice(2)}</li>);
+      rendered.push(<li key={rendered.length} className="text-body ml-4" style={{ color: 'var(--color-text-secondary)' }}>{line.slice(2)}</li>);
     } else if (line.match(/^\d\. /)) {
-      rendered.push(<li key={rendered.length} className="text-sm leading-relaxed ml-4" style={{ color: 'var(--color-text-secondary)' }}>{line.replace(/^\d\.\s*/, '')}</li>);
+      rendered.push(<li key={rendered.length} className="text-body ml-4" style={{ color: 'var(--color-text-secondary)' }}>{line.replace(/^\d\.\s*/, '')}</li>);
     } else if (line.trim() === '') {
       rendered.push(<div key={rendered.length} className="h-2" />);
     } else {
       const formatted = line.replace(/`([^`]+)`/g, '<code class="code-inline">$1</code>');
-      rendered.push(<p key={rendered.length} className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }} dangerouslySetInnerHTML={{ __html: formatted }} />);
+      rendered.push(<p key={rendered.length} className="text-body" style={{ color: 'var(--color-text-secondary)' }} dangerouslySetInnerHTML={{ __html: formatted }} />);
     }
   }
 

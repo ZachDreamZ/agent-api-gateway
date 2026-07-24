@@ -244,7 +244,7 @@ export default function Auth() {
           <div className="mb-5 flex justify-center">
             <BrandLockup variant="product" showOrgSubline markClassName="w-6 h-6" to="/" />
           </div>
-          <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+          <h1 className="text-display-sm" style={{ color: 'var(--color-text-primary)' }}>
             {title}
           </h1>
           <p className="mt-1.5 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
@@ -314,7 +314,7 @@ export default function Auth() {
           <>
             {mode === 'signup' && (
               <label
-                className="mb-4 flex items-start gap-2.5 rounded-md px-3 py-2.5 text-xs leading-relaxed cursor-pointer"
+                className="mb-4 flex items-start gap-2.5 rounded-md px-3 py-2.5 text-caption leading-relaxed cursor-pointer"
                 style={{
                   background: 'var(--color-bg-app)',
                   border: '1px solid var(--color-border-subtle)',
@@ -380,7 +380,7 @@ export default function Auth() {
 
                 <div className="relative mb-4 flex items-center gap-3">
                   <div className="h-px flex-1" style={{ background: 'var(--color-border-subtle)' }} />
-                  <span className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--color-text-disabled)' }}>
+                  <span className="text-caption uppercase tracking-wider" style={{ color: 'var(--color-text-disabled)' }}>
                     or email
                   </span>
                   <div className="h-px flex-1" style={{ background: 'var(--color-border-subtle)' }} />
@@ -444,7 +444,7 @@ export default function Auth() {
                     {mode === 'signin' && (
                       <button
                         type="button"
-                        className="text-[11px] link-accent"
+                        className="text-caption link-accent"
                         onClick={() => {
                           setMode('forgot');
                           setError(null);
@@ -478,7 +478,7 @@ export default function Auth() {
                     </button>
                   </div>
                   {mode === 'signup' && (
-                    <p className="mt-1.5 text-[11px]" style={{ color: 'var(--color-text-disabled)' }}>
+                    <p className="mt-1.5 text-caption" style={{ color: 'var(--color-text-disabled)' }}>
                       At least 10 characters. We will email a verification link.
                     </p>
                   )}
@@ -503,7 +503,7 @@ export default function Auth() {
             </form>
 
             {mode === 'signin' && (
-              <p className="mt-4 text-center text-[11px] leading-relaxed" style={{ color: 'var(--color-text-disabled)' }}>
+              <p className="mt-4 text-center text-caption leading-relaxed" style={{ color: 'var(--color-text-disabled)' }}>
                 By signing in you confirm you accept our{' '}
                 <Link to="/terms" className="link-accent">
                   Terms

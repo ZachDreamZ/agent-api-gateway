@@ -59,10 +59,10 @@ export default function ResetPassword() {
           <div className="mb-5 flex justify-center">
             <BrandLockup variant="product" showOrgSubline markClassName="w-6 h-6" to="/" />
           </div>
-          <h1 className="font-display text-2xl font-bold tracking-tight" style={{ color: 'var(--color-text-primary)' }}>
+          <h1 className="text-display-sm" style={{ color: 'var(--color-text-primary)' }}>
             {done ? 'Password updated' : 'Choose a new password'}
           </h1>
-          <p className="mt-1.5 text-sm" style={{ color: 'var(--color-text-tertiary)' }}>
+          <p className="mt-1.5 text-body" style={{ color: 'var(--color-text-tertiary)' }}>
             {done ? 'Redirecting you to sign in…' : 'Use at least 10 characters.'}
           </p>
         </div>

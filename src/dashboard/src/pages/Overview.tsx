@@ -244,7 +244,7 @@ function RecentRequests({ items }: { items: RecentItem[] }) {
   return (
     <div className="surface surface-hover surface-glow p-5">
       <div className="flex items-center justify-between mb-3 gap-2">
-        <h3 className="font-syne text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+        <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
           Recent requests
         </h3>
         <div className="flex items-center gap-2">
@@ -345,7 +345,7 @@ function UsageChart({ data }: { data: DailyUsage[] }) {
   return (
     <div className="stat-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>Last 7 Days</h3>
+        <h3 className="text-heading" style={{ color: 'var(--color-text-secondary)' }}>Last 7 Days</h3>
         <span className="text-xs tabular-nums" style={{ color: 'var(--color-text-tertiary)' }}>
           {data.reduce((sum, d) => sum + d.count, 0).toLocaleString()} total
         </span>
@@ -355,11 +355,11 @@ function UsageChart({ data }: { data: DailyUsage[] }) {
           const pct = (d.count / max) * 100;
           return (
             <div key={d.date} className="group flex flex-1 flex-col items-center gap-1.5">
-              <span className="text-[10px] font-medium" style={{ color: 'transparent' }}>
+              <span className="text-caption font-medium" style={{ color: 'transparent' }}>
                 {d.count}
               </span>
               <div className="chart-bar" style={{ height: `${Math.max(pct, 4)}%` }} />
-              <span className="text-[10px]" style={{ color: 'var(--color-text-tertiary)' }}>
+              <span className="text-caption" style={{ color: 'var(--color-text-tertiary)' }}>
                 {new Date(d.date).toLocaleDateString('en-US', { weekday: 'short' }).charAt(0)}
               </span>
             </div>
@@ -440,14 +440,14 @@ function SchemaCards() {
                 <Icon className="w-4 h-4" style={{ color: schema.color }} strokeWidth={1.75} />
               </div>
               <div className="min-w-0">
-                <div className="text-sm font-semibold mb-0.5" style={{ color: "var(--color-text-primary)" }}>{schema.name}</div>
-                <code className="text-[10px]" style={{ color: "var(--color-text-tertiary)" }}>/{schema.slug}</code>
+                <div className="text-heading mb-0.5" style={{ color: "var(--color-text-primary)" }}>{schema.name}</div>
+                <code className="text-caption" style={{ color: "var(--color-text-tertiary)" }}>/{schema.slug}</code>
               </div>
             </div>
-            <p className="text-[11px] leading-relaxed mb-1.5" style={{ color: "var(--color-text-secondary)" }}>{schema.description}</p>
+            <p className="text-caption leading-relaxed mb-1.5" style={{ color: "var(--color-text-secondary)" }}>{schema.description}</p>
             <div className="flex flex-wrap gap-1">
               {schema.fields.split(", ").map((f) => (
-                <span key={f} className="px-1.5 py-0.5 rounded text-[9px] font-mono font-medium" style={{ background: "var(--color-bg-elevated)", color: "var(--color-text-disabled)" }}>{f}</span>
+                <span key={f} className="px-1.5 py-0.5 rounded text-caption font-mono font-medium" style={{ background: "var(--color-bg-elevated)", color: "var(--color-text-disabled)" }}>{f}</span>
               ))}
             </div>
           </motion.div>
@@ -474,10 +474,10 @@ Available schemas:
   return (
     <div className="surface surface-hover surface-glow p-5 space-y-4">
       <div>
-        <h3 className="font-syne text-base font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+        <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
           Agent integration
         </h3>
-        <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+        <p className="mt-1 text-caption leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
           Add these instructions to your system prompt or AI agent context (e.g. <code className="code-inline">.cursorrules</code>, <code className="code-inline">.claudeprompt</code>) so your agent knows how to extract web data automatically.
         </p>
       </div>
@@ -493,7 +493,7 @@ Available schemas:
           return (
             <span
               key={tech.name}
-              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium"
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-caption font-medium"
               style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border-subtle)' }}
             >
               <Icon className={`w-3 h-3 ${tech.color}`} strokeWidth={2.2} />
@@ -505,10 +505,10 @@ Available schemas:
 
       <div className="relative rounded-lg overflow-hidden border" style={{ borderColor: 'var(--color-border-subtle)' }}>
         <div className="flex items-center justify-between px-3 py-2 text-xs" style={{ background: 'var(--color-bg-surface)', borderBottom: '1px solid var(--color-border-subtle)' }}>
-          <span className="font-mono text-[10px]" style={{ color: 'var(--color-text-disabled)' }}>system-instruction.txt</span>
+          <span className="font-mono text-caption" style={{ color: 'var(--color-text-disabled)' }}>system-instruction.txt</span>
           <CopyButton text={code} label="Copy context" />
         </div>
-        <pre className="p-3 text-[10px] leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
+        <pre className="p-3 text-caption leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
           <code>{code}</code>
         </pre>
       </div>
@@ -541,10 +541,10 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
       <div className="space-y-4">
         <CreditPacksMini />
         <div className="stat-card space-y-3">
-          <h3 className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+          <h3 className="text-heading" style={{ color: 'var(--color-text-secondary)' }}>
             Next steps
           </h3>
-          <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+          <p className="text-caption leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
             Wire the MCP server for Claude/Cursor, or upgrade your monthly plan under Billing.
           </p>
           <div className="flex flex-col gap-2">
@@ -567,10 +567,10 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
         <p className="text-eyebrow mb-1" style={{ color: 'var(--color-accent-base)' }}>
           Get started
         </p>
-        <h3 className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+        <h3 className="text-heading" style={{ color: 'var(--color-text-primary)' }}>
           Create an API key, then call /v1/extract
         </h3>
-        <p className="mt-1.5 text-xs leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
+        <p className="mt-1.5 text-caption leading-relaxed" style={{ color: 'var(--color-text-tertiary)' }}>
           Free tier includes 100 queries/month. Keys are shown once — copy them immediately.
         </p>
       </div>
@@ -582,7 +582,7 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
           </p>
           <div className="flex items-center gap-2">
             <code
-              className="flex-1 break-all rounded-md px-2 py-1.5 text-[11px]"
+              className="flex-1 break-all rounded-md px-2 py-1.5 text-caption"
               style={{ background: 'var(--color-bg-app)', border: '1px solid var(--color-border-subtle)', fontFamily: 'var(--font-family-mono)' }}
             >
               {createdKey}
@@ -609,7 +609,7 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
       )}
 
       <pre
-        className="rounded-md p-3 text-[10px] leading-relaxed overflow-x-auto"
+        className="rounded-md p-3 text-caption leading-relaxed overflow-x-auto"
         style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-tertiary)', border: '1px solid var(--color-border-subtle)' }}
       >
 {`curl -s https://agentapigw.dpdns.org/v1/extract \\
@@ -823,8 +823,8 @@ export default function Overview() {
           <Stagger>
             <StaggerItem>
               <div className="surface surface-hover surface-glow p-5 space-y-4">
-                <h3 className="font-syne text-base font-semibold" style={{ color: "var(--color-text-primary)" }}>Extraction schemas</h3>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-tertiary)" }}>Each URL + schema pair returns structured JSON. Fields are nullable.</p>
+                <h3 className="text-heading" style={{ color: "var(--color-text-primary)" }}>Extraction schemas</h3>
+                <p className="text-caption leading-relaxed" style={{ color: "var(--color-text-tertiary)" }}>Each URL + schema pair returns structured JSON. Fields are nullable.</p>
                 <SchemaCards />
               </div>
             </StaggerItem>
