@@ -170,7 +170,7 @@ body {
 
 .text-heading {
   font-family: var(--font-family-sans);
-  font-size: 1.125rem;
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
   font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.4;

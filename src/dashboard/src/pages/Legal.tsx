@@ -191,7 +191,7 @@ export default function Legal({ kind }: { kind: LegalKind }) {
         <div className="space-y-8">
           {doc.sections.map((s) => (
             <section key={s.h}>
-              <h2 className="text-heading mb-2" style={{ color: 'var(--color-text-primary)' }}>
+              <h2 className="text-title mb-2" style={{ color: 'var(--color-text-primary)' }}>
                 {s.h}
               </h2>
               <p className="text-body" style={{ color: 'var(--color-text-secondary)' }}>
