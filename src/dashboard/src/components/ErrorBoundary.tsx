@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     // Report to error tracking service if configured
     if (typeof window !== 'undefined' && (window as any).reportError) {
       (window as any).reportError(error, errorInfo);
@@ -31,6 +31,18 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   handleReset = () => {
+    const message = this.state.error?.message ?? '';
+    const isChunkError =
+      /Failed to fetch dynamically imported module|Importing a module script failed|Loading chunk [\d]+ failed|ChunkLoadError|error loading dynamically imported module/i.test(
+        message,
+      );
+
+    if (isChunkError && typeof window !== 'undefined') {
+      // Full reload fetches the latest HTML shell + current asset hashes.
+      window.location.reload();
+      return;
+    }
+
     this.setState({ hasError: false, error: null });
   };
 
