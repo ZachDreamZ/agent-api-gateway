@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 import { useSEO } from '../hooks/useSEO';
 import { PricingPageStructuredData } from '../components/StructuredData';
-import { ArrowRight, Zap } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowRight, Zap, Check, X } from 'lucide-react';
 
 const PACKS = [
   {
@@ -31,31 +32,64 @@ const PACKS = [
   },
 ];
 
+const MONTHLY = [
+  { name: 'Free', price: '$0', annualPrice: '$0', note: '500 queries / month · REST + MCP', detail: 'Enough to integrate a real agent loop', href: undefined },
+  { name: 'Hobby', price: '$29/mo', annualPrice: '$23/mo', note: '5,000 queries · 60 RPM · 5 concurrent', detail: 'Save $72/yr with annual', href: '/buy?sku=hobby' },
+  { name: 'Pro', price: '$99/mo', annualPrice: '$79/mo', note: '25,000 queries · 300 RPM · 20 concurrent', detail: 'Save $240/yr with annual', href: '/buy?sku=pro' },
+];
+
 const PLANS = [
   {
     name: 'Free',
     price: '$0',
+    annualPrice: '$0',
     note: '500 queries / month · REST + MCP',
     detail: 'Enough to integrate a real agent loop',
+    annualDetail: 'Always free',
     href: undefined as string | undefined,
   },
   {
     name: 'Hobby',
     price: '$29/mo',
+    annualPrice: '$23/mo',
     note: '5,000 queries · 60 RPM · 5 concurrent',
     detail: 'Always-on allowance + response caching',
+    annualDetail: '$276/yr · save $72/yr',
     href: '/buy?sku=hobby',
   },
   {
     name: 'Pro',
     price: '$99/mo',
+    annualPrice: '$79/mo',
     note: '25,000 queries · 300 RPM · 20 concurrent',
     detail: 'Production agents + priority support',
+    annualDetail: '$948/yr · save $240/yr',
     href: '/buy?sku=pro',
   },
 ];
 
+function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0"
+      style={{
+        background: checked ? 'var(--color-accent-base)' : 'var(--color-border-default)',
+      }}
+    >
+      <span
+        className="inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform"
+        style={{ transform: checked ? 'translateX(18px)' : 'translateX(2px)' }}
+      />
+    </button>
+  );
+}
+
 export default function Pricing() {
+  const [annual, setAnnual] = useState(false);
   useSEO({
     title: 'Pricing',
     description:
@@ -128,7 +162,15 @@ export default function Pricing() {
           ))}
         </div>
 
-        <h2 className="text-title mb-2">Monthly plans</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-title">Monthly plans</h2>
+          <label className="flex items-center gap-2 text-xs cursor-pointer" style={{ color: 'var(--color-text-tertiary)' }}>
+            <span>Monthly</span>
+            <Toggle checked={annual} onChange={setAnnual} />
+            <span style={{ color: annual ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)' }}>Annual</span>
+            <span className="badge badge-active text-[10px]" style={annual ? {} : { opacity: 0.4 }}>Save 20%</span>
+          </label>
+        </div>
         <p className="text-sm mb-3" style={{ color: 'var(--color-text-tertiary)' }}>
           Choose a plan when you need a steady allowance, higher rate limits, and concurrency — not just more credits.
         </p>
@@ -136,12 +178,17 @@ export default function Pricing() {
           {PLANS.map((p) => (
             <div key={p.name} className="surface p-4">
               <p className="text-sm font-medium">{p.name}</p>
-              <p className="text-title mt-2">{p.price}</p>
+              <p className="text-title mt-2">{annual && p.annualPrice ? p.annualPrice : p.price}</p>
+              {annual && p.annualPrice && p.annualPrice !== p.price && (
+                <p className="text-caption mt-1 line-through opacity-60" style={{ color: 'var(--color-text-tertiary)' }}>
+                  {p.price}
+                </p>
+              )}
               <p className="text-caption mt-1" style={{ color: 'var(--color-text-secondary)' }}>
                 {p.note}
               </p>
               <p className="text-caption mt-1 mb-3" style={{ color: 'var(--color-text-tertiary)' }}>
-                {p.detail}
+                {annual && p.annualDetail ? p.annualDetail : p.detail}
               </p>
               {p.href ? (
                 <a href={p.href} className="btn btn-secondary text-xs w-full">
@@ -171,6 +218,69 @@ export default function Pricing() {
           </ul>
         </div>
 
+        
+        <div className="surface p-5 mb-10">
+          <h2 className="text-heading mb-3">How we compare</h2>
+          <p className="text-sm mb-4" style={{ color: 'var(--color-text-tertiary)' }}>
+            See how Agent API Gateway stacks up against popular alternatives.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
+                  <th className="text-left py-2 pr-4 font-medium">Feature</th>
+                  <th className="text-center py-2 px-2 font-medium" style={{ color: 'var(--color-accent-base)' }}>Agent API Gateway</th>
+                  <th className="text-center py-2 px-2 font-medium" style={{ color: 'var(--color-text-disabled)' }}>Firecrawl</th>
+                  <th className="text-center py-2 pl-2 font-medium" style={{ color: 'var(--color-text-disabled)' }}>Browserless</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
+                  <td className="py-2 pr-4">Structured JSON output</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-success)' }}>✓</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-success)' }}>✓</td>
+                  <td className="text-center py-2 pl-2" style={{ color: 'var(--color-text-disabled)' }}>—</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
+                  <td className="py-2 pr-4">Schema validation</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-success)' }}>✓</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-text-disabled)' }}>—</td>
+                  <td className="text-center py-2 pl-2" style={{ color: 'var(--color-text-disabled)' }}>—</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
+                  <td className="py-2 pr-4">MCP server</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-success)' }}>✓</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-success)' }}>✓</td>
+                  <td className="text-center py-2 pl-2" style={{ color: 'var(--color-text-disabled)' }}>—</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
+                  <td className="py-2 pr-4">SSRF protection</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-success)' }}>✓</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-success)' }}>✓</td>
+                  <td className="text-center py-2 pl-2" style={{ color: 'var(--color-text-disabled)' }}>—</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
+                  <td className="py-2 pr-4">Free tier</td>
+                  <td className="text-center py-2 px-2">500 queries/mo</td>
+                  <td className="text-center py-2 px-2">500 credits/mo</td>
+                  <td className="text-center py-2 pl-2">1k requests/mo</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
+                  <td className="py-2 pr-4">Entry plan</td>
+                  <td className="text-center py-2 px-2">$29 (5k queries)</td>
+                  <td className="text-center py-2 px-2">$19 (3k credits)</td>
+                  <td className="text-center py-2 pl-2">$49 (65k req.)</td>
+                </tr>
+                <tr>
+                  <td className="py-2 pr-4">Extra credits</td>
+                  <td className="text-center py-2 px-2" style={{ color: 'var(--color-accent-base)' }}>$1/1k</td>
+                  <td className="text-center py-2 px-2">~$3/1k</td>
+                  <td className="text-center py-2 pl-2" style={{ color: 'var(--color-text-disabled)' }}>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div className="flex flex-wrap gap-3">
           <a href="/buy?sku=credits_1k" className="btn btn-primary text-sm">
             Buy $1 credits
