@@ -548,7 +548,7 @@ function OnboardingCard({ hasUsage }: { hasUsage: boolean }) {
             Wire the MCP server for Claude/Cursor, or upgrade your monthly plan under Billing.
           </p>
           <div className="flex flex-col gap-2">
-            <Link to="/docs#mcp" className="btn btn-secondary w-full text-xs">
+            <Link to="/mcp" className="btn btn-secondary w-full text-xs">
               <BookOpen className="w-3.5 h-3.5" />
               MCP setup
             </Link>

@@ -2,6 +2,8 @@
 
 Agent API Gateway exposes a **stdio MCP server** for agent hosts (Claude Desktop, Cursor, VS Code Copilot).
 
+**Install hub (website):** https://agentapigw.dpdns.org/mcp
+
 ## Tools
 
 | Tool | Input | Notes |

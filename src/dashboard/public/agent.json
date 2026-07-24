@@ -2,7 +2,7 @@
   "name": "Agent API Gateway",
   "vendor": "NexusCore",
   "version": "0.1.0",
-  "description": "Structured web data for AI agents. URL + schema → validated JSON for products, articles, and companies.",
+  "description": "Structured web data for AI agents. URL + schema \u2192 validated JSON for products, articles, and companies.",
   "homepage": "https://agentapigw.dpdns.org/",
   "docs": "https://agentapigw.dpdns.org/docs",
   "agents_page": "https://agentapigw.dpdns.org/agents",
@@ -33,14 +33,21 @@
       "method": "POST",
       "url": "https://agentapigw.dpdns.org/v1/extract",
       "auth": "Bearer API key",
-      "body": { "url": "https://example.com/item", "schema": "product" }
+      "body": {
+        "url": "https://example.com/item",
+        "schema": "product"
+      }
     },
     "schemas": {
       "method": "GET",
       "url": "https://agentapigw.dpdns.org/v1/schemas"
     }
   },
-  "schemas": ["product", "article", "company"],
+  "schemas": [
+    "product",
+    "article",
+    "company"
+  ],
   "scrape": {
     "http_headers": "chrome-like",
     "content_cleaning": "html-to-markdown",
@@ -52,5 +59,20 @@
       "url": "https://statusplate.agentapigw.dpdns.org/",
       "description": "Uptime monitors + public status pages for indie SaaS"
     }
-  ]
+  ],
+  "mcp_page": "https://agentapigw.dpdns.org/mcp",
+  "mcp": {
+    "page": "https://agentapigw.dpdns.org/mcp",
+    "transport": "stdio",
+    "package": "agent-api-gateway-mcp",
+    "registry_name": "io.github.ZachDreamZ/agent-api-gateway",
+    "npm": "https://www.npmjs.com/package/agent-api-gateway-mcp",
+    "github": "https://github.com/ZachDreamZ/agent-api-gateway-mcp",
+    "registry_search": "https://registry.modelcontextprotocol.io/v0/servers?search=io.github.ZachDreamZ%2Fagent-api-gateway",
+    "install_command": "npx -y agent-api-gateway-mcp",
+    "config_env": {
+      "AGENT_API_KEY": "sk-your-api-key",
+      "API_BASE_URL": "https://agentapigw.dpdns.org/v1"
+    }
+  }
 }

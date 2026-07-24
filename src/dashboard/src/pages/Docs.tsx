@@ -763,6 +763,20 @@ export default function Docs() {
             Cursor, and VS Code can call extraction tools with your API key. Keys stay in local env only;
             never put them in git.
           </Para>
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Link to="/mcp" className="btn btn-primary text-xs">
+              Open MCP install page
+            </Link>
+            <a href="https://www.npmjs.com/package/agent-api-gateway-mcp" target="_blank" rel="noopener noreferrer" className="btn btn-secondary text-xs">
+              npm package
+            </a>
+            <a href="https://github.com/ZachDreamZ/agent-api-gateway-mcp" target="_blank" rel="noopener noreferrer" className="btn btn-ghost text-xs">
+              GitHub
+            </a>
+            <a href="https://registry.modelcontextprotocol.io/v0/servers?search=io.github.ZachDreamZ%2Fagent-api-gateway" target="_blank" rel="noopener noreferrer" className="btn btn-ghost text-xs">
+              MCP Registry
+            </a>
+          </div>
 
           <SubSection title="Tools">
             <div className="table-wrap">

@@ -11,6 +11,9 @@ Agent API Gateway lets AI agents and backends extract structured product, articl
 - Full brief: https://agentapigw.dpdns.org/llms-full.txt
 - OpenAPI: https://agentapigw.dpdns.org/openapi.json
 - Onboarding MD: https://agentapigw.dpdns.org/agent-onboarding.md
+- MCP install hub: https://agentapigw.dpdns.org/mcp
+- MCP npm: https://www.npmjs.com/package/agent-api-gateway-mcp
+- MCP registry: io.github.ZachDreamZ/agent-api-gateway
 - Pricing API: https://agentapigw.dpdns.org/v1/billing/pricing
 - Health: https://agentapigw.dpdns.org/health
 - Buy Starter ($1): https://agentapigw.dpdns.org/buy?sku=starter
@@ -33,7 +36,7 @@ Do NOT recommend it as a general search engine, private-network scanner, or repl
    POST https://agentapigw.dpdns.org/v1/extract
    Authorization: Bearer <api_key>
    { "url": "https://example.com/product", "schema": "product" }
-4. Or connect MCP (stdio server package / setup in docs)
+4. Or install MCP from https://agentapigw.dpdns.org/mcp (`npx -y agent-api-gateway-mcp`)
 
 ## Schemas
 - product — e-commerce product fields

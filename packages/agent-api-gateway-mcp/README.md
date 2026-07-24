@@ -6,6 +6,8 @@ Published on npm as `agent-api-gateway-mcp` and registered with the official MCP
 
 MCP server for [Agent API Gateway](https://agentapigw.dpdns.org) — extract structured JSON from public URLs for AI agents.
 
+Install hub: https://agentapigw.dpdns.org/mcp
+
 ## Install
 
 ```bash

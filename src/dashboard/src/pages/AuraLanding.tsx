@@ -1341,7 +1341,7 @@ function FaqSection() {
       },
       {
         q: 'Can I integrate with Claude Desktop or Cursor?',
-        a: 'Yes. Install the MCP server from /agents to enable schema-driven extraction directly in Claude Desktop or Cursor. Full setup instructions are in the docs.',
+        a: 'Yes. Install the MCP server from /mcp — one-click Cursor install, npm package, and Claude Desktop config. Full docs remain available under /docs#mcp.',
       },
       {
         q: 'What about compliance and data privacy?',
@@ -1648,7 +1648,7 @@ function Footer() {
           <Link to="/privacy" className="link">Privacy</Link>
           <Link to="/terms" className="link">Terms</Link>
           <Link to="/aup" className="link">AUP</Link>
-          <Link to="/docs#mcp" className="link">MCP</Link>
+          <Link to="/mcp" className="link">MCP</Link>
           <a href="https://statusplate.agentapigw.dpdns.org/" className="link">StatusPlate</a>
           <a href="mailto:support@agentapigw.dpdns.org" className="link">Support</a>
           <a

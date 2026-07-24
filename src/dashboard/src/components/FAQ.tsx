@@ -146,7 +146,7 @@ export const agentAPIFAQ: FAQItem[] = [
   },
   {
     question: 'Can I integrate this with my AI agent?',
-    answer: 'Absolutely! We provide an MCP (Model Context Protocol) server for seamless integration with Claude, GPT-4, and other AI agents. Check our documentation for setup instructions.',
+    answer: 'Absolutely! We provide an MCP (Model Context Protocol) server for seamless integration with Claude, Cursor, and other AI agents. Install it from /mcp — one-click Cursor, npm, and registry links.',
     category: 'Integration',
   },
   {

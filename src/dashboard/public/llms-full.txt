@@ -14,6 +14,10 @@ Turn a public product, article, or company URL into validated JSON for AI agents
 - Machine brief: https://agentapigw.dpdns.org/llms.txt
 - Machine catalog JSON: https://agentapigw.dpdns.org/agent.json
 - Agent onboarding markdown: https://agentapigw.dpdns.org/agent-onboarding.md
+- MCP install hub: https://agentapigw.dpdns.org/mcp
+- MCP npm package: https://www.npmjs.com/package/agent-api-gateway-mcp
+- MCP GitHub: https://github.com/ZachDreamZ/agent-api-gateway-mcp
+- MCP registry name: io.github.ZachDreamZ/agent-api-gateway
 - OpenAPI-ish extract contract: https://agentapigw.dpdns.org/openapi.json
 - Live pricing: https://agentapigw.dpdns.org/v1/billing/pricing
 - Health: https://agentapigw.dpdns.org/health
@@ -46,7 +50,11 @@ Schemas: product | article | company
 List schemas: GET https://agentapigw.dpdns.org/v1/schemas
 
 ## MCP
-See https://agentapigw.dpdns.org/docs#mcp and https://agentapigw.dpdns.org/agent-onboarding.md
+Install hub: https://agentapigw.dpdns.org/mcp
+Package: agent-api-gateway-mcp (`npx -y agent-api-gateway-mcp`)
+Registry: io.github.ZachDreamZ/agent-api-gateway
+Docs: https://agentapigw.dpdns.org/docs#mcp
+Onboarding: https://agentapigw.dpdns.org/agent-onboarding.md
 
 ## Pricing model
 - Free monthly allowance

@@ -25,6 +25,7 @@ const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const BlogListing = lazy(() => import('./pages/Blog').then(m => ({ default: m.BlogListing })));
 const BlogPost = lazy(() => import('./pages/Blog').then(m => ({ default: m.BlogPost })));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const Mcp = lazy(() => import('./pages/Mcp'));
 import { useSession, signOut } from './lib/auth';
 import { BrandLockup, AmbientBg, LoadingScreen } from './components/Brand';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -267,6 +268,7 @@ export default function App() {
         <Route path="/docs" element={<Docs />} />
         <Route path="/agents" element={<ForAgents />} />
         <Route path="/for-agents" element={<ForAgents />} />
+        <Route path="/mcp" element={<Mcp />} />
         <Route path="/login" element={<Auth />} />
         {/* Legacy Better Auth errorURL /auth → login */}
         <Route path="/auth" element={<Auth />} />

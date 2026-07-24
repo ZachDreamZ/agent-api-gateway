@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { FileText, Braces, Code2, Heart, Activity, BookOpen, List } from 'lucide-react';
+import { FileText, Braces, Code2, Heart, Activity, BookOpen, List, Bot } from 'lucide-react';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
 import { useSEO } from '../hooks/useSEO';
 
@@ -12,6 +12,7 @@ const ENDPOINTS = [
   { href: '/v1/billing/pricing', label: 'GET /v1/billing/pricing', icon: Activity, desc: 'Live pricing JSON' },
   { href: '/health', label: 'GET /health', icon: Heart, desc: 'Liveness probe' },
   { href: '/v1/schemas', label: 'GET /v1/schemas', icon: List, desc: 'Schema catalog' },
+  { href: '/mcp', label: '/mcp', icon: Bot, desc: 'MCP install hub (Cursor, npm, registry)' },
 ];
 
 export default function ForAgents() {
@@ -92,6 +93,9 @@ export default function ForAgents() {
         <div className="flex flex-wrap gap-3">
           <Link to="/docs" className="btn btn-primary text-sm">
             Read docs
+          </Link>
+          <Link to="/mcp" className="btn btn-secondary text-sm">
+            Install MCP
           </Link>
           <Link to="/login" className="btn btn-secondary text-sm">
             Get API key

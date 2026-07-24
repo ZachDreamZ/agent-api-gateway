@@ -14,6 +14,7 @@
 | health | https://agentapigw.dpdns.org/health |
 | for agents (UI) | https://agentapigw.dpdns.org/agents |
 | docs | https://agentapigw.dpdns.org/docs |
+| mcp install | https://agentapigw.dpdns.org/mcp |
 
 ## What it does
 
@@ -34,7 +35,7 @@ curl -sS -X POST https://agentapigw.dpdns.org/v1/extract \
 
 ## MCP
 
-See https://agentapigw.dpdns.org/docs for MCP server setup (Cursor / Claude / VS Code). Prefer REST if MCP package is not installed.
+Install from https://agentapigw.dpdns.org/mcp — Cursor one-click, npm (`agent-api-gateway-mcp`), GitHub, and official registry (`io.github.ZachDreamZ/agent-api-gateway`). Prefer REST if MCP is not needed.
 
 ## Rate limits
 

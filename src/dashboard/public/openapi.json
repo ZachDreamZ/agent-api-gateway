@@ -99,7 +99,7 @@
     }
   },
   "externalDocs": {
-    "description": "Human docs and MCP setup",
+    "description": "Human docs; MCP install hub at /mcp",
     "url": "https://agentapigw.dpdns.org/docs"
   }
 }
