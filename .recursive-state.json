@@ -2,7 +2,7 @@
   "version": 1,
   "loop": {
     "currentPhase": "verify",
-    "iteration": 42,
+    "iteration": 43,
     "startedAt": "2026-07-23T06:00:00Z",
     "lastAudit": "2026-07-25T02:52:00Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
@@ -170,6 +170,12 @@
         "description": "Better Auth Dash fully connected - shows 21 users, analytics, events, all 4 plugins active",
         "commit": "22027cc",
         "timestamp": "2026-07-25T10:52:00Z"
+      },
+      {
+        "id": "experimental-joins",
+        "description": "Enabled experimental.joins: true in Better Auth for 2x-3x faster single-query joins on /get-session, /get-organization, and related endpoints",
+        "commit": "d7ec335",
+        "timestamp": "2026-07-25T11:10:00Z"
       }
     ],
     "pending": [
