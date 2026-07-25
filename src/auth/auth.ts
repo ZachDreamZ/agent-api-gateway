@@ -275,7 +275,10 @@ export const auth = betterAuth({
       disableIpTracking: false,
     },
   },
-
+  // ─── Experimental features ───
+  experimental: {
+    joins: true, // 2x-3x faster queries via single-query joins
+  },
   plugins: [
     apiKey({
       defaultPrefix: 'sk-',
