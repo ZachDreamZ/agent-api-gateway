@@ -1600,6 +1600,56 @@ function Pricing() {
 
 // ─── Final CTA ───
 
+// --- Blog Section ---
+
+function BlogPreview() {
+  const posts = [
+    { slug: 'install-agent-api-gateway-mcp-in-cursor', title: 'Install Agent API Gateway MCP in Cursor and Claude Desktop', tag: 'MCP' },
+    { slug: 'rate-limiting-strategies-for-ai-agents', title: 'Rate limiting strategies for AI agent APIs', tag: 'Engineering' },
+    { slug: 'ssrf-protection-for-extraction-apis', title: 'SSRF protection for web extraction APIs', tag: 'Security' },
+  ];
+
+  return (
+    <section className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-20">
+      <Reveal>
+        <SectionLabel>From the blog</SectionLabel>
+        <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
+          Latest from the Agent API Gateway team.
+        </h2>
+        <p className="text-sm mb-8 max-w-xl" style={{ color: 'var(--color-text-secondary)' }}>
+          Engineering deep-dives, security patterns, and practical guides for building with structured extraction APIs.
+        </p>
+      </Reveal>
+      <div className="grid md:grid-cols-3 gap-4">
+        {posts.map((post, i) => (
+          <Reveal key={post.slug} delay={i * 0.06}>
+            <Link
+              to={'/blog/' + post.slug}
+              className="lift-card surface surface-hover surface-glow p-5 h-full flex flex-col group"
+            >
+              <span className="badge badge-accent self-start mb-3">{post.tag}</span>
+              <h3 className="text-sm font-semibold leading-snug mb-2 group-hover" style={{ color: 'var(--color-text-primary)' }}>
+                {post.title}
+              </h3>
+              <span className="link-accent inline-flex items-center gap-1 mt-auto text-xs">
+                Read more <ArrowRight className="w-3 h-3" />
+              </span>
+            </Link>
+          </Reveal>
+        ))}
+      </div>
+      <Reveal delay={0.12}>
+        <div className="mt-8 text-center">
+          <Link to="/blog" className="btn btn-ghost" style={{ padding: '0.7rem 1.4rem', borderRadius: '6px' }}>
+            View all posts
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 function FinalCTA() {
   useSEO({
     title: 'Structured Web Data Extraction for AI Agents',
@@ -1837,6 +1887,7 @@ function Landing() {
           <FaqSection />
           <Testimonials />
           <Pricing />
+          <BlogPreview />
           <FinalCTA />
         </main>
         <Footer />
