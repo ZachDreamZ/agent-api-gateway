@@ -298,7 +298,6 @@ export const auth = betterAuth({
     // Opt-in TOTP 2FA (OpenVPN checklist: MFA). Not enforced at sign-in;
     // users enable it voluntarily from the dashboard.
     dash({
-      apiUrl: process.env.BETTER_AUTH_API_URL,
       apiKey: process.env.BETTER_AUTH_API_KEY,
     }),
     twoFactor({
