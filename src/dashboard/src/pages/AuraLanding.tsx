@@ -1602,7 +1602,7 @@ function Pricing() {
 
 function FinalCTA() {
   useSEO({
-    title: 'Structured Web Data Extraction for AI Agents | Agent API Gateway',
+    title: 'Structured Web Data Extraction for AI Agents',
     description: 'Extract structured JSON from any public URL. AI-powered schemas for product, article, and company data. REST API and MCP server.',
     keywords: 'web extraction API, structured data extraction, AI agent API, MCP server, web scraper API',
     ogImage: 'https://agentapigw.dpdns.org/og-image.svg',

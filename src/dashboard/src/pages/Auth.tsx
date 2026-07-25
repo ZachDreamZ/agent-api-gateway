@@ -48,7 +48,7 @@ function isUnverifiedError(message: string): boolean {
 
 export default function Auth() {
   useSEO({
-    title: 'Sign In & Sign Up | Agent API Gateway',
+    title: 'Sign In & Sign Up',
     description: 'Create a free account or sign in to manage API keys, view usage, and access billing for Agent API Gateway.',
     keywords: 'sign in, sign up, create account, API gateway login, Agent API Gateway',
     canonical: 'https://agentapigw.dpdns.org/login',

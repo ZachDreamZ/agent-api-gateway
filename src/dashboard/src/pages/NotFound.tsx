@@ -7,7 +7,7 @@ import { useSEO } from '../hooks/useSEO';
 
 export default function NotFound() {
   useSEO({
-    title: 'Page Not Found | Agent API Gateway',
+    title: 'Page Not Found',
     description: 'The page you are looking for does not exist. Return to Agent API Gateway homepage.',
     canonical: 'https://agentapigw.dpdns.org/',
   });

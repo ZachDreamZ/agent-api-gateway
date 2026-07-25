@@ -9,7 +9,7 @@ import { useSEO } from '../hooks/useSEO';
 
 export default function ResetPassword() {
   useSEO({
-    title: 'Reset Password | Agent API Gateway',
+    title: 'Reset Password',
     description: 'Reset your Agent API Gateway account password.',
     canonical: 'https://agentapigw.dpdns.org/reset-password',
   });
