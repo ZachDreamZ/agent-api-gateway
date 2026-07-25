@@ -10,6 +10,82 @@ import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkle
 
 const POSTS = [
   {
+    slug: 'how-to-build-an-ai-agent-that-extracts-web-data',
+    title: 'How to build an AI agent that extracts web data (REST + MCP)',
+    excerpt: 'A practical step-by-step guide to building AI agents that extract structured data from websites using REST APIs and MCP servers. Includes working Python code examples.',
+    date: '2026-07-25',
+    readTime: '6 min',
+    tags: ['agents', 'guides', 'tutorial'],
+    content: `## Why build an extraction agent?
+
+AI agents need real-time data from the web. A structured extraction API lets your agent get clean, typed data from any public URL with a single API call.
+
+In this guide, you will build an AI agent that takes a URL, extracts structured data, handles multiple schema types, and integrates with both REST API and MCP server.
+
+## Prerequisites
+
+- An Agent API Gateway account (free tier: 500 queries/month)
+- An API key from the dashboard
+- Python 3.10+ or Node.js 18+
+
+## Step 1: Get your API key
+
+1. Go to /login and create an account
+2. Navigate to Dashboard > API Keys
+3. Create a new key with the sk- prefix
+
+## Step 2: REST API client (Python)
+
+\`\`\`python
+import os
+import requests
+
+API_KEY = os.environ.get("AGENT_API_KEY")
+BASE_URL = "https://agentapigw.dpdns.org/v1"
+
+def extract_url(url: str, schema: str = "product") -> dict:
+    response = requests.post(
+        f"{BASE_URL}/extract",
+        headers={
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={"url": url, "schema": schema},
+        timeout=15,
+    )
+    response.raise_for_status()
+    return response.json()
+
+result = extract_url("https://example.com/product", "product")
+print(f"Product: {result[\"data\"][\"name\"]}")
+\`\`\`
+
+## Step 3: Batch processing
+
+The API supports three built-in schemas:
+
+- product: e-commerce and pricing pages
+- article: blog posts and news articles
+- company: about pages and company profiles
+
+## Step 4: Error handling
+
+| HTTP Status | Meaning | Action |
+|-------------|---------|--------|
+| 200 | Success | Parse the response |
+| 401 | Unauthorized | Check your API key |
+| 429 | Rate limited | Wait and retry |
+| 500 | Server error | Retry with backoff |
+
+## Next steps
+
+- Try the live playground on the homepage
+- Read about SSRF protection patterns
+- Compare with alternatives
+- Join the GitHub community`,
+  },
+
+  {
     slug: 'structured-data-for-ai-agents',
     title: 'Why AI agents need structured data, not HTML',
     excerpt: 'Raw HTML parsing is brittle and expensive. Here\'s how structured extraction APIs solve the reliability problem for agent tool-calling.',
