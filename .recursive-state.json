@@ -2,7 +2,7 @@
   "version": 1,
   "loop": {
     "currentPhase": "commit",
-    "iteration": 46,
+    "iteration": 47,
     "startedAt": "2026-07-23T06:00:00Z",
     "lastAudit": "2026-07-25T02:52:00Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
@@ -194,6 +194,11 @@
         "description": "UI/UX polish: cleaned up HTML template (removed duplicate GSC tags), added sitemap link, fixed pricing toggle cursor-pointer",
         "timestamp": "2026-07-25T14:12:50.4445713+08:00",
         "id": "ui-ux-pro-max-polish"
+      },
+      {
+        "timestamp": "2026-07-25T14:38:13.5811650+08:00",
+        "id": "seo-title-duplication-fix",
+        "description": "Fixed duplicated '| Agent API Gateway' suffix in page titles across landing, auth, legal, not-found, and reset-password pages"
       }
     ],
     "pending": [
