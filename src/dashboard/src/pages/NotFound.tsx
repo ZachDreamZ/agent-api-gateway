@@ -3,8 +3,14 @@ import { motion } from 'motion/react';
 import { Home, BookOpen, LogIn } from 'lucide-react';
 import { AmbientBg } from '../components/Brand';
 import { easeOut } from '../lib/motion';
+import { useSEO } from '../hooks/useSEO';
 
 export default function NotFound() {
+  useSEO({
+    title: 'Page Not Found | Agent API Gateway',
+    description: 'The page you are looking for does not exist. Return to Agent API Gateway homepage.',
+    canonical: 'https://agentapigw.dpdns.org/',
+  });
   return (
     <div
       className="relative min-h-screen flex flex-col items-center justify-center px-5 text-center overflow-hidden"

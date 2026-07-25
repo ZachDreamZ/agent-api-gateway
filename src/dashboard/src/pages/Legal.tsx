@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Shield, FileText, Lock, Scale, Mail } from 'lucide-react';
 import { AmbientBg, BrandLockup, SectionLabel } from '../components/Brand';
+import { useSEO } from '../hooks/useSEO';
 
 export type LegalKind = 'privacy' | 'terms' | 'aup';
 
@@ -157,6 +158,17 @@ const NAV: { kind: LegalKind; label: string; path: string }[] = [
 ];
 
 export default function Legal({ kind }: { kind: LegalKind }) {
+  const titles: Record<LegalKind, string> = {
+    privacy: 'Privacy Policy',
+    terms: 'Terms of Service',
+    aup: 'Acceptable Use Policy',
+  };
+  useSEO({
+    title: `${titles[kind]} | Agent API Gateway`,
+    description: `${titles[kind]} for Agent API Gateway — structured web data extraction for AI agents.`,
+    canonical: `https://agentapigw.dpdns.org/${kind === 'aup' ? 'aup' : kind}`,
+  });
+
   const doc = COPY[kind];
   return (
     <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>

@@ -5,8 +5,14 @@ import { Eye, EyeOff, Lock, KeyRound } from 'lucide-react';
 import { resetPassword } from '../lib/auth';
 import { AmbientBg, BrandLockup, Spinner } from '../components/Brand';
 import { easeOut, scaleIn } from '../lib/motion';
+import { useSEO } from '../hooks/useSEO';
 
 export default function ResetPassword() {
+  useSEO({
+    title: 'Reset Password | Agent API Gateway',
+    description: 'Reset your Agent API Gateway account password.',
+    canonical: 'https://agentapigw.dpdns.org/reset-password',
+  });
   const [params] = useSearchParams();
   const token = useMemo(() => params.get('token') || '', [params]);
   const [password, setPassword] = useState('');

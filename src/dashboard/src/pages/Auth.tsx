@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { useSEO } from '../hooks/useSEO';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { Mail, Eye, EyeOff, Lock, User, ArrowLeft } from 'lucide-react';
@@ -46,6 +47,13 @@ function isUnverifiedError(message: string): boolean {
 }
 
 export default function Auth() {
+  useSEO({
+    title: 'Sign In & Sign Up | Agent API Gateway',
+    description: 'Create a free account or sign in to manage API keys, view usage, and access billing for Agent API Gateway.',
+    keywords: 'sign in, sign up, create account, API gateway login, Agent API Gateway',
+    canonical: 'https://agentapigw.dpdns.org/login',
+  });
+
   const [mode, setMode] = useState<Mode>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
