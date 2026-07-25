@@ -28,6 +28,7 @@ import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { easeOut } from '../lib/motion';
 import { useSEO } from '../hooks/useSEO';
+import { useHealth } from '../hooks/useHealth';
 
 
 // ═══════════════════════════════════════════════════════════════════════════
