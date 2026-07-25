@@ -16,15 +16,16 @@ export const SEO: React.FC<SEOProps> = ({
   title,
   description,
   keywords = [],
-  ogImage = 'https://agentapigw.dpdns.org/og-image.jpg',
+  ogImage = 'https://agentapigw.dpdns.org/og-image.svg',
   ogType = 'website',
   canonicalUrl,
   noindex = false,
   structuredData,
 }) => {
   const location = useLocation();
-  const fullTitle = title.includes('Agent API Gateway') ? title : ${title} | Agent API Gateway;
-  const currentUrl = canonicalUrl || https://agentapigw.dpdns.org;
+  const fullTitle = title.includes('Agent API Gateway') ? title : `${title} | Agent API Gateway`;
+
+  const currentUrl = canonicalUrl || 'https://agentapigw.dpdns.org';
 
   useEffect(() => {
     // Update document title
@@ -33,7 +34,7 @@ export const SEO: React.FC<SEOProps> = ({
     // Update or create meta tags
     const updateMetaTag = (name: string, content: string, isProperty = false) => {
       const attribute = isProperty ? 'property' : 'name';
-      let element = document.querySelector(meta[=""]);
+      let element = document.querySelector(`meta[${attribute}="${name}"]`);
       if (!element) {
         element = document.createElement('meta');
         element.setAttribute(attribute, name);

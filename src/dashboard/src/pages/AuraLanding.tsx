@@ -27,6 +27,8 @@ import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationS
 import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { easeOut } from '../lib/motion';
+import { useSEO } from '../hooks/useSEO';
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Agent API Gateway — Landing
@@ -1599,6 +1601,13 @@ function Pricing() {
 // ─── Final CTA ───
 
 function FinalCTA() {
+  useSEO({
+    title: 'Structured Web Data Extraction for AI Agents | Agent API Gateway',
+    description: 'Extract structured JSON from any public URL. AI-powered schemas for product, article, and company data. REST API and MCP server.',
+    keywords: 'web extraction API, structured data extraction, AI agent API, MCP server, web scraper API',
+    ogImage: 'https://agentapigw.dpdns.org/og-image.svg',
+  });
+
   return (
     <section className="mx-auto max-w-6xl px-5 md:px-6 py-16 md:py-24">
       <Reveal>
@@ -1704,7 +1713,7 @@ function Landing() {
       className="landing-shell relative min-h-screen"
       style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
     >
-      {/* Structured data for SEO */}
+  // Structured data for SEO
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
