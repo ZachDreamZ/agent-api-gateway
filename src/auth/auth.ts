@@ -145,6 +145,8 @@ export const auth = betterAuth({
     // Persist OAuth state in Postgres (verification table) so deploys/restarts
     // mid-login and multi-instance don't drop the cookie-only state.
     storeStateStrategy: 'database',
+    // Encrypt OAuth access/refresh tokens at rest (AES-256-GCM).
+    encryptOAuthTokens: true,
     accountLinking: {
       enabled: true,
       // Trusted providers auto-link when the OAuth email matches an existing user.
@@ -169,6 +171,8 @@ export const auth = betterAuth({
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
+    // Re-auth required for sensitive actions (password change, email change) after 1 hour.
+    freshAge: 60 * 60,
     cookieCache: {
       enabled: true,
       maxAge: 60 * 5,
@@ -273,6 +277,16 @@ export const auth = betterAuth({
     ipAddress: {
       ipAddressHeaders: ['cf-connecting-ip', 'x-forwarded-for', 'x-real-ip'],
       disableIpTracking: false,
+      // Group IPv6 addresses by /64 subnet for rate-limit consistency.
+      ipv6Subnet: 64,
+    },
+    // Ensure non-blocking operations (email sends, audit logs) don't delay responses.
+    backgroundTasks: {
+      handler: (promise) => {
+        promise.catch((err) =>
+          console.error('[auth] background task failed:', err),
+        );
+      },
     },
   },
   // ─── Experimental features ───

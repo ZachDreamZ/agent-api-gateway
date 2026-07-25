@@ -2,7 +2,7 @@
   "version": 1,
   "loop": {
     "currentPhase": "verify",
-    "iteration": 43,
+    "iteration": 44,
     "startedAt": "2026-07-23T06:00:00Z",
     "lastAudit": "2026-07-25T02:52:00Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
@@ -176,6 +176,12 @@
         "description": "Enabled experimental.joins: true in Better Auth for 2x-3x faster single-query joins on /get-session, /get-organization, and related endpoints",
         "commit": "d7ec335",
         "timestamp": "2026-07-25T11:10:00Z"
+      },
+      {
+        "id": "security-patches-deps",
+        "description": "Security patches: react-router-dom 7.12.0\u21927.18.1, fast-uri fixed, MCP SDK nested @hono/node-server documented as not exploitable (no serveStatic/WebSocket usage)",
+        "commit": "c31a9d0",
+        "timestamp": "2026-07-25T04:30:00Z"
       }
     ],
     "pending": [
