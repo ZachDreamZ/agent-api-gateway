@@ -75,7 +75,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0"
+      className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0 cursor-pointer"
       style={{
         background: checked ? 'var(--color-accent-base)' : 'var(--color-border-default)',
       }}
