@@ -581,7 +581,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.05, ease: easeOut }}
             >
-              Structured web data for{' '}
+              Web data extraction API for{' '}
               <span className="text-gradient-signal">AI agents</span>.
             </motion.h1>
 
@@ -609,7 +609,7 @@ function Hero() {
                 className="btn btn-primary btn-shine"
                 style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
               >
-                Buy 1,000 credits for $1
+                Try it now - 1,000 credits for just $1
                 <ArrowRight className="w-4 h-4" />
               </a>
               <Link
@@ -617,7 +617,7 @@ function Hero() {
                 className="btn btn-secondary"
                 style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
               >
-                Start free (500 queries)
+                Start free with 500 queries
               </Link>
             </motion.div>
           </div>
@@ -692,8 +692,7 @@ function Quickstart() {
           First call in under a minute.
         </h2>
         <p className="text-sm max-w-lg mb-8" style={{ color: 'var(--color-text-secondary)' }}>
-          Create an account, mint a key in the dashboard, then hit <span className="text-mono text-xs">POST /v1/extract</span>.
-        </p>
+          Create an account, mint a key in the dashboard, then hit <span className="text-mono text-xs">POST /v1/extract</span>.</p>
       </Reveal>
 
       <Reveal delay={0.06}>
@@ -1494,7 +1493,7 @@ function Pricing() {
       <Reveal>
         <SectionLabel>Pricing</SectionLabel>
         <h2 className="text-display max-w-lg mb-3" style={{ color: 'var(--color-text-primary)' }}>
-          Start free (500 queries). Buy $1 credits for bursts. Subscribe for higher RPM.
+          Start free with 500 queries. Buy $1 credits for bursts. Subscribe for higher RPM.
         </h2>
         <p className="text-sm mb-10 max-w-xl" style={{ color: 'var(--color-text-secondary)' }}>
           Monthly plans set a steady allowance. Credit packs are one-time top-ups that stack on any plan and do not expire until used.
@@ -1615,10 +1614,10 @@ function FinalCTA() {
         <div className="cta-stage-glass px-6 py-14 md:px-12 md:py-20 text-center rounded-2xl">
           <div className="relative">
             <p className="text-eyebrow mb-4" style={{ color: 'var(--color-accent-base)' }}>
-              Ready when you are
+              Stop maintaining scrapers
             </p>
             <h2 className="text-display max-w-xl mx-auto" style={{ color: 'var(--color-text-primary)' }}>
-              Ship structured data without a scraper farm.
+              From URL to validated JSON in one API call.
             </h2>
             <p className="mt-4 text-sm max-w-md mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
               Create an account, mint a key, and call <span className="text-mono text-xs">/v1/extract</span>.
@@ -1663,7 +1662,7 @@ function Footer() {
       <footer className="relative z-10" style={{ borderTop: '1px solid var(--color-border-subtle)' }}>
       <div className="mx-auto max-w-6xl px-5 md:px-6 py-14 md:py-20 text-center">
         <p className="text-display-sm max-w-lg mx-auto mb-4" style={{ color: 'var(--color-text-primary)' }}>
-          Ship structured data without a scraper farm.
+          From URL to validated JSON in one API call.
         </p>
         <p className="text-xs max-w-sm mx-auto mb-8" style={{ color: 'var(--color-text-tertiary)' }}>
           Agent API Gateway — validated JSON from public pages. Built for agents, not scrapers.
