@@ -1,10 +1,10 @@
 {
   "version": 1,
   "loop": {
-    "currentPhase": "commit",
-    "iteration": 47,
+    "currentPhase": "verify",
+    "iteration": 48,
     "startedAt": "2026-07-23T06:00:00Z",
-    "lastAudit": "2026-07-25T02:52:00Z",
+    "lastAudit": "2026-08-22T23:16:44.519Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
   },
   "improvements": {
@@ -199,6 +199,12 @@
         "timestamp": "2026-07-25T14:38:13.5811650+08:00",
         "id": "seo-title-duplication-fix",
         "description": "Fixed duplicated '| Agent API Gateway' suffix in page titles across landing, auth, legal, not-found, and reset-password pages"
+      },
+      {
+        "id": "revamp-perf-a11y-seo",
+        "description": "Self-hosted fonts (no Google roundtrip), PNG og-image for social cards, fixed contrast tokens, invalid ol>div nesting, reduced-motion Reveal bug; removed placeholder GSC meta",
+        "commit": "c4f958e",
+        "timestamp": "2026-08-22T23:16:44.519Z"
       }
     ],
     "pending": [
