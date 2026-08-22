@@ -61,7 +61,7 @@ export function CookieConsent() {
               className="px-3 py-1.5 rounded text-xs font-medium transition-all"
               style={{
                 background: 'var(--color-accent-base)',
-                color: 'var(--color-surface)'
+                color: 'var(--color-bg-app)'
               }}
             >
               Accept
@@ -79,7 +79,7 @@ export function CookieConsent() {
             <a
               href="/privacy"
               className="px-3 py-1.5 text-xs font-medium transition-all"
-              style={{ color: 'var(--color-text-tertiary)' }}
+              style={{ color: 'var(--color-text-secondary)' }}
             >
               Learn more
             </a>

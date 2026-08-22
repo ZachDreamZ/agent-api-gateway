@@ -314,7 +314,7 @@ function SchemaPlayground() {
                 onClick={() => { setSchema(key); setResult(null); setError(null); }}
                 className="relative rounded px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer"
                 style={{
-                  color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)',
+                  color: isActive ? 'var(--color-accent-base)' : 'var(--color-text-secondary)',
                   border: `1px solid ${isActive ? 'oklch(0.74 0.12 195 / 0.3)' : 'transparent'}`,
                 }}
               >
@@ -574,16 +574,13 @@ function Hero() {
               <span className="eyebrow">URL + schema → validated JSON</span>
             </motion.div>
 
-            <motion.h1
+            <h1
               className="text-display-lg"
               style={{ color: 'var(--color-text-primary)' }}
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.05, ease: easeOut }}
             >
               Web data extraction API for{' '}
               <span className="text-gradient-signal">AI agents</span>.
-            </motion.h1>
+            </h1>
 
             <motion.p
               className="mt-5 max-w-md text-body"
@@ -654,7 +651,7 @@ function CapabilityMarquee() {
     <div className="marquee-track mb-4" aria-hidden>
       <div className="marquee-inner">
         {loop.map((label, i) => (
-          <span key={`${label}-${i}`} className="marquee-item">
+          <span key={`${label}-${i}`} className="marquee-item" aria-hidden="true">
             <span>//</span>
             {label}
           </span>
@@ -821,10 +818,10 @@ function HowItWorks() {
           Three steps from URL to usable fields.
         </h2>
       </Reveal>
-      <ol className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         {steps.map((s, i) => (
-          <Reveal key={s.n} delay={i * 0.08}>
-            <li className="surface surface-hover surface-glow lift-card p-6 h-full list-none">
+          <Reveal key={s.n} delay={i * 0.08} className="h-full">
+            <div className="surface surface-hover surface-glow lift-card p-6 h-full list-none">
               <span className="text-mono text-xs font-medium tabular-nums" style={{ color: 'var(--color-accent-base)' }}>
                 {s.n}
               </span>
@@ -834,10 +831,10 @@ function HowItWorks() {
               <p className="mt-2 text-body" style={{ color: 'var(--color-text-secondary)' }}>
                 {s.body}
               </p>
-            </li>
+            </div>
           </Reveal>
         ))}
-      </ol>
+      </div>
     </section>
   );
 }

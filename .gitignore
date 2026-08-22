@@ -22,6 +22,8 @@ set-env*
 
 pooltest.mjs
 *test*.local.*
+.lighthouse-*.json
+.fonts-tmp.css
 
 # limit-break sidecar (clone manually from https://github.com/ullamua/limit-break)
 /limitbreak/
