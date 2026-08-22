@@ -609,7 +609,7 @@ function Hero() {
                 className="btn btn-primary btn-shine"
                 style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
               >
-                Try it now - 1,000 credits for just $1
+                Buy 1,000 credits for $1
                 <ArrowRight className="w-4 h-4" />
               </a>
               <Link
