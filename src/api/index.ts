@@ -61,8 +61,10 @@ function serveStatic(c: any, filePath: string) {
   };
   // HTML shell must not be cached long — deploys would otherwise leave users on stale SPA
   if (ext === '.html' || safeRel === 'index.html' || safeRel === 'sw.js' || safeRel === 'manifest.json') {
-    headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
-  } else if (safeRel.startsWith('assets/') || safeRel.startsWith('brand/')) {
+    // Storable but always revalidated: fresh deploys still propagate, and the
+    // page stays eligible for back/forward cache (no-store would disable it).
+    headers['Cache-Control'] = 'public, max-age=0, must-revalidate';
+  } else if (safeRel.startsWith('assets/') || safeRel.startsWith('brand/') || safeRel.startsWith('fonts/') || safeRel === 'og-image.png') {
     headers['Cache-Control'] = 'public, max-age=31536000, immutable';
   }
   return c.body(content, 200, headers);

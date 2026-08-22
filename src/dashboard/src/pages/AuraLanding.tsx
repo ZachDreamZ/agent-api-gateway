@@ -1711,10 +1711,10 @@ function Footer() {
         <p className="text-display-sm max-w-lg mx-auto mb-4" style={{ color: 'var(--color-text-primary)' }}>
           From URL to validated JSON in one API call.
         </p>
-        <p className="text-xs max-w-sm mx-auto mb-8" style={{ color: 'var(--color-text-tertiary)' }}>
+        <p className="text-xs max-w-sm mx-auto mb-8" style={{ color: 'var(--color-text-secondary)' }}>
           Agent API Gateway — validated JSON from public pages. Built for agents, not scrapers.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-tertiary)' }}>
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
           <Link to="/docs" className="link">Docs</Link>
           <Link to="/blog" className="link">Blog</Link>
           <Link to="/agents" className="link">For agents</Link>

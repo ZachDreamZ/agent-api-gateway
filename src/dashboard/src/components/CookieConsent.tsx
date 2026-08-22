@@ -81,7 +81,7 @@ export function CookieConsent() {
               className="px-3 py-1.5 text-xs font-medium transition-all"
               style={{ color: 'var(--color-text-secondary)' }}
             >
-              Learn more
+              Read our privacy policy
             </a>
           </div>
         </div>

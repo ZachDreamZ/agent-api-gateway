@@ -168,7 +168,7 @@ export function BrandLockup({
         to={to}
         onClick={onClick}
         className={`inline-flex items-center gap-2.5 min-w-0 ${className}`}
-        aria-label={secondary ? `${primary} by ${secondary}` : primary}
+        aria-label={secondary ? `${primary} — go to homepage` : `${primary} — go to homepage`}
       >
         {content}
       </Link>
