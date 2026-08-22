@@ -83,6 +83,8 @@ app.use('/*', async (c, next) => {
     path === '/health' ||
     path.startsWith('/assets/') ||
     path.startsWith('/brand/') ||
+    path.startsWith('/fonts/') ||
+    path === '/og-image.png' ||
     path === '/favicon.ico' ||
     path === '/favicon.svg' ||
     path === '/sw.js' ||
@@ -355,6 +357,8 @@ app.get('/logo-mark.svg', (c) => serveStatic(c, 'logo-mark.svg') || c.json({ err
 app.get('/logo-product.svg', (c) => serveStatic(c, 'logo-product.svg') || c.json({ error: 'Not found' }, 404));
 app.get('/brand/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
 app.get('/assets/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
+app.get('/fonts/*', (c) => serveStatic(c, c.req.path) || c.json({ error: 'Not found' }, 404));
+app.get('/og-image.png', (c) => serveStatic(c, 'og-image.png') || c.json({ error: 'Not found' }, 404));
 app.get('/sw.js', (c) => serveStatic(c, 'sw.js') || c.json({ error: 'Not found' }, 404));
 app.get('/manifest.json', (c) => serveStatic(c, 'manifest.json') || c.json({ error: 'Not found' }, 404));
 
