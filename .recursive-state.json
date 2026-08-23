@@ -405,14 +405,14 @@
     "deployStatus": "live",
     "commitsThisSession": 37,
     "lighthouse": {
-      "performance": 89,
+      "performance": 90,
       "accessibility": 100,
       "bestPractices": 100,
       "seo": 100,
-      "lcp": "2.7s",
-      "cls": "0.030",
-      "measuredAt": "2026-08-23T06:20:00.000Z",
-      "sampleRange": "89-93 performance across repeated hosted runs"
+      "lcp": "2.6s",
+      "cls": "0.032",
+      "measuredAt": "2026-08-23T07:00:00.000Z",
+      "sampleRange": "88-93 performance across repeated hosted runs"
     }
   },
   "iteration": 61
