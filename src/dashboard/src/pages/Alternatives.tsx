@@ -147,7 +147,7 @@ function CellValue({ value }: { value: Cell }) {
 
 function AlternativeDetail({ item }: { item: Alternative }) {
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
       <div className="relative z-10 mx-auto max-w-3xl px-5 py-12 md:py-16">
         <BrandLockup variant="product" showOrgSubline to="/" />
@@ -230,7 +230,7 @@ function AlternativeDetail({ item }: { item: Alternative }) {
           <Link to="/pricing" className="link-accent">Pricing</Link>
         </p>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -253,19 +253,19 @@ export default function Alternatives() {
 
   if (slug && !item) {
     return (
-      <div className="relative min-h-screen flex items-center justify-center px-5" style={{ background: 'var(--color-bg-app)' }}>
+      <main id="start" tabIndex={-1} className="relative min-h-screen flex items-center justify-center px-5" style={{ background: 'var(--color-bg-app)' }}>
         <div className="text-center">
           <h1 className="text-display-sm mb-3">Comparison not found</h1>
           <Link to="/alternatives" className="btn btn-primary text-sm">View all alternatives</Link>
         </div>
-      </div>
+      </main>
     );
   }
 
   if (item) return <AlternativeDetail item={item} />;
 
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
       <div className="relative z-10 mx-auto max-w-3xl px-5 py-12 md:py-16">
         <BrandLockup variant="product" showOrgSubline to="/" />
@@ -294,6 +294,6 @@ export default function Alternatives() {
           <Link to="/docs" className="btn btn-ghost text-sm">Docs</Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

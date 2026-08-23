@@ -123,7 +123,7 @@ const ICONS = {
 function UseCaseDetail({ item }: { item: UseCase }) {
   const Icon = ICONS[item.icon];
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
       <div className="relative z-10 mx-auto max-w-3xl px-5 py-12 md:py-16">
         <BrandLockup variant="product" showOrgSubline to="/" />
@@ -172,7 +172,7 @@ function UseCaseDetail({ item }: { item: UseCase }) {
               <p className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
                 Request: <code>POST /v1/extract</code> with <code>{`{"url": "https://example.com/product", "schema": "product"}`}</code>
               </p>
-              <pre className="code-block rounded-lg p-4 text-xs leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
+              <pre role="region" tabIndex={0} aria-label="Example product extraction JSON" className="code-block rounded-lg p-4 text-xs leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
 {`{
   "name": "Wireless Noise-Cancelling Headphones Pro",
   "brand": "Sony",
@@ -194,7 +194,7 @@ function UseCaseDetail({ item }: { item: UseCase }) {
               <p className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
                 Drop this into your agent system prompt to give it price-extraction capability:
               </p>
-              <pre className="code-block rounded-lg p-4 text-xs leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
+              <pre role="region" tabIndex={0} aria-label="Agent price extraction prompt template" className="code-block rounded-lg p-4 text-xs leading-relaxed overflow-x-auto" style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-family-mono)' }}>
 {`You have access to a structured extraction tool. When the user asks for product details from a URL:
 1. Call the \`extract_product\` tool with the product URL
 2. The tool returns validated JSON with: name, brand, price, currency, in_stock, rating, review_count, description, image, specs, availability
@@ -230,7 +230,7 @@ function UseCaseDetail({ item }: { item: UseCase }) {
           <Link to="/" className="link-accent">Home</Link>
         </p>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -253,19 +253,19 @@ export default function UseCases() {
 
   if (slug && !item) {
     return (
-      <div className="relative min-h-screen flex items-center justify-center px-5" style={{ background: 'var(--color-bg-app)' }}>
+      <main id="start" tabIndex={-1} className="relative min-h-screen flex items-center justify-center px-5" style={{ background: 'var(--color-bg-app)' }}>
         <div className="text-center">
           <h1 className="text-display-sm mb-3">Use case not found</h1>
           <Link to="/use-cases" className="btn btn-primary text-sm">View use cases</Link>
         </div>
-      </div>
+      </main>
     );
   }
 
   if (item) return <UseCaseDetail item={item} />;
 
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
       <div className="relative z-10 mx-auto max-w-3xl px-5 py-12 md:py-16">
         <BrandLockup variant="product" showOrgSubline to="/" />
@@ -297,7 +297,7 @@ export default function UseCases() {
           <Link to="/mcp" className="btn btn-ghost text-sm">MCP</Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

@@ -41,13 +41,13 @@ export function CookieConsent() {
       <div className="flex items-start gap-3">
         <Cookie size={20} style={{ color: 'var(--color-accent-base)', flexShrink: 0, marginTop: 2 }} />
         <div className="flex-1 pr-6">
-          <h3
+          <h2
             id="cookie-title"
             className="text-sm font-semibold mb-1"
             style={{ color: 'var(--color-text-primary)' }}
           >
             Cookie Notice
-          </h3>
+          </h2>
           <p
             id="cookie-desc"
             className="text-xs leading-relaxed mb-3"
