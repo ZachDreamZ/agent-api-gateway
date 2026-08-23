@@ -358,7 +358,7 @@
       {
         "id": "lighthouse-a11y-font-pass",
         "description": "Fixed invalid hero ARIA labeling, brand accessible-name mismatch, and font-swap layout shifts with semantic screen-reader text and critical font preloads",
-        "commit": "PENDING",
+        "commit": "22cf20b",
         "timestamp": "2026-08-23T05:30:00.000Z"
       }
     ],
@@ -381,13 +381,13 @@
     "deployStatus": "live",
     "commitsThisSession": 37,
     "lighthouse": {
-      "performance": 91,
+      "performance": 93,
       "accessibility": 100,
       "bestPractices": 100,
       "seo": 100,
-      "lcp": "2.3s",
-      "cls": "0.004",
-      "measuredAt": "2026-08-23T01:21:37.323Z"
+      "lcp": "2.6s",
+      "cls": "0.030",
+      "measuredAt": "2026-08-23T05:45:00.000Z"
     }
   },
   "iteration": 58
