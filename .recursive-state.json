@@ -348,6 +348,12 @@
         "description": "Removed a bare JSX comment that rendered as visible // Structured data for SEO text above the landing hero",
         "commit": "7072a32",
         "timestamp": "2026-08-23T04:10:00.000Z"
+      },
+      {
+        "id": "react-bits-blur-hero",
+        "description": "Added a local React Bits-inspired BlurText hero reveal with semantic text and reduced-motion support; verified desktop/mobile geometry and no browser errors",
+        "commit": "288037d",
+        "timestamp": "2026-08-23T05:00:00.000Z"
       }
     ],
     "pending": [
@@ -378,5 +384,5 @@
       "measuredAt": "2026-08-23T01:21:37.323Z"
     }
   },
-    "iteration": 56
+  "iteration": 57
 }
