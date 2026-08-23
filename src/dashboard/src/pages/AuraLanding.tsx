@@ -67,7 +67,7 @@ function Navbar() {
 
   return (
     <header className="nav-float">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between" aria-label="Primary">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between py-3" aria-label="Primary">
         <BrandLockup variant="product" showOrgSubline to="/" />
 
         <div className="hidden md:flex items-center gap-4 lg:gap-5">
@@ -603,16 +603,14 @@ function Hero() {
             >
               <a
                 href="/buy?sku=credits_1k"
-                className="btn btn-primary btn-shine"
-                style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
+                className="btn btn-primary btn-shine btn-lg"
               >
                 Buy 1,000 credits for $1
                 <ArrowRight className="w-4 h-4" />
               </a>
               <Link
                 to="/login"
-                className="btn btn-secondary"
-                style={{ padding: '0.8rem 1.6rem', borderRadius: '6px' }}
+                className="btn btn-secondary btn-lg"
               >
                 Start free with 500 queries
               </Link>
@@ -1714,7 +1712,7 @@ function Footer() {
         <p className="text-xs max-w-sm mx-auto mb-8" style={{ color: 'var(--color-text-secondary)' }}>
           Agent API Gateway — validated JSON from public pages. Built for agents, not scrapers.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
           <Link to="/docs" className="link">Docs</Link>
           <Link to="/blog" className="link">Blog</Link>
           <Link to="/agents" className="link">For agents</Link>
@@ -1748,7 +1746,9 @@ function Footer() {
         className="mx-auto max-w-6xl px-5 md:px-6 pb-8 text-center text-caption"
         style={{ color: 'var(--color-text-disabled)' }}
       >
-        © {new Date().getFullYear()} NexusCore · Agent API Gateway · agentapigw.dpdns.org
+        <span>© {new Date().getFullYear()} </span>
+        <span className="brand-wordmark">NexusCore</span>
+        <span> · Agent API Gateway · agentapigw.dpdns.org</span>
       </div>
     </footer>
   );
