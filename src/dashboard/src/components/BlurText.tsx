@@ -25,23 +25,20 @@ export function BlurText({
 
   return (
     <span className={className}>
-      <span className="sr-only">{value}</span>
-      <span aria-hidden="true">
-        {words.map((word, index) => (
-          <span key={`${word}-${index}`} className="inline-block">
-            <motion.span
-              className="inline-block"
-              // Keep the LCP candidate painted immediately; animate blur and position only.
-              initial={{ opacity: 1, filter: 'blur(8px)', y: 8 }}
-              animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-              transition={{ duration: 0.42, delay: delay + index * step, ease: easeOut }}
-            >
-              {word}
-            </motion.span>
-            {index < words.length - 1 ? '\u00a0' : null}
-          </span>
-        ))}
-      </span>
+      {words.map((word, index) => (
+        <span key={`${word}-${index}`} className="inline-block">
+          <motion.span
+            className="inline-block"
+            // Keep the LCP candidate painted immediately; animate blur and position only.
+            initial={{ opacity: 1, filter: 'blur(8px)', y: 8 }}
+            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+            transition={{ duration: 0.42, delay: delay + index * step, ease: easeOut }}
+          >
+            {word}
+          </motion.span>
+          {index < words.length - 1 ? '\u00a0' : null}
+        </span>
+      ))}
     </span>
   );
 }
