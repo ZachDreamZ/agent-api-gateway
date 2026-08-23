@@ -39,6 +39,7 @@ export { Accordion } from './Accordion';
 export { Tabs } from './Tabs';
 export { ShareButton } from './ShareButton';
 export { LiveExtractDemo } from './LiveExtractDemo';
+export { BlurText } from './BlurText';
 
 // Landing Page Components
 export { Hero } from './Hero';

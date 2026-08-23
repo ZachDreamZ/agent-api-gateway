@@ -26,6 +26,7 @@ import { BackToTop } from '../components/BackToTop';
 import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData } from '../components';
 import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
+import { BlurText } from '../components/BlurText';
 import { easeOut } from '../lib/motion';
 import { useSEO } from '../hooks/useSEO';
 import { useHealth } from '../hooks/useHealth';
@@ -571,7 +572,7 @@ function Hero() {
               className="text-display-lg"
               style={{ color: 'var(--color-text-primary)' }}
             >
-              Web data extraction API for{' '}
+              <BlurText text="Web data extraction API for" />{' '}
               <span className="text-gradient-signal">AI agents</span>.
             </h1>
 
