@@ -564,9 +564,9 @@ function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease: easeOut }}
+              transition={{ duration: 0.18, ease: easeOut }}
               className="mb-5 inline-flex items-center gap-2 px-3 py-1 text-xs"
               style={{ color: 'var(--color-accent-base)' }}
             >
@@ -587,7 +587,7 @@ function Hero() {
               style={{ color: 'var(--color-text-secondary)' }}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.12, ease: easeOut }}
+              transition={{ duration: 0.22, delay: 0.05, ease: easeOut }}
             >
               Send a public page URL and a schema type. Get typed fields back:
               product, article, or company. No scraper farm to maintain.
