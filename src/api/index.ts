@@ -98,6 +98,16 @@ function injectMeta(html: string, path: string): string {
   return out;
 }
 
+function serveSpa(c: any) {
+  const indexPath = resolve(DIST, 'index.html');
+  if (!existsSync(indexPath)) return null;
+  const html = injectMeta(readFileSync(indexPath, 'utf8'), c.req.path);
+  return c.body(html, 200, {
+    'Content-Type': 'text/html; charset=utf-8',
+    'Cache-Control': 'public, max-age=0, must-revalidate',
+  });
+}
+
 // ─── App ───
 
 const app = new Hono();
@@ -367,20 +377,20 @@ app.all('/api-key/*', (c) => auth.handler(c.req.raw));
 
 // ─── Serve frontend for non-API routes ───
 
-app.get('/', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/docs', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/agents', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/for-agents', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/login', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/auth', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/verify-email', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/reset-password', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/privacy', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/terms', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/aup', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/acceptable-use', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/dashboard', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
-app.get('/dashboard/*', (c) => serveStatic(c, 'index.html') || c.json({ error: 'Frontend not built' }, 503));
+app.get('/', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/docs', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/agents', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/for-agents', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/login', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/auth', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/verify-email', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/reset-password', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/privacy', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/terms', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/aup', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/acceptable-use', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/dashboard', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
+app.get('/dashboard/*', (c) => serveSpa(c) || c.json({ error: 'Frontend not built' }, 503));
 app.get('/favicon.ico', (c) => serveStatic(c, 'favicon.svg') || serveStatic(c, 'favicon.ico') || c.newResponse(null, 204));
 app.get('/favicon.svg', (c) => serveStatic(c, 'favicon.svg') || c.newResponse(null, 204));
 app.get('/logo-mark.svg', (c) => serveStatic(c, 'logo-mark.svg') || c.json({ error: 'Not found' }, 404));
@@ -454,11 +464,7 @@ app.route('/webhooks/polar', webhookApp);
 app.get('/blog/rss.xml', (c) => serveStatic(c, 'blog/rss.xml') || c.text('Not found', 404));
 app.get('/blog/feed.json', (c) => serveStatic(c, 'blog/feed.json') || c.text('Not found', 404));
 app.get('/*', (c) => {
-  const indexPath = resolve(DIST, 'index.html');
-  if (!existsSync(indexPath)) return c.json({ error: `Not found: GET ${c.req.path}` }, 404);
-  const raw = readFileSync(indexPath, 'utf8');
-  const html = injectMeta(raw, c.req.path);
-  return c.body(html, 200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=0, must-revalidate' });
+  return serveSpa(c) || c.json({ error: `Not found: GET ${c.req.path}` }, 404);
 });
 
 // ─── 404 (non-GET methods) ───
