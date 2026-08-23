@@ -4,8 +4,8 @@
     "currentPhase": "verify",
     "iteration": 63,
     "startedAt": "2026-07-23T06:00:00Z",
-    "lastAudit": "2026-08-23T02:17:29.414Z",
-    "lastDeployVerification": "2026-08-23T08:35:00Z"
+    "lastAudit": "2026-08-23T09:12:00Z",
+    "lastDeployVerification": "2026-08-23T09:12:00Z"
   },
   "improvements": {
     "completed": [
@@ -402,6 +402,24 @@
         "description": "Corrected the 256px PNG app icon declaration and verified the hosted head serves both icon types correctly",
         "commit": "8d8035e",
         "timestamp": "2026-08-23T08:35:00.000Z"
+      },
+      {
+        "id": "route-metadata-canonical-pass",
+        "description": "Added route-aware titles, descriptions, Open Graph URLs, and canonical URLs for crawler-facing pages",
+        "commit": "52c24e2",
+        "timestamp": "2026-08-23T08:45:00.000Z"
+      },
+      {
+        "id": "seo-route-a11y-pass",
+        "description": "Added landmarks, skip targets, heading-order cleanup, and keyboard access for code regions across SEO pages",
+        "commit": "a819814",
+        "timestamp": "2026-08-23T08:55:00.000Z"
+      },
+      {
+        "id": "docs-pricing-a11y-pass",
+        "description": "Made docs tables and pricing comparisons keyboard-scrollable, added page landmarks, and restored pricing badge contrast",
+        "commit": "415ee2f",
+        "timestamp": "2026-08-23T09:05:00.000Z"
       }
     ],
     "pending": [
@@ -420,7 +438,7 @@
     "testsPasssing": 27,
     "typescriptErrors": 0,
     "deployStatus": "live",
-    "commitsThisSession": 38,
+    "commitsThisSession": 41,
     "lighthouse": {
       "performance": 93,
       "accessibility": 100,
@@ -432,5 +450,5 @@
       "sampleRange": "88-93 performance across repeated hosted runs"
     }
   },
-  "iteration": 63
+  "iteration": 64
 }
