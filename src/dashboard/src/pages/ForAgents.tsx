@@ -23,7 +23,7 @@ export default function ForAgents() {
   });
 
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
       <div className="relative z-10 mx-auto max-w-3xl px-5 py-14 md:py-20">
         <BrandLockup variant="product" showOrgSubline to="/" />
@@ -69,7 +69,7 @@ export default function ForAgents() {
         </ul>
 
         <h2 className="text-title mb-3">Extract example</h2>
-        <pre className="code-block p-4 mb-8 text-xs overflow-x-auto">
+        <pre role="region" tabIndex={0} aria-label="Machine-readable agent discovery files" className="code-block p-4 mb-8 text-xs overflow-x-auto">
 {`curl -sS -X POST https://agentapigw.dpdns.org/v1/extract \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
@@ -121,6 +121,6 @@ export default function ForAgents() {
           support@agentapigw.dpdns.org
         </p>
       </div>
-    </div>
+    </main>
   );
 }

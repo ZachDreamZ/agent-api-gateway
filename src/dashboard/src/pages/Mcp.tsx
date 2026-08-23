@@ -135,7 +135,7 @@ function CodeBlock({ code, lang }: { code: string; lang: string }) {
         </span>
         <CopyButton text={code} />
       </div>
-      <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
+      <pre tabIndex={0} className="overflow-x-auto p-4 text-sm leading-relaxed">
         <code style={{ color: 'var(--color-text-secondary)' }}>{code}</code>
       </pre>
     </div>
@@ -152,7 +152,7 @@ export default function Mcp() {
   });
 
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-5 py-12 md:py-16">
@@ -413,7 +413,7 @@ export default function Mcp() {
           support@agentapigw.dpdns.org
         </p>
       </div>
-    </div>
+    </main>
   );
 }
 

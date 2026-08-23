@@ -102,7 +102,7 @@ export default function Pricing() {
   });
 
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
       <div className="relative z-10 mx-auto max-w-3xl px-5 py-12 md:py-16">
         <BrandLockup variant="product" showOrgSubline to="/" />
@@ -177,7 +177,7 @@ export default function Pricing() {
             <span>Monthly</span>
             <Toggle checked={annual} onChange={setAnnual} />
             <span style={{ color: annual ? 'var(--color-accent-base)' : 'var(--color-text-tertiary)' }}>Annual</span>
-            <span className="badge badge-active text-[10px]" style={annual ? {} : { opacity: 0.4 }}>Save 20%</span>
+            <span className="badge badge-active text-[10px]" style={annual ? {} : { color: 'var(--color-text-secondary)', background: 'var(--color-bg-elevated)' }}>Save 20%</span>
           </label>
         </div>
         <p className="text-sm mb-3" style={{ color: 'var(--color-text-tertiary)' }}>
@@ -233,7 +233,7 @@ export default function Pricing() {
           <p className="text-sm mb-4" style={{ color: 'var(--color-text-tertiary)' }}>
             See how Agent API Gateway stacks up against popular alternatives.
           </p>
-          <div className="overflow-x-auto">
+          <div tabIndex={0} className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
@@ -305,6 +305,6 @@ export default function Pricing() {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

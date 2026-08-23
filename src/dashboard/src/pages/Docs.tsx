@@ -59,7 +59,7 @@ function Code({ children, lang }: { children: string; lang?: string }) {
           <CopyButton text={code} />
         </div>
       )}
-      <pre className="overflow-x-auto p-4 text-sm leading-relaxed">
+      <pre tabIndex={0} className="overflow-x-auto p-4 text-sm leading-relaxed">
         <code style={{ color: 'var(--color-text-secondary)' }}>{code}</code>
       </pre>
     </div>
@@ -488,7 +488,7 @@ export default function Docs() {
   }, []);
 
   return (
-    <div className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
+    <main id="start" tabIndex={-1} className="relative min-h-screen" style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}>
       <AmbientBg intensity="subtle" />
       <MobileHeader onMenuOpen={() => setMobileMenuOpen(true)} />
       <MobileSidebar open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} activeSection={activeSection} />
@@ -499,7 +499,7 @@ export default function Docs() {
         </div>
       </div>
 
-      <main className="relative z-10 mx-auto min-h-screen px-6 pt-20 pb-16 lg:pl-64 lg:pr-8 lg:pt-12 docs-body" style={{ maxWidth: '72rem' }}>
+      <div className="relative z-10 mx-auto min-h-screen px-6 pt-20 pb-16 lg:pl-64 lg:pr-8 lg:pt-12 docs-body" style={{ maxWidth: '72rem' }}>
         <Link to="/" className="mb-6 inline-flex items-center gap-1 text-sm link lg:hidden" style={{ color: 'var(--color-text-tertiary)' }}>
           ← Home
         </Link>
@@ -581,7 +581,7 @@ export default function Docs() {
         <Section id="schemas" title="Extraction Schemas">
           <Para>Each schema returns a structured JSON object matching the page type. Fields are nullable — if a field cannot be extracted, it returns <code className="code-inline">null</code>.</Para>
 
-          <div className="table-wrap">
+          <div tabIndex={0} className="table-wrap">
             <table>
               <thead>
                 <tr>
@@ -616,7 +616,7 @@ export default function Docs() {
           <Para>Extract structured data from any public URL. Returns the schema-matched fields plus usage metadata.</Para>
 
           <SubSection title="Request Body">
-            <div className="table-wrap">
+            <div tabIndex={0} className="table-wrap">
               <table>
                 <thead>
                   <tr>
@@ -779,7 +779,7 @@ export default function Docs() {
           </div>
 
           <SubSection title="Tools">
-            <div className="table-wrap">
+            <div tabIndex={0} className="table-wrap">
               <table>
                 <thead>
                   <tr>
@@ -908,7 +908,7 @@ print(data['data']['title'])`}
         <Section id="errors" title="Error Handling">
           <Para>The API uses standard HTTP status codes. Every error response includes a JSON body with an <code className="code-inline">error</code> field.</Para>
 
-          <div className="table-wrap">
+          <div tabIndex={0} className="table-wrap">
             <table>
               <thead>
                 <tr>
@@ -956,7 +956,7 @@ print(data['data']['title'])`}
             Exceeding remaining credits or RPM returns a <code className="code-inline">429</code> response.
           </Para>
 
-          <div className="table-wrap">
+          <div tabIndex={0} className="table-wrap">
             <table>
               <thead>
                 <tr>
@@ -1000,7 +1000,7 @@ print(data['data']['title'])`}
             </table>
           </div>
 
-          <div className="mt-6 table-wrap">
+          <div tabIndex={0} className="mt-6 table-wrap">
             <table>
               <thead>
                 <tr>
@@ -1091,7 +1091,7 @@ print(data['data']['title'])`}
             <li><Link to="/aup" className="link-accent">Acceptable Use Policy</Link></li>
           </ul>
         </Section>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
