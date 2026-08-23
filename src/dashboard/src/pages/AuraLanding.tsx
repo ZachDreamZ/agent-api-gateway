@@ -403,7 +403,7 @@ function SchemaPlayground() {
               </pre>
             )}
           </div>
-        </motion.div>
+              </motion.div>
       </AnimatePresence>
 
       {result && (
@@ -559,16 +559,13 @@ function Hero() {
       <div className="relative mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.18, ease: easeOut }}
+            <div
               className="mb-5 inline-flex items-center gap-2 px-3 py-1 text-xs"
               style={{ color: 'var(--color-accent-base)' }}
             >
               <span className="signal-dot signal-dot-ok" />
               <span className="eyebrow">URL + schema → validated JSON</span>
-            </motion.div>
+            </div>
 
             <h1
               className="text-display-lg"
@@ -578,8 +575,7 @@ function Hero() {
               <span className="text-gradient-signal">AI agents</span>.
             </h1>
 
-            <motion.p
-              className="mt-5 max-w-md text-body"
+            <p className="mt-5 max-w-md text-body"
               style={{ color: 'var(--color-text-secondary)' }}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -587,16 +583,11 @@ function Hero() {
             >
               Send a public page URL and a schema type. Get typed fields back:
               product, article, or company. No scraper farm to maintain.
-            </motion.p>
+            </p>
 
             <SocialProof />
 
-                        <motion.div
-              className="mt-8 flex flex-col sm:flex-row gap-3"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.18, ease: easeOut }}
-            >
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <a
                 href="/buy?sku=credits_1k"
                 className="btn btn-primary btn-shine btn-lg"
@@ -610,19 +601,14 @@ function Hero() {
               >
                 Start free with 500 queries
               </Link>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.65, delay: 0.14, ease: easeOut }}
-            className="hero-float-card"
-          >
+          <div className="hero-float-card" style={{ animation: 'none' }}>
             <div className="relative z-[1]">
               <SchemaPlayground />
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
