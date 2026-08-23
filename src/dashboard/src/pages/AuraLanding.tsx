@@ -1742,7 +1742,7 @@ function Landing() {
       className="landing-shell relative min-h-screen"
       style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
     >
-  // Structured data for SEO
+      {/* Structured data for SEO */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
