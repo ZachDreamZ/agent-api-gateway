@@ -40,6 +40,7 @@ export { Tabs } from './Tabs';
 export { ShareButton } from './ShareButton';
 export { LiveExtractDemo } from './LiveExtractDemo';
 export { BlurText } from './BlurText';
+export { SpotlightCard } from './SpotlightCard';
 
 // Landing Page Components
 export { Hero } from './Hero';

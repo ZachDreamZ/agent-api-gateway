@@ -27,6 +27,7 @@ import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationS
 import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { BlurText } from '../components/BlurText';
+import { SpotlightCard } from '../components/SpotlightCard';
 import { easeOut } from '../lib/motion';
 import { useSEO } from '../hooks/useSEO';
 import { useHealth } from '../hooks/useHealth';
@@ -802,7 +803,7 @@ function HowItWorks() {
       <div className="grid md:grid-cols-3 gap-6">
         {steps.map((s, i) => (
           <Reveal key={s.n} delay={i * 0.08} className="h-full">
-            <div className="surface surface-hover surface-glow lift-card p-6 h-full list-none">
+            <SpotlightCard className="surface surface-hover surface-glow lift-card p-6 h-full list-none">
               <span className="text-mono text-xs font-medium tabular-nums" style={{ color: 'var(--color-accent-base)' }}>
                 {s.n}
               </span>
@@ -812,7 +813,7 @@ function HowItWorks() {
               <p className="mt-2 text-body" style={{ color: 'var(--color-text-secondary)' }}>
                 {s.body}
               </p>
-            </div>
+            </SpotlightCard>
           </Reveal>
         ))}
       </div>
@@ -905,7 +906,7 @@ function Features() {
           const Icon = f.icon;
           return (
             <Reveal key={f.title} delay={i * 0.06}>
-              <div className="surface surface-hover surface-glow lift-card p-6 h-full">
+              <SpotlightCard className="surface surface-hover surface-glow lift-card p-6 h-full">
                 <div
                   className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg"
                   style={{
@@ -921,7 +922,7 @@ function Features() {
                 <p className="mt-2 text-body" style={{ color: 'var(--color-text-secondary)' }}>
                   {f.body}
                 </p>
-              </div>
+              </SpotlightCard>
             </Reveal>
           );
         })}
