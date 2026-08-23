@@ -424,6 +424,7 @@ app.route('/webhooks/polar', webhookApp);
 // Must come after all API routes but before JSON 404, so deep-links like
 // /docs/overview return the SPA shell. API routes still get proper 404 JSON.
 app.get('/blog/rss.xml', (c) => serveStatic(c, 'blog/rss.xml') || c.text('Not found', 404));
+app.get('/blog/feed.json', (c) => serveStatic(c, 'blog/feed.json') || c.text('Not found', 404));
 app.get('/*', (c) =>
   serveStatic(c, 'index.html') || c.json({ error: `Not found: GET ${c.req.path}` }, 404),
 );
