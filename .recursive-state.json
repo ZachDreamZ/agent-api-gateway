@@ -4,8 +4,8 @@
     "currentPhase": "verify",
     "iteration": 63,
     "startedAt": "2026-07-23T06:00:00Z",
-    "lastAudit": "2026-08-23T09:12:00Z",
-    "lastDeployVerification": "2026-08-23T09:12:00Z"
+    "lastAudit": "2026-08-23T09:40:00Z",
+    "lastDeployVerification": "2026-08-23T09:40:00Z"
   },
   "improvements": {
     "completed": [
@@ -420,6 +420,12 @@
         "description": "Made docs tables and pricing comparisons keyboard-scrollable, added page landmarks, and restored pricing badge contrast",
         "commit": "415ee2f",
         "timestamp": "2026-08-23T09:05:00.000Z"
+      },
+      {
+        "id": "blog-content-a11y-pass",
+        "description": "Added a visible global skip link, main landmarks for blog routes, complete Markdown table rows, and semantic list wrappers",
+        "commit": "67bb823",
+        "timestamp": "2026-08-23T09:35:00.000Z"
       }
     ],
     "pending": [
@@ -438,7 +444,7 @@
     "testsPasssing": 27,
     "typescriptErrors": 0,
     "deployStatus": "live",
-    "commitsThisSession": 41,
+    "commitsThisSession": 42,
     "lighthouse": {
       "performance": 92,
       "accessibility": 100,
@@ -450,5 +456,5 @@
       "sampleRange": "92 performance on latest hosted run; repeated runs previously ranged 88-93"
     }
   },
-  "iteration": 64
+  "iteration": 65
 }
