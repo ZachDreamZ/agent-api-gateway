@@ -376,7 +376,7 @@ function SchemaPlayground() {
         >
           <div className="p-4 md:border-r" style={{ borderColor: 'var(--color-border-subtle)' }}>
             <p className="text-eyebrow mb-3">Request</p>
-            <pre className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+            <pre tabIndex={0} aria-label="Example extraction request" className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
               <code>{result ? JSON.stringify({ url: url || sample.request.match(/"url": "([^"]+)"/)?.[1] || 'https://example.com', schema }, null, 2) : sample.request}</code>
             </pre>
           </div>
@@ -395,11 +395,11 @@ function SchemaPlayground() {
                 Extracting structured data…
               </div>
             ) : result ? (
-              <pre className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              <pre tabIndex={0} aria-label="Example extraction response" className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
                 <code>{JSON.stringify(result, null, 2)}</code>
               </pre>
             ) : (
-              <pre className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+              <pre tabIndex={0} aria-label="Example extraction response" className="text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
                 <code>{sample.response}</code>
               </pre>
             )}
@@ -709,7 +709,7 @@ function Quickstart() {
               {copied ? 'Copied' : 'Copy'}
             </button>
           </div>
-          <pre className="p-4 text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+          <pre tabIndex={0} aria-label="cURL request example" className="p-4 text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
             <code>{CURL_SNIPPET}</code>
           </pre>
         </div>
@@ -1118,7 +1118,7 @@ function SDKSection() {
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22, ease: easeOut }}
           >
-            <pre className="p-4 text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
+            <pre tabIndex={0} aria-label={`${active.label} code example`} className="p-4 text-caption sm:text-xs leading-relaxed overflow-x-auto" style={{ color: 'var(--color-text-secondary)' }}>
               <code>{active.code}</code>
             </pre>
           </motion.div>
