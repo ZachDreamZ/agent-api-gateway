@@ -555,7 +555,7 @@ function SocialProof() {
 
 function Hero() {
   return (
-    <section id="start" className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-5 md:px-6 overflow-hidden">
+    <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-5 md:px-6 overflow-hidden">
       <div className="hero-beam" aria-hidden />
       <div className="hero-beam-secondary" aria-hidden="true" />
       <div className="relative mx-auto max-w-6xl">
@@ -1745,8 +1745,15 @@ function Landing() {
       style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
     >
       <div className="relative z-10">
+        <a
+          href="#start"
+          className="sr-only focus:not-sr-only fixed left-4 top-4 z-[100] rounded-md px-3 py-2 text-sm"
+          style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border-strong)' }}
+        >
+          Skip to main content
+        </a>
         <Navbar />
-        <main>
+        <main id="start" tabIndex={-1}>
           <Hero />
           <LiveStatsBar />
           <CapabilityMarquee />
