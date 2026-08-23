@@ -23,7 +23,7 @@ import {
 import { BrandLockup, SectionLabel, Reveal } from '../components/Brand';
 import { NewsletterSignup } from '../components/NewsletterSignup';
 import { BackToTop } from '../components/BackToTop';
-import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData } from '../components';
+import { OrganizationStructuredData, WebSiteStructuredData, SoftwareApplicationStructuredData, FAQStructuredData } from '../components';
 import { ApiHealthBadge } from '../components/ApiHealthBadge';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { BlurText } from '../components/BlurText';
@@ -1743,114 +1743,6 @@ function Landing() {
       className="landing-shell relative min-h-screen"
       style={{ background: 'var(--color-bg-app)', color: 'var(--color-text-primary)' }}
     >
-      {/* Structured data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: 'NexusCore',
-            description: 'Structured web data extraction API for AI agents',
-            url: 'https://agentapigw.dpdns.org',
-            logo: 'https://agentapigw.dpdns.org/logo.png',
-            sameAs: ['https://github.com/ZachDreamZ/agent-api-gateway'],
-            contactPoint: {
-              '@type': 'ContactPoint',
-              email: 'support@agentapigw.dpdns.org',
-              contactType: 'Customer Support'
-            }
-          })
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'FAQPage',
-            mainEntity: [
-              {
-                '@type': 'Question',
-                name: 'What is Agent API Gateway?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Agent API Gateway turns public product, article, and company pages into validated JSON for AI agents via REST or MCP.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Does it support MCP?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'Yes. Install the published package agent-api-gateway-mcp from the /mcp hub for Cursor and Claude Desktop.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'How does pricing work?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'There is a free tier, subscriptions for higher monthly limits, and one-time credit packs starting at $1.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Is it a Firecrawl alternative?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: 'For agent-first single-URL structured extraction, yes. For full-site crawl orchestration, Firecrawl may still be a better fit. See /alternatives/firecrawl.',
-                },
-              },
-            ],
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebSite',
-            name: 'Agent API Gateway',
-            url: 'https://agentapigw.dpdns.org',
-            description: 'Structured web data extraction API for AI agents. Send a URL and schema, get validated JSON.',
-            potentialAction: {
-              '@type': 'SearchAction',
-              target: 'https://agentapigw.dpdns.org/docs?q={search_term_string}',
-              'query-input': 'required name=search_term_string'
-            }
-          })
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
-            name: 'Agent API Gateway',
-            applicationCategory: 'DeveloperApplication',
-            description: 'Structured web data extraction API for AI agents. Extract product, article, and company data with schema validation.',
-            operatingSystem: 'Any',
-            offers: {
-              '@type': 'Offer',
-              price: '0',
-              priceCurrency: 'USD',
-              description: 'Free tier with 500 queries/month'
-            },
-            featureList: [
-              'Schema-validated JSON extraction',
-              'SSRF protection',
-              'MCP server for Claude Desktop',
-              'Product, article, and company schemas',
-              'Credit packs and flexible billing'
-            ]
-          })
-        }}
-      />
-
       <div className="relative z-10">
         <Navbar />
         <main>
@@ -1882,6 +1774,14 @@ function LandingWithBackToTop() {
       <OrganizationStructuredData />
       <WebSiteStructuredData />
       <SoftwareApplicationStructuredData />
+      <FAQStructuredData
+        faqs={[
+          { question: 'What is Agent API Gateway?', answer: 'Agent API Gateway turns public product, article, and company pages into validated JSON for AI agents via REST or MCP.' },
+          { question: 'Does it support MCP?', answer: 'Yes. Install the published package agent-api-gateway-mcp from the /mcp hub for Cursor and Claude Desktop.' },
+          { question: 'How does pricing work?', answer: 'There is a free tier, subscriptions for higher monthly limits, and one-time credit packs starting at $1.' },
+          { question: 'Is it a Firecrawl alternative?', answer: 'For agent-first single-URL structured extraction, yes. For full-site crawl orchestration, Firecrawl may still be a better fit.' },
+        ]}
+      />
       <Landing />
       <BackToTop />
     </>
