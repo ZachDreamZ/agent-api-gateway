@@ -41,6 +41,7 @@ shots/
 .shots/
 .lh-summary.mjs
 .seo.mjs
+demo-check.json
 dc.log
 mc.log
 shots-run.log
