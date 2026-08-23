@@ -557,7 +557,7 @@ function BlogListing() {
           </nav>
         </header>
 
-        <main className="mx-auto max-w-3xl px-5 md:px-6 pt-32 pb-20">
+        <main id="start" tabIndex={-1} className="mx-auto max-w-3xl px-5 md:px-6 pt-32 pb-20">
           <SectionLabel>Blog</SectionLabel>
           <h1 className="text-display mt-4 mb-2" style={{ color: 'var(--color-text-primary)' }}>
             Engineering & updates
@@ -682,7 +682,7 @@ function BlogPost() {
               <Link to="/blog" className="link text-sm">Blog</Link>
             </nav>
           </header>
-          <main className="mx-auto max-w-3xl px-5 md:px-6 pt-32 pb-20 text-center">
+          <main id="start" tabIndex={-1} className="mx-auto max-w-3xl px-5 md:px-6 pt-32 pb-20 text-center">
             <h1 className="text-display" style={{ color: 'var(--color-text-primary)' }}>Post not found</h1>
             <p className="mt-4 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
               <Link to="/blog" className="link">&larr; Back to blog</Link>
@@ -744,10 +744,11 @@ function BlogPost() {
   let codeLines: string[] = [];
   let codeLang = '';
 
-  for (const line of lines) {
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
     if (line.startsWith('```')) {
       if (inCode) {
-        rendered.push(<pre key={rendered.length} className="overflow-x-auto rounded-lg p-4 text-xs leading-relaxed my-4" style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)' }}><code>{codeLines.join('\n')}</code></pre>);
+        rendered.push(<pre key={rendered.length} role="region" tabIndex={0} className="overflow-x-auto rounded-lg p-4 text-xs leading-relaxed my-4" aria-label={`${codeLang || 'Code'} example ${rendered.length + 1}`} style={{ background: 'var(--color-bg-elevated)', color: 'var(--color-text-secondary)' }}><code>{codeLines.join('\n')}</code></pre>);
         codeLines = [];
         inCode = false;
       } else {
@@ -765,19 +766,28 @@ function BlogPost() {
     } else if (line.startsWith('### ')) {
       rendered.push(<h3 key={rendered.length} className="text-heading mt-6 mb-2" style={{ color: 'var(--color-text-primary)' }}>{line.slice(4)}</h3>);
     } else if (line.startsWith('| ')) {
-      if (line.includes('---')) continue;
-      const cells = line.split('|').filter(Boolean).map((c) => c.trim());
-      const isHeader = rendered.length > 0 && rendered[rendered.length - 1] && typeof rendered[rendered.length - 1] === 'string' ? false : true;
-      if (isHeader) {
+      const tableRows: string[][] = [];
+      while (index < lines.length && lines[index].trimStart().startsWith('|')) {
+        const tableLine = lines[index];
+        index += 1;
+        if (!tableLine.includes('---')) {
+          tableRows.push(tableLine.split('|').filter(Boolean).map((c) => c.trim()));
+        }
+      }
+      index -= 1;
+      if (tableRows.length > 0) {
+        const [header, ...rows] = tableRows;
         rendered.push(
-          <div key={rendered.length} className="overflow-x-auto my-4">
+          <div key={rendered.length} tabIndex={0} className="overflow-x-auto my-4">
             <table className="w-full text-xs" style={{ borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>
-                  {cells.map((c, i) => <th key={i} className="px-3 py-2 text-left font-medium" style={{ color: 'var(--color-text-secondary)' }}>{c}</th>)}
+                  {header.map((c, i) => <th key={i} scope="col" className="px-3 py-2 text-left font-medium" style={{ color: 'var(--color-text-secondary)' }}>{c}</th>)}
                 </tr>
               </thead>
-              <tbody></tbody>
+              <tbody>
+                {rows.map((row, rowIndex) => <tr key={rowIndex} style={{ borderBottom: '1px solid var(--color-border-subtle)' }}>{row.map((c, i) => <td key={i} className="px-3 py-2" style={{ color: 'var(--color-text-secondary)' }}>{c}</td>)}</tr>)}
+              </tbody>
             </table>
           </div>
         );
@@ -785,12 +795,12 @@ function BlogPost() {
     } else if (line.startsWith('- **')) {
       const match = line.match(/- \*\*(.+?)\*\*(.+)/);
       if (match) {
-        rendered.push(<li key={rendered.length} className="text-body" style={{ color: 'var(--color-text-secondary)' }}><strong style={{ color: 'var(--color-text-primary)' }}>{match[1]}</strong>{match[2]}</li>);
+        rendered.push(<ul key={rendered.length} className="my-3 ml-5 list-disc"><li className="text-body" style={{ color: 'var(--color-text-secondary)' }}><strong style={{ color: 'var(--color-text-primary)' }}>{match[1]}</strong>{match[2]}</li></ul>);
       }
     } else if (line.startsWith('- ')) {
-      rendered.push(<li key={rendered.length} className="text-body ml-4" style={{ color: 'var(--color-text-secondary)' }}>{line.slice(2)}</li>);
+      rendered.push(<ul key={rendered.length} className="my-3 ml-5 list-disc"><li className="text-body" style={{ color: 'var(--color-text-secondary)' }}>{line.slice(2)}</li></ul>);
     } else if (line.match(/^\d\. /)) {
-      rendered.push(<li key={rendered.length} className="text-body ml-4" style={{ color: 'var(--color-text-secondary)' }}>{line.replace(/^\d\.\s*/, '')}</li>);
+      rendered.push(<ol key={rendered.length} className="my-3 ml-5 list-decimal"><li className="text-body" style={{ color: 'var(--color-text-secondary)' }}>{line.replace(/^\d\.\s*/, '')}</li></ol>);
     } else if (line.trim() === '') {
       rendered.push(<div key={rendered.length} className="h-2" />);
     } else {
@@ -821,6 +831,7 @@ function BlogPost() {
           </nav>
         </header>
 
+        <main id="start" tabIndex={-1}>
         <article className="mx-auto max-w-3xl px-5 md:px-6 pt-32 pb-20">
           <Link to="/blog" className="link text-xs flex items-center gap-1 mb-6" style={{ color: 'var(--color-text-tertiary)' }}>
             <ArrowLeft className="w-3 h-3" /> Back to blog
@@ -850,6 +861,7 @@ function BlogPost() {
             {rendered}
           </div>
         </article>
+        </main>
 
         <footer
           className="relative z-10"
