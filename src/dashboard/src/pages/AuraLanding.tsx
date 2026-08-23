@@ -576,7 +576,7 @@ function Hero() {
               <span className="text-gradient-signal">AI agents</span>.
             </h1>
 
-            <p className="mt-5 max-w-md text-body"
+            <motion.p className="mt-5 max-w-md text-body"
               style={{ color: 'var(--color-text-secondary)' }}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
@@ -584,7 +584,7 @@ function Hero() {
             >
               Send a public page URL and a schema type. Get typed fields back:
               product, article, or company. No scraper farm to maintain.
-            </p>
+            </motion.p>
 
             <SocialProof />
 
