@@ -4,79 +4,79 @@
     <loc>https://agentapigw.dpdns.org/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/docs</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/mcp</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/pricing</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/agents</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/for-agents</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/alternatives</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/alternatives/firecrawl</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/alternatives/browse-ai</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/alternatives/scrapy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/alternatives/browserless</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/blog/install-agent-api-gateway-mcp-in-cursor</loc>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/blog/rate-limiting-strategies-for-ai-agents</loc>
@@ -130,30 +130,30 @@
     <loc>https://agentapigw.dpdns.org/use-cases</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/use-cases/price-intelligence</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/use-cases/content-research</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/use-cases/company-enrichment</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
   <url>
     <loc>https://agentapigw.dpdns.org/use-cases/mcp-agents</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-08-23</lastmod>
   </url>
 </urlset>

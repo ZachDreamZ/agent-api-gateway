@@ -13,6 +13,7 @@ credentials/
 scripts/oauth-debug.png
 scripts/oauth-secret-debug.png
 *.log
+lh-*.json
 .playwright/
 .dockerignore
 render-cli/
