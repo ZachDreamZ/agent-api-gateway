@@ -242,7 +242,7 @@ billingPricing.get('/buy', async (c) => {
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Checkout failed';
     console.error('[Billing] /buy error:', message);
-    return c.json({ error: 'Could not start checkout' }, 500);
+    return c.redirect('/pricing?checkout_error=1', 302);
   }
 });
 
