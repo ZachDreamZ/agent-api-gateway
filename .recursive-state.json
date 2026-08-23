@@ -2,7 +2,7 @@
   "version": 1,
   "loop": {
     "currentPhase": "execute",
-    "iteration": 51,
+    "iteration": 52,
     "startedAt": "2026-07-23T06:00:00Z",
     "lastAudit": "2026-08-23T00:44:44.174Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
@@ -282,6 +282,12 @@
         "description": "Playground result CTA + nav dashboard button upgraded to match hero scale",
         "commit": "085e57e",
         "timestamp": "2026-08-23T01:49:21.949Z"
+      },
+      {
+        "id": "blog-md-links",
+        "description": "Markdown links in blog content now render as real anchors (was plain text); internal linking restored for SEO",
+        "commit": "e0e1330",
+        "timestamp": "2026-08-23T01:55:59.638Z"
       }
     ],
     "pending": [
@@ -312,5 +318,5 @@
       "measuredAt": "2026-08-23T01:21:37.323Z"
     }
   },
-  "iteration": 51
+  "iteration": 52
 }
