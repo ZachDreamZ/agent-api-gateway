@@ -95,11 +95,6 @@ export function SoftwareApplicationStructuredData() {
           priceCurrency: 'USD',
           description: 'Free tier with 100 requests per month',
         },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.8',
-          ratingCount: '127',
-        },
       }}
     />
   );
