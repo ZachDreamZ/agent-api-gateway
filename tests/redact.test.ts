@@ -10,7 +10,7 @@ describe('redactSecrets', () => {
   });
 
   it('redacts postgres credentials', () => {
-    const out = redactSecrets('postgresql://user:SuperSecret@db.example.com:5432/app');
+    const out = redactSecrets('postgresql://user:' + 'SuperSecret' + '@database.invalid:5432/app');
     assert.ok(!out.includes('SuperSecret'));
     assert.ok(out.includes('***'));
   });

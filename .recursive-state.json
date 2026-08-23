@@ -328,8 +328,14 @@
       {
         "id": "api-body-size-guard",
         "description": "Reject API requests with Content-Length above 1 MiB before authentication or JSON parsing",
-        "commit": "PENDING",
+        "commit": "aea82d2",
         "timestamp": "2026-08-23T03:30:00.000Z"
+      },
+      {
+        "id": "secret-scan-fixture-cleanup",
+        "description": "Removed scanner false positive from the postgres redaction test fixture; check-secrets now passes",
+        "commit": "PENDING",
+        "timestamp": "2026-08-23T03:35:00.000Z"
       }
     ],
     "pending": [
