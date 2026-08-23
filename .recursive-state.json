@@ -2,9 +2,9 @@
   "version": 1,
   "loop": {
     "currentPhase": "execute",
-    "iteration": 52,
+    "iteration": 53,
     "startedAt": "2026-07-23T06:00:00Z",
-    "lastAudit": "2026-08-23T00:44:44.174Z",
+    "lastAudit": "2026-08-23T02:17:29.414Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
   },
   "improvements": {
@@ -288,6 +288,36 @@
         "description": "Markdown links in blog content now render as real anchors (was plain text); internal linking restored for SEO",
         "commit": "e0e1330",
         "timestamp": "2026-08-23T01:55:59.638Z"
+      },
+      {
+        "id": "feed-json-route",
+        "description": "Fixed /blog/feed.json falling through to SPA fallback",
+        "commit": "ab68430",
+        "timestamp": "2026-08-23T02:17:29.415Z"
+      },
+      {
+        "id": "nav-height-benchmark",
+        "description": "Nav height 52px -> 64px desktop / 56px mobile to match Linear/Stripe benchmark",
+        "commit": "PENDING",
+        "timestamp": "2026-08-23T02:17:29.415Z"
+      },
+      {
+        "id": "what-if-audit-100",
+        "description": "Created docs/what-if-audit.md with 100 scenarios cataloged and status markers",
+        "commit": "108e19c",
+        "timestamp": "2026-08-23T02:17:29.415Z"
+      },
+      {
+        "id": "hero-motion-strip",
+        "description": "Stripped entrance animations from above-fold hero elements for LCP",
+        "commit": "108e19c",
+        "timestamp": "2026-08-23T02:17:29.415Z"
+      },
+      {
+        "id": "security-probe-pass",
+        "description": "Live security probes: SSRF vectors/2MB body/rate-limit burst all rejected at auth gate; headers CSP+HSTS+frame-deny verified",
+        "commit": "N/A",
+        "timestamp": "2026-08-23T02:17:29.415Z"
       }
     ],
     "pending": [

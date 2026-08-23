@@ -1157,7 +1157,7 @@ a.sr-only:focus {
 }
 
 .nav-float nav {
-  height: 3.25rem;
+  height: 4rem;
   padding-inline: clamp(1rem, 4vw, 1.5rem);
   max-width: 72rem;
   margin: 0 auto;
@@ -1165,7 +1165,7 @@ a.sr-only:focus {
 
 @media (max-width: 767px) {
   .nav-float nav {
-    height: 3rem;
+    height: 3.5rem;
   }
 }
 
