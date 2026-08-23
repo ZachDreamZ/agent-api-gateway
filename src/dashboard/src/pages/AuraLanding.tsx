@@ -421,7 +421,7 @@ function SchemaPlayground() {
           <Link
             to="/login"
             className="btn btn-primary text-xs"
-            style={{ padding: '0.35rem 0.9rem', borderRadius: '6px' }}
+            style={{ padding: '0.5rem 1.1rem', borderRadius: '8px' }}
           >
             Sign up for full extraction
           </Link>
