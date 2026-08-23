@@ -558,7 +558,7 @@ function Hero() {
       <div className="hero-beam-secondary" aria-hidden="true" />
       <div className="relative mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div>
+          <div className="min-w-0">
             <div
               className="mb-5 inline-flex items-center gap-2 px-3 py-1 text-xs"
               style={{ color: 'var(--color-accent-base)' }}
@@ -604,7 +604,7 @@ function Hero() {
             </div>
           </div>
 
-          <div className="hero-float-card" style={{ animation: 'none' }}>
+          <div className="hero-float-card min-w-0" style={{ animation: 'none' }}>
             <div className="relative z-[1]">
               <SchemaPlayground />
             </div>

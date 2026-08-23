@@ -334,8 +334,14 @@
       {
         "id": "secret-scan-fixture-cleanup",
         "description": "Removed scanner false positive from the postgres redaction test fixture; check-secrets now passes",
-        "commit": "PENDING",
+        "commit": "5d6f675",
         "timestamp": "2026-08-23T03:35:00.000Z"
+      },
+      {
+        "id": "mobile-hero-overflow",
+        "description": "Visual audit found hero grid minimum sizing clipping the H1 on 390px screens; added min-width:0 to both columns",
+        "commit": "PENDING",
+        "timestamp": "2026-08-23T04:00:00.000Z"
       }
     ],
     "pending": [
