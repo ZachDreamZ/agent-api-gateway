@@ -60,7 +60,7 @@ export function CodeBlock({ code, language = 'text', showLineNumbers = false, cl
           </div>
         )}
         <div className="overflow-x-auto">
-          <pre tabIndex={0} aria-label={`${language} code example`} className="p-4 text-sm" style={{ color: 'oklch(0.85 0.02 240)' }}>
+          <pre role="region" tabIndex={0} aria-label={`${language} code example`} className="p-4 text-sm" style={{ color: 'oklch(0.85 0.02 240)' }}>
             {showLineNumbers ? (
               <code>
                 {lines.map((line, index) => (

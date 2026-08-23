@@ -110,7 +110,7 @@ export function LiveExtractDemo({ schema }: LiveExtractDemoProps) {
               {copied ? "Copied!" : "Copy JSON"}
             </button>
           </div>
-          <pre tabIndex={0} aria-label="Live extraction JSON response" className="code-block text-xs leading-relaxed overflow-x-auto max-h-[300px]" style={{ background: "var(--color-bg-elevated)", color: "var(--color-text-secondary)", fontFamily: "var(--font-family-mono)" }}>
+          <pre role="region" tabIndex={0} aria-label="Live extraction JSON response" className="code-block text-xs leading-relaxed overflow-x-auto max-h-[300px]" style={{ background: "var(--color-bg-elevated)", color: "var(--color-text-secondary)", fontFamily: "var(--font-family-mono)" }}>
             {JSON.stringify(result, null, 2)}
           </pre>
         </div>
