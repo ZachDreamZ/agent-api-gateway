@@ -360,6 +360,18 @@
         "description": "Fixed invalid hero ARIA labeling, brand accessible-name mismatch, and font-swap layout shifts with semantic screen-reader text and critical font preloads",
         "commit": "22cf20b",
         "timestamp": "2026-08-23T05:30:00.000Z"
+      },
+      {
+        "id": "hero-motion-element-fix",
+        "description": "Converted the hero supporting-copy animation from invalid native DOM props to a real motion paragraph",
+        "commit": "7224a99",
+        "timestamp": "2026-08-23T06:00:00.000Z"
+      },
+      {
+        "id": "hero-lcp-paint-pass",
+        "description": "Kept the React Bits-style headline painted immediately while animating blur and position, reducing perceived LCP risk",
+        "commit": "7a0bda1",
+        "timestamp": "2026-08-23T06:15:00.000Z"
       }
     ],
     "pending": [
@@ -381,14 +393,15 @@
     "deployStatus": "live",
     "commitsThisSession": 37,
     "lighthouse": {
-      "performance": 93,
+      "performance": 89,
       "accessibility": 100,
       "bestPractices": 100,
       "seo": 100,
-      "lcp": "2.6s",
+      "lcp": "2.7s",
       "cls": "0.030",
-      "measuredAt": "2026-08-23T05:45:00.000Z"
+      "measuredAt": "2026-08-23T06:20:00.000Z",
+      "sampleRange": "89-93 performance across repeated hosted runs"
     }
   },
-  "iteration": 58
+  "iteration": 60
 }
