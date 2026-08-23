@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
 
 interface StructuredDataProps {
   type: string;
@@ -11,14 +11,26 @@ export function StructuredData({ type, data }: StructuredDataProps) {
     '@type': type,
     ...data,
   };
+  const json = JSON.stringify(baseData);
+  const key = `${type}:${String(data['@id'] ?? data.url ?? data.name ?? '')}`;
 
-  return (
-    <Helmet>
-      <script type="application/ld+json">
-        {JSON.stringify(baseData)}
-      </script>
-    </Helmet>
-  );
+  useEffect(() => {
+    const scripts = Array.from(
+      document.head.querySelectorAll<HTMLScriptElement>('script[data-agent-structured-data]'),
+    );
+    const existing = scripts.find((script) => script.dataset.agentStructuredData === key);
+    const script = existing ?? document.createElement('script');
+    script.type = 'application/ld+json';
+    script.dataset.agentStructuredData = key;
+    script.textContent = json;
+    if (!existing) document.head.appendChild(script);
+
+    return () => {
+      if (script.textContent === json) script.remove();
+    };
+  }, [json, key]);
+
+  return null;
 }
 
 export function OrganizationStructuredData() {
@@ -208,4 +220,3 @@ export function FAQStructuredData({
     />
   );
 }
-
