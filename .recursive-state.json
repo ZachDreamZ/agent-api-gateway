@@ -372,6 +372,18 @@
         "description": "Kept the React Bits-style headline painted immediately while animating blur and position, reducing perceived LCP risk",
         "commit": "7a0bda1",
         "timestamp": "2026-08-23T06:15:00.000Z"
+      },
+      {
+        "id": "seo-static-faq",
+        "description": "Added static FAQPage JSON-LD to the document head so crawlers can discover FAQ content without JavaScript",
+        "commit": "469adfe",
+        "timestamp": "2026-08-23T06:25:00.000Z"
+      },
+      {
+        "id": "hero-animation-semantic-source",
+        "description": "Made the animated hero words the single accessible text source, removing duplicate H1 content for crawlers and assistive technology",
+        "commit": "a74a513",
+        "timestamp": "2026-08-23T06:35:00.000Z"
       }
     ],
     "pending": [
@@ -403,5 +415,5 @@
       "sampleRange": "89-93 performance across repeated hosted runs"
     }
   },
-  "iteration": 60
+  "iteration": 61
 }
