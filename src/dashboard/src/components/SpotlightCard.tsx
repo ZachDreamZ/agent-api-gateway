@@ -16,7 +16,7 @@ export function SpotlightCard({ children, className = '' }: SpotlightCardProps) 
   const [spotlight, setSpotlight] = useState({ x: 50, y: 50, visible: false });
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (reduce) return;
+    if (reduce || event.pointerType === 'touch') return;
     const bounds = event.currentTarget.getBoundingClientRect();
     setSpotlight({
       x: ((event.clientX - bounds.left) / bounds.width) * 100,
@@ -38,7 +38,7 @@ export function SpotlightCard({ children, className = '' }: SpotlightCardProps) 
           className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
           style={{
             opacity: spotlight.visible ? 1 : 0,
-            background: `radial-gradient(260px circle at ${spotlight.x}% ${spotlight.y}%, color-mix(in oklab, var(--color-accent-base) 16%, transparent), transparent 68%)`,
+            background: `radial-gradient(260px circle at ${spotlight.x}% ${spotlight.y}%, rgb(95 224 194 / 0.14), transparent 68%)`,
           }}
         />
       )}
