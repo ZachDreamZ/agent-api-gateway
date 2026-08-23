@@ -70,6 +70,34 @@ function serveStatic(c: any, filePath: string) {
   return c.body(content, 200, headers);
 }
 
+// Route-specific SEO metadata for crawlers that don't execute JS.
+const ROUTE_META: Record<string, { title: string; desc: string }> = {
+  '/': { title: 'Structured Web Data Extraction for AI Agents | Agent API Gateway', desc: 'Extract structured JSON from any public URL. AI-powered schemas for product, article, and company data via REST and MCP.' },
+  '/pricing': { title: 'Pricing — Free Tier, $1 Credit Packs, Hobby & Pro Plans', desc: 'Start free with 500 queries/month. Credit packs from $1. Hobby ($29/mo) and Pro ($99/mo) plans with higher RPM for AI agent extraction.' },
+  '/blog': { title: 'Blog — AI Agent & Web Extraction Guides', desc: 'Practical guides on building AI agents that extract structured data from websites. Cost analysis, architecture patterns, and API tutorials.' },
+  '/alternatives': { title: 'Agent API Gateway vs Alternatives — Firecrawl, ScrapingBee, Browserless', desc: 'Compare Agent API Gateway with Firecrawl, ScrapingBee, and other web extraction APIs. See pricing, features, and which fits your AI agent stack.' },
+  '/docs': { title: 'Documentation — REST API & MCP Reference', desc: 'Agent API Gateway documentation: REST endpoints, MCP server setup, authentication, rate limits, schema definitions, and code examples.' },
+};
+
+function injectMeta(html: string, path: string): string {
+  const meta = ROUTE_META[path];
+  if (!meta) return html;
+  let out = html;
+  if (/<title>[^<]*<\/title>/.test(out)) {
+    out = out.replace(/<title>[^<]*<\/title>/, `<title>${meta.title}</title>`);
+  }
+  if (/name="description" content="[^"]*"/.test(out)) {
+    out = out.replace(/name="description" content="[^"]*"/, `name="description" content="${meta.desc}"`);
+  }
+  if (/property="og:title" content="[^"]*"/.test(out)) {
+    out = out.replace(/property="og:title" content="[^"]*"/, `property="og:title" content="${meta.title}"`);
+  }
+  if (/property="og:description" content="[^"]*"/.test(out)) {
+    out = out.replace(/property="og:description" content="[^"]*"/, `property="og:description" content="${meta.desc}"`);
+  }
+  return out;
+}
+
 // ─── App ───
 
 const app = new Hono();
@@ -425,9 +453,13 @@ app.route('/webhooks/polar', webhookApp);
 // /docs/overview return the SPA shell. API routes still get proper 404 JSON.
 app.get('/blog/rss.xml', (c) => serveStatic(c, 'blog/rss.xml') || c.text('Not found', 404));
 app.get('/blog/feed.json', (c) => serveStatic(c, 'blog/feed.json') || c.text('Not found', 404));
-app.get('/*', (c) =>
-  serveStatic(c, 'index.html') || c.json({ error: `Not found: GET ${c.req.path}` }, 404),
-);
+app.get('/*', (c) => {
+  const indexPath = resolve(DIST, 'index.html');
+  if (!existsSync(indexPath)) return c.json({ error: `Not found: GET ${c.req.path}` }, 404);
+  const raw = readFileSync(indexPath, 'utf8');
+  const html = injectMeta(raw, c.req.path);
+  return c.body(html, 200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=0, must-revalidate' });
+});
 
 // ─── 404 (non-GET methods) ───
 app.notFound((c) =>
