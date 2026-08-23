@@ -1,10 +1,10 @@
 {
   "version": 1,
   "loop": {
-    "currentPhase": "verify",
-    "iteration": 48,
+    "currentPhase": "execute",
+    "iteration": 49,
     "startedAt": "2026-07-23T06:00:00Z",
-    "lastAudit": "2026-08-22T23:16:44.519Z",
+    "lastAudit": "2026-08-23T00:44:44.174Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
   },
   "improvements": {
@@ -205,10 +205,50 @@
         "description": "Self-hosted fonts (no Google roundtrip), PNG og-image for social cards, fixed contrast tokens, invalid ol>div nesting, reduced-motion Reveal bug; removed placeholder GSC meta",
         "commit": "c4f958e",
         "timestamp": "2026-08-22T23:16:44.519Z"
+      },
+      {
+        "id": "self-hosted-fonts",
+        "description": "Self-hosted DM Sans/Syne/IBM Plex Mono woff2 + local @font-face; dropped Google Fonts import",
+        "commit": "c4f958e",
+        "timestamp": "2026-08-23T00:44:44.174Z"
+      },
+      {
+        "id": "png-og-image",
+        "description": "Generated 1200x630 PNG og-image via sharp; removed SVG variant",
+        "commit": "c4f958e",
+        "timestamp": "2026-08-23T00:44:44.174Z"
+      },
+      {
+        "id": "api-static-routes",
+        "description": "Served /fonts/* and /og-image.png statically instead of SPA fallback",
+        "commit": "05a2199",
+        "timestamp": "2026-08-23T00:44:44.174Z"
+      },
+      {
+        "id": "a11y-round-2",
+        "description": "Contrast tokens brightened, list semantics fixed, Reveal reduced-motion prop bug, brand link label, cookie link text",
+        "commit": "9ea359b",
+        "timestamp": "2026-08-23T00:44:44.174Z"
+      },
+      {
+        "id": "bfcache-html-cache",
+        "description": "HTML cache-control public max-age=0 must-revalidate for bfcache eligibility",
+        "commit": "9ea359b",
+        "timestamp": "2026-08-23T00:44:44.174Z"
+      },
+      {
+        "id": "hero-lcp-speedup",
+        "description": "Removed 0.55s hero H1 entrance delay; badge anim 0.45s->0.18s",
+        "commit": "c999fb8",
+        "timestamp": "2026-08-23T00:44:44.174Z"
+      },
+      {
+        "id": "lighthouse-91-perf",
+        "description": "Lighthouse: perf 91, a11y 100, BP 100, SEO 100 (was 61/90/100/92)",
+        "timestamp": "2026-08-23T00:44:44.174Z"
       }
     ],
     "pending": [
-      "Lighthouse performance audit",
       "Interactive API playground on landing page",
       "Analytics integration for traffic measurement",
       "Dark/light mode toggle",
@@ -225,7 +265,16 @@
     "testsPasssing": 27,
     "typescriptErrors": 0,
     "deployStatus": "live",
-    "commitsThisSession": 37
+    "commitsThisSession": 37,
+    "lighthouse": {
+      "performance": 91,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcp": "2.3s",
+      "cls": "0.004",
+      "measuredAt": "2026-08-23T00:44:44.174Z"
+    }
   },
-  "iteration": 42
+  "iteration": 49
 }

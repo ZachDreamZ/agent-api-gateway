@@ -10,6 +10,58 @@ import { BookOpen, Calendar, Clock, ArrowLeft, Bot, Layout, Shield, Tag, Sparkle
 
 const POSTS = [
   {
+    slug: 'cost-to-scrape-10000-pages-ai-agents',
+    title: 'What it costs to extract 10,000 pages with AI agents (2026 benchmarks)',
+    excerpt: 'Real numbers: DIY browser-farm scraping vs an extraction API at 10K, 50K, and 250K pages/month - including the hidden costs nobody budgets for.',
+    date: '2026-08-23',
+    readTime: '5 min',
+    tags: ['guides', 'engineering'],
+    content: `## The question every agent team asks
+
+You have an agent (or a thousand of them) that needs web data: product prices, article bodies, company profiles. The question is not whether to extract - it is what 10,000 extractions a month should cost.
+
+We run the numbers across three approaches: a self-hosted headless-browser farm, a generic scraping proxy, and a structured extraction API. Here is what actually shows up on the invoice.
+
+## Approach 1: DIY browser farm
+
+A minimal Playwright stack needs one browser worker per ~2 concurrent pages. At 10,000 pages/month that is trivial; at scale it is not:
+
+- **Compute:** a 2 vCPU worker renders roughly 30,000 pages/month before latency degrades. Ten workers cover 300K pages.
+- **Maintenance:** sites change markup constantly. Every breakage is an incident: selector rot, bot walls, CAPTCHAs, new client-side rendering frameworks.
+- **Hidden costs:** proxy rotation (~$1-8/GB), retry storms, and engineer hours. Most teams underestimate this last one by 5-10x.
+
+Realistic all-in cost at 100K pages/month: $400-900/mo in infrastructure plus 15-25% of an engineer's time. The engineer time is the expensive line item.
+
+## Approach 2: Scraping proxies
+
+Proxies solve the blocking problem but hand you raw HTML. Your agent still has to parse it - usually by piping HTML into an LLM prompt, which costs $0.50-3 per 1,000 pages in tokens and returns unvalidated output that occasionally hallucinates a price.
+
+At 10K pages/month you might pay $50 in proxy fees plus $20-60 in LLM tokens, and inherit a correctness problem you cannot easily measure.
+
+## Approach 3: Structured extraction API
+
+An extraction API collapses render, parse, and validate into one call. With Agent API Gateway pricing ($1 Starter tier, then usage-based credits):
+
+| Monthly volume | Typical cost | What is included |
+|----------------|--------------|------------------|
+| 500 pages | Free | Product/article/company schemas |
+| 10,000 pages | ~$9 | Validated JSON, SSRF-safe fetching |
+| 100,000 pages | ~$80-90 | Cache hits are free |
+| 250,000 pages | Volume tier | Priority queue |
+
+Caching matters more than teams expect: agent workflows re-fetch the same URLs constantly. A warm cache turns repeated extractions into zero-cost responses.
+
+## The number people forget: correctness
+
+The cheapest pipeline is the one that never serves a wrong price to a customer. Browser farms fail silently when markup shifts. LLM parsing fails confidently - it invents plausible values. A schema-validated API fails loudly, which is the only failure mode you can build an alert around.
+
+## Bottom line
+
+Below ~5,000 pages/month, do whatever is fastest to ship. Between 5K and 250K, structured extraction APIs win on total cost once you count engineering time. Past 250K with a stable handful of source sites, a dedicated in-house pipeline starts to make sense again.
+
+If you want the middle path, the [free tier](/) gives you 500 validated extractions a month - enough to benchmark against your current stack with real traffic. Compare us with other options in our [alternatives overview](/alternatives).`,
+  },
+  {
     slug: 'how-to-build-an-ai-agent-that-extracts-web-data',
     title: 'How to build an AI agent that extracts web data (REST + MCP)',
     excerpt: 'A practical step-by-step guide to building AI agents that extract structured data from websites using REST APIs and MCP servers. Includes working Python code examples.',

@@ -35,3 +35,10 @@ dashboard-overview-final.png
 packages/**/node_modules/
 packages/**/.npmrc
 
+design-compare.json
+mobile-check.json
+shots/
+dc.log
+mc.log
+shots-run.log
+lh-report.json
