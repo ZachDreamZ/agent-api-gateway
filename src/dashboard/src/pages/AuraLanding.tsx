@@ -238,7 +238,7 @@ type SchemaKey = keyof typeof SCHEMAS;
 
 function SchemaPlayground() {
   const [schema, setSchema] = useState<SchemaKey>('product');
-  const [url, setUrl] = useState('https://store.example.com/products/wireless-headphones');
+  const [url, setUrl] = useState('https://books.toscrape.com/');
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
