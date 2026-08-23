@@ -24,20 +24,23 @@ export function BlurText({
   if (reduce) return <span className={className}>{value}</span>;
 
   return (
-    <span className={className} aria-label={value}>
-      {words.map((word, index) => (
-        <span key={`${word}-${index}`} className="inline-block" aria-hidden="true">
-          <motion.span
-            className="inline-block"
-            initial={{ opacity: 0, filter: 'blur(8px)', y: 8 }}
-            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-            transition={{ duration: 0.42, delay: delay + index * step, ease: easeOut }}
-          >
-            {word}
-          </motion.span>
-          {index < words.length - 1 ? '\u00a0' : null}
-        </span>
-      ))}
+    <span className={className}>
+      <span className="sr-only">{value}</span>
+      <span aria-hidden="true">
+        {words.map((word, index) => (
+          <span key={`${word}-${index}`} className="inline-block">
+            <motion.span
+              className="inline-block"
+              initial={{ opacity: 0, filter: 'blur(8px)', y: 8 }}
+              animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+              transition={{ duration: 0.42, delay: delay + index * step, ease: easeOut }}
+            >
+              {word}
+            </motion.span>
+            {index < words.length - 1 ? '\u00a0' : null}
+          </span>
+        ))}
+      </span>
     </span>
   );
 }

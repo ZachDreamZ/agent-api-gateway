@@ -354,6 +354,12 @@
         "description": "Added a local React Bits-inspired BlurText hero reveal with semantic text and reduced-motion support; verified desktop/mobile geometry and no browser errors",
         "commit": "288037d",
         "timestamp": "2026-08-23T05:00:00.000Z"
+      },
+      {
+        "id": "lighthouse-a11y-font-pass",
+        "description": "Fixed invalid hero ARIA labeling, brand accessible-name mismatch, and font-swap layout shifts with semantic screen-reader text and critical font preloads",
+        "commit": "PENDING",
+        "timestamp": "2026-08-23T05:30:00.000Z"
       }
     ],
     "pending": [
@@ -384,5 +390,5 @@
       "measuredAt": "2026-08-23T01:21:37.323Z"
     }
   },
-  "iteration": 57
+  "iteration": 58
 }
