@@ -340,13 +340,13 @@
       {
         "id": "mobile-hero-overflow",
         "description": "Visual audit found hero grid minimum sizing clipping the H1 on 390px screens; added min-width:0 to both columns",
-        "commit": "PENDING",
+        "commit": "b1f49c9",
         "timestamp": "2026-08-23T04:00:00.000Z"
       },
       {
         "id": "visible-jsx-comment-leak",
         "description": "Removed a bare JSX comment that rendered as visible // Structured data for SEO text above the landing hero",
-        "commit": "PENDING",
+        "commit": "7072a32",
         "timestamp": "2026-08-23T04:10:00.000Z"
       }
     ],
@@ -378,5 +378,5 @@
       "measuredAt": "2026-08-23T01:21:37.323Z"
     }
   },
-    "iteration": 55
+    "iteration": 56
 }
