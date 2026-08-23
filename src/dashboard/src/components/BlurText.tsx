@@ -31,7 +31,8 @@ export function BlurText({
           <span key={`${word}-${index}`} className="inline-block">
             <motion.span
               className="inline-block"
-              initial={{ opacity: 0, filter: 'blur(8px)', y: 8 }}
+              // Keep the LCP candidate painted immediately; animate blur and position only.
+              initial={{ opacity: 1, filter: 'blur(8px)', y: 8 }}
               animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
               transition={{ duration: 0.42, delay: delay + index * step, ease: easeOut }}
             >
