@@ -116,6 +116,20 @@ const app = new Hono();
 const globalReqTimestamps = new Map<string, number[]>();
 setInterval(() => globalReqTimestamps.clear(), 60_000).unref();
 
+// Reject oversized API payloads before auth/body parsing. This protects the
+// JSON parser and keeps unauthenticated floods from consuming memory.
+const MAX_API_BODY_BYTES = 1_048_576;
+app.use('/v1/*', async (c, next) => {
+  const length = Number(c.req.header('content-length') || 0);
+  if (length > MAX_API_BODY_BYTES) {
+    return c.json(
+      { error: 'Request body too large', max_bytes: MAX_API_BODY_BYTES },
+      413,
+    );
+  }
+  await next();
+});
+
 app.use('/*', async (c, next) => {
   // Skip rate limiting for static assets and health check
   const path = c.req.path;

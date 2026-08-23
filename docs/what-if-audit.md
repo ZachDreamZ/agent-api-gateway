@@ -23,7 +23,7 @@ Legend: [OK] defended (verified or guarded in code) | [PART] partial defense | [
 16. What if DNS rebinding swaps IP after check? [PART] guard resolves at fetch time; TOCTOU window documented
 17. What if redirect chain hops to private IP? [OK] redirects re-validated by guard
 18. What if URL is ftp:// or file://? [OK] scheme allowlist (http/https only)
-19. What if payload is 50MB of JSON? [PART] hono body limit set; exact cap needs verification
+19. What if payload is 50MB of JSON? [PART] API Content-Length is rejected above 1 MiB before auth/body parsing; chunked-body limits remain runtime-dependent
 20. What if prompt injection inside scraped page hijacks extraction? [PART] schema validation constrains output shape
 21. What if API key leaked in GitHub? [OK] sk- prefix scan via check:secrets; keys hashed in DB
 22. What if XSS via extracted content echoed to dashboard? [OK] React escapes; no dangerouslySetInnerHTML on API data

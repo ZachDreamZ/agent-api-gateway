@@ -2,7 +2,7 @@
   "version": 1,
   "loop": {
     "currentPhase": "execute",
-    "iteration": 54,
+    "iteration": 55,
     "startedAt": "2026-07-23T06:00:00Z",
     "lastAudit": "2026-08-23T02:17:29.414Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
@@ -324,6 +324,12 @@
         "description": "Added route-specific title, description, and Open Graph metadata for non-JavaScript crawlers, including explicit /docs route",
         "commit": "e038242",
         "timestamp": "2026-08-23T02:40:00.000Z"
+      },
+      {
+        "id": "api-body-size-guard",
+        "description": "Reject API requests with Content-Length above 1 MiB before authentication or JSON parsing",
+        "commit": "PENDING",
+        "timestamp": "2026-08-23T03:30:00.000Z"
       }
     ],
     "pending": [
@@ -354,5 +360,5 @@
       "measuredAt": "2026-08-23T01:21:37.323Z"
     }
   },
-    "iteration": 54
+    "iteration": 55
 }
