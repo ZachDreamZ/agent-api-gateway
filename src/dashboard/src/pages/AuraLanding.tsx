@@ -81,7 +81,7 @@ function Navbar() {
           <Link to="/blog" className="link text-sm">Blog</Link>
           <Link to="/agents" className="link text-sm">For agents</Link>
           <Link to="/login" className="link text-sm">Sign in</Link>
-          <Link to="/dashboard" className="btn btn-primary btn-shine text-xs" style={{ padding: '0.45rem 1rem', borderRadius: '6px' }}>
+          <Link to="/dashboard" className="btn btn-primary btn-shine text-sm" style={{ padding: '0.6rem 1.25rem', borderRadius: '8px' }}>
             Open dashboard
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
