@@ -90,6 +90,9 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
 
 export default function Pricing() {
   const [annual, setAnnual] = useState(false);
+  const [checkoutError, setCheckoutError] = useState(
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('checkout_error') === '1'
+  );
   useSEO({
     title: 'Pricing',
     description:
@@ -105,6 +108,12 @@ export default function Pricing() {
         <BrandLockup variant="product" showOrgSubline to="/" />
         <SectionLabel>Pricing</SectionLabel>
         <h1 className="text-display-sm mb-3">Start free. Buy credits when agents get busy.</h1>
+        {checkoutError && (
+          <div className="mb-4 rounded-lg border px-4 py-3 text-body" style={{ borderColor: 'oklch(0.65 0.2 25 / 0.4)', background: 'oklch(0.65 0.2 25 / 0.08)', color: 'var(--color-text-primary)' }}>
+            Checkout couldn&apos;t start. This is usually temporary — try again in a moment, or reach out if it persists.
+            <button type="button" onClick={() => setCheckoutError(false)} className="ml-2 underline cursor-pointer" style={{ color: 'var(--color-text-secondary)' }}>Dismiss</button>
+          </div>
+        )}
         <p className="text-body mb-4" style={{ color: 'var(--color-text-secondary)' }}>
           Most builders start with the free tier, then buy a <strong style={{ color: 'var(--color-text-primary)' }}>$1 pack</strong> for bursts.
           Subscribe only when you want a higher monthly allowance, RPM, and concurrency.
