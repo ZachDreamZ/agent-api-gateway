@@ -77,12 +77,29 @@ const ROUTE_META: Record<string, { title: string; desc: string }> = {
   '/blog': { title: 'Blog — AI Agent & Web Extraction Guides', desc: 'Practical guides on building AI agents that extract structured data from websites. Cost analysis, architecture patterns, and API tutorials.' },
   '/alternatives': { title: 'Agent API Gateway vs Alternatives — Firecrawl, ScrapingBee, Browserless', desc: 'Compare Agent API Gateway with Firecrawl, ScrapingBee, and other web extraction APIs. See pricing, features, and which fits your AI agent stack.' },
   '/docs': { title: 'Documentation — REST API & MCP Reference', desc: 'Agent API Gateway documentation: REST endpoints, MCP server setup, authentication, rate limits, schema definitions, and code examples.' },
+  '/mcp': { title: 'MCP Server for AI Agents | Agent API Gateway', desc: 'Install Agent API Gateway as an MCP tool in Cursor, Claude Desktop, or VS Code and turn public webpages into validated JSON.' },
+  '/agents': { title: 'Machine-Readable API Discovery for AI Agents | Agent API Gateway', desc: 'Use llms.txt, agent.json, OpenAPI, health, schemas, and MCP endpoints to help AI agents discover and call Agent API Gateway.' },
+  '/for-agents': { title: 'For AI Agents — Discovery Files & MCP | Agent API Gateway', desc: 'Machine-readable endpoints for AI agents: llms.txt, agent.json, OpenAPI, schema discovery, health checks, and MCP integration.' },
+  '/use-cases': { title: 'AI Agent Web Extraction Use Cases | Agent API Gateway', desc: 'Explore price intelligence, content research, company enrichment, and MCP workflows powered by structured web extraction.' },
+  '/privacy': { title: 'Privacy Policy | Agent API Gateway', desc: 'How Agent API Gateway handles account data, extraction URLs, authentication, billing, and service providers.' },
+  '/terms': { title: 'Terms of Service | Agent API Gateway', desc: 'Terms governing use of Agent API Gateway structured web extraction services, accounts, billing, and acceptable behavior.' },
+  '/aup': { title: 'Acceptable Use Policy | Agent API Gateway', desc: 'Acceptable use rules for Agent API Gateway, including prohibited abuse, bypassing controls, and harmful extraction activity.' },
+  '/acceptable-use': { title: 'Acceptable Use Policy | Agent API Gateway', desc: 'Acceptable use rules for Agent API Gateway, including prohibited abuse, bypassing controls, and harmful extraction activity.' },
 };
 
+function routeMeta(path: string) {
+  if (ROUTE_META[path]) return ROUTE_META[path];
+  if (path.startsWith('/blog/')) return { title: 'AI Agent Web Extraction Guide | Agent API Gateway', desc: 'Engineering guides and practical patterns for reliable structured web extraction in AI agent workflows.' };
+  if (path.startsWith('/alternatives/')) return { title: 'AI Web Extraction API Comparison | Agent API Gateway', desc: 'Compare structured web extraction approaches for AI agents, including pricing, schemas, reliability, and MCP support.' };
+  if (path.startsWith('/use-cases/')) return { title: 'AI Agent Web Extraction Use Case | Agent API Gateway', desc: 'See how structured web extraction supports production AI agent workflows with validated JSON and predictable schemas.' };
+  return undefined;
+}
+
 function injectMeta(html: string, path: string): string {
-  const meta = ROUTE_META[path];
+  const meta = routeMeta(path);
   if (!meta) return html;
   let out = html;
+  const canonical = `https://agentapigw.dpdns.org${path === '/' ? '/' : path}`;
   if (/<title>[^<]*<\/title>/.test(out)) {
     out = out.replace(/<title>[^<]*<\/title>/, `<title>${meta.title}</title>`);
   }
@@ -94,6 +111,12 @@ function injectMeta(html: string, path: string): string {
   }
   if (/property="og:description" content="[^"]*"/.test(out)) {
     out = out.replace(/property="og:description" content="[^"]*"/, `property="og:description" content="${meta.desc}"`);
+  }
+  if (/property="og:url" content="[^"]*"/.test(out)) {
+    out = out.replace(/property="og:url" content="[^"]*"/, `property="og:url" content="${canonical}"`);
+  }
+  if (/<link rel="canonical" href="[^"]*"/.test(out)) {
+    out = out.replace(/<link rel="canonical" href="[^"]*"/, `<link rel="canonical" href="${canonical}"`);
   }
   return out;
 }
