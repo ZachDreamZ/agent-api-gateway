@@ -298,7 +298,7 @@
       {
         "id": "nav-height-benchmark",
         "description": "Nav height 52px -> 64px desktop / 56px mobile to match Linear/Stripe benchmark",
-        "commit": "PENDING",
+        "commit": "5d6f675",
         "timestamp": "2026-08-23T02:17:29.415Z"
       },
       {
