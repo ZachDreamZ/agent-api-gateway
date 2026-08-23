@@ -238,7 +238,7 @@ type SchemaKey = keyof typeof SCHEMAS;
 
 function SchemaPlayground() {
   const [schema, setSchema] = useState<SchemaKey>('product');
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState('https://store.example.com/products/wireless-headphones');
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -258,10 +258,6 @@ function SchemaPlayground() {
   }, []);
 
   async function handleRun() {
-    if (!url.trim()) {
-      setError('Enter a URL to try it out');
-      return;
-    }
     let normalized = url.trim();
     if (!/^https?:\/\//i.test(normalized)) normalized = 'https://' + normalized;
     try { new URL(normalized); } catch {
@@ -342,7 +338,7 @@ function SchemaPlayground() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') handleRun(); }}
-          placeholder="https://store.example.com/headphones"
+          placeholder="Paste any product, article, or company page URL"
           className="flex-1 rounded px-3 py-1.5 text-xs outline-none"
           style={{
             background: 'var(--color-bg-elevated)',
