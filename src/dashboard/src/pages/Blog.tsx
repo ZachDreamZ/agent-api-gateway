@@ -794,7 +794,9 @@ function BlogPost() {
     } else if (line.trim() === '') {
       rendered.push(<div key={rendered.length} className="h-2" />);
     } else {
-      const formatted = line.replace(/`([^`]+)`/g, '<code class="code-inline">$1</code>');
+      const formatted = line
+        .replace(/`([^`]+)`/g, '<code class="code-inline">$1</code>')
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a class="link-accent" href="$2">$1</a>');
       rendered.push(<p key={rendered.length} className="text-body" style={{ color: 'var(--color-text-secondary)' }} dangerouslySetInnerHTML={{ __html: formatted }} />);
     }
   }
