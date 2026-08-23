@@ -2,7 +2,7 @@
   "version": 1,
   "loop": {
     "currentPhase": "execute",
-    "iteration": 50,
+    "iteration": 51,
     "startedAt": "2026-07-23T06:00:00Z",
     "lastAudit": "2026-08-23T00:44:44.174Z",
     "lastDeployVerification": "2026-07-25T02:52:00Z"
@@ -270,6 +270,18 @@
         "description": "Post-deploy Lighthouse: perf 91 a11y 100 BP 100 SEO 100; LCP 2.3s CLS 0.004",
         "commit": "",
         "timestamp": "2026-08-23T01:21:37.323Z"
+      },
+      {
+        "id": "playground-one-click-demo",
+        "description": "Prefilled demo URL (books.toscrape.com); fixed fake-domain bug found by e2e check; verified live: click -> 368ms typed result",
+        "commit": "b945f1b",
+        "timestamp": "2026-08-23T01:49:21.948Z"
+      },
+      {
+        "id": "cta-scale-consistency",
+        "description": "Playground result CTA + nav dashboard button upgraded to match hero scale",
+        "commit": "085e57e",
+        "timestamp": "2026-08-23T01:49:21.949Z"
       }
     ],
     "pending": [
@@ -300,5 +312,5 @@
       "measuredAt": "2026-08-23T01:21:37.323Z"
     }
   },
-  "iteration": 50
+  "iteration": 51
 }
