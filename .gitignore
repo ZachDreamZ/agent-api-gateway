@@ -38,6 +38,9 @@ packages/**/.npmrc
 design-compare.json
 mobile-check.json
 shots/
+.shots/
+.lh-summary.mjs
+.seo.mjs
 dc.log
 mc.log
 shots-run.log
