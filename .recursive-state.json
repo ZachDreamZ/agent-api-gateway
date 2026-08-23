@@ -390,6 +390,12 @@
         "description": "Made horizontally scrollable code samples and the comparison table keyboard-focusable with named regions; local axe audit now reports no violations",
         "commit": "6620b24",
         "timestamp": "2026-08-23T07:20:00.000Z"
+      },
+      {
+        "id": "spotlight-card-microinteraction",
+        "description": "Added a reduced-motion and touch-safe React Bits-inspired pointer spotlight to capability cards without adding dependencies",
+        "commit": "c9378ca",
+        "timestamp": "2026-08-23T08:00:00.000Z"
       }
     ],
     "pending": [
@@ -410,13 +416,13 @@
     "deployStatus": "live",
     "commitsThisSession": 38,
     "lighthouse": {
-      "performance": 92,
+      "performance": 93,
       "accessibility": 100,
       "bestPractices": 100,
       "seo": 100,
       "lcp": "2.7s",
       "cls": "0.030",
-      "measuredAt": "2026-08-23T07:40:00.000Z",
+      "measuredAt": "2026-08-23T08:10:00.000Z",
       "sampleRange": "88-93 performance across repeated hosted runs"
     }
   },
